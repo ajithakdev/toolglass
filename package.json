@@ -6,7 +6,14 @@
   "description": "Toolglass — frosted developer utilities. 9 beautiful, lightning-fast, 100% client-side tools (password, JWT, UUID, ObjectId, NanoID, hash, base64, timestamp, JSON).",
   "license": "MIT",
   "author": "ajithakdev",
-  "homepage": "https://ajithakdev.github.io/password-generator-v1",
+  "homepage": "https://ajithakdev.github.io/toolglass",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ajithakdev/toolglass.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ajithakdev/toolglass/issues"
+  },
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",

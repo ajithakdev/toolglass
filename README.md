@@ -9,7 +9,7 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-5-3178c6.svg)](https://www.typescriptlang.org)
 [![Vite](https://img.shields.io/badge/Vite-5-646cff.svg)](https://vitejs.dev)
 
-🔗 **Live:** https://ajithakdev.github.io/password-generator-v1/
+🔗 **Live:** https://ajithakdev.github.io/toolglass/
 
 </div>
 
@@ -50,7 +50,7 @@ Toolglass bundles nine of the utilities you reach for every day into a single gl
 ## 🚀 Quick start
 
 ```bash
-git clone https://github.com/ajithakdev/password-generator-v1.git toolglass
+git clone https://github.com/ajithakdev/toolglass.git
 cd toolglass
 npm install
 npm run dev

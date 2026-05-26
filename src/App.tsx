@@ -36,7 +36,7 @@ function Shell({ children }: { children: React.ReactNode }) {
           <span style={{ fontWeight: 700, letterSpacing: '-0.01em' }}>Toolglass</span>
         </Link>
         <a
-          href="https://github.com/ajithakdev/password-generator-v1"
+          href="https://github.com/ajithakdev/toolglass"
           target="_blank"
           rel="noreferrer"
           style={{ fontSize: 13, color: 'var(--ink-soft)', fontWeight: 500 }}

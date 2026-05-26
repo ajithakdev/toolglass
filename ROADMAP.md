@@ -1,6 +1,9 @@
-# Toolglass — 10-Day Enhancement Plan
+# Toolglass — 20-Day Enhancement Plan
 
-One small, shippable feature per day. Each day = single commit, single PR, ≤ ~150 LOC, no new heavy deps. Ship 1 feature → 10 features → noticeably better product in 10 days.
+One small, shippable feature per day. Each day = single commit, single PR, ≤ ~150 LOC, no heavy deps unless explicitly noted.
+
+**Days 1–10** build the platform: UX polish, theme, URL state, tests, a11y, recents, three core utilities, PWA, SEO, local stats.
+**Days 11–20** scale the product: six new high-value tools, then perf/CI guardrails, then a real v1.0.0 launch.
 
 Recommended order: low-risk visual wins first, then UX, then content, then power-user features. Resist scope creep.
 
@@ -219,19 +222,221 @@ Recommended order: low-risk visual wins first, then UX, then content, then power
 
 ---
 
-## After day 10 — parking lot (pick whichever feels exciting next)
+## Day 11 — Regex tester
 
-- Regex tester with live highlighting
-- cURL → fetch converter
-- JSON-to-TypeScript type generator
-- Lorem ipsum generator
-- QR code generator
-- Markdown ⇄ HTML
-- CSS unit converter
-- Cron expression explainer
-- diff viewer (text/JSON)
-- bcrypt / argon2 cost estimator
-- API mock data generator
-- Per-tool dynamic OG images
+**What:** Paste a regex + flags + test string → highlighted matches + capture groups table + per-match index.
+
+**Why:** Top-3 most-Googled dev utility. Pure client-side with `RegExp` — zero dependencies.
+
+**Where:**
+- `src/tools/regex/RegexTool.tsx`
+- Inputs: pattern, flags (`g`, `i`, `m`, `s`, `u`), test string.
+- Render the test string with `<mark>` wrapping each match; below it a table of `[match, index, ...groups]`.
+- Try/catch on `new RegExp(...)`; show error in red under the pattern input.
+- Registry entry; icon `🔍`.
+
+**Acceptance:** Invalid regex never crashes the page. Global flag actually shows all matches.
+
+**Skip:** PCRE features (lookbehind workarounds), replace mode (Day 12).
+
+---
+
+## Day 12 — JSON ⇄ TypeScript type generator
+
+**What:** Paste JSON → emit a TypeScript `interface` / `type` for it. Toggle interface-vs-type, optional-undefined detection from arrays.
+
+**Why:** Devs paste API responses into this kind of tool daily. Saves a lot of typing.
+
+**Where:**
+- `src/tools/json-to-ts/JsonToTsTool.tsx`
+- Pure function `inferType(value, name)` recursive:
+  - primitives → `string | number | boolean | null`
+  - array → union of element types, deduped
+  - object → nested interface, name from key (PascalCase)
+- Sub-types emitted above the root with sane names; collision suffixes (`User`, `User2`).
+- Registry entry; icon `🧾`.
+
+**Acceptance:** Round-trips a moderately nested JSON sample. Produces compilable TS (test by pasting into TS playground).
+
+**Skip:** Zod / Yup output (parking lot).
+
+---
+
+## Day 13 — cURL → fetch converter
+
+**What:** Paste a `curl …` command → emit a JS `fetch(…)` snippet (and a Node `fetch` variant). Handles `-X`, `-H`, `-d`/`--data`, `--data-raw`, `-u`, `--form`, single-line and backslash-wrapped multi-line input.
+
+**Why:** Every API doc page on the planet ships curl examples; devs translate them into fetch all day.
+
+**Where:**
+- `src/tools/curl-to-fetch/CurlTool.tsx`
+- Small tokenizer that respects single/double quotes, line continuations, and `\$` escapes. Then build the fetch options object.
+- Registry entry; icon `📡`.
+
+**Acceptance:** Round-trip a Stripe-docs-style curl example correctly.
+
+**Skip:** curl flags like `--compressed`, `--cookie-jar`, certificate options.
+
+---
+
+## Day 14 — QR code generator
+
+**What:** Text/URL → live SVG QR with size + error-correction-level controls. Download as SVG/PNG.
+
+**Why:** Common utility, visible/photographable result — great social-share moment.
+
+**Where:**
+- `src/tools/qr/QrTool.tsx`
+- Add one tiny dep: [`qrcode`](https://www.npmjs.com/package/qrcode) (no extra runtime cost, ~13 KB gz, no deps).
+- Render to `<canvas>` + offer SVG variant for export.
+- Registry entry; icon `▦`.
+
+**Acceptance:** Generated QR scans correctly with a phone camera at default size.
+
+**Skip:** Logo overlay, gradient colors (parking lot).
+
+---
+
+## Day 15 — Markdown ⇄ HTML preview
+
+**What:** Split view: Markdown on the left, rendered HTML on the right, synced scroll. "Copy HTML" button.
+
+**Why:** Useful and shows off the glass aesthetic well (two frosted panels side by side).
+
+**Where:**
+- `src/tools/markdown/MarkdownTool.tsx`
+- Add dep: [`marked`](https://www.npmjs.com/package/marked) + [`dompurify`](https://www.npmjs.com/package/dompurify) for safe HTML output (XSS sanitization).
+- On mobile, stack vertically instead of split.
+- Registry entry; icon `📝`.
+
+**Acceptance:** Pasting an arbitrary `README.md` renders correctly. `<script>` tags from input are stripped (verify).
+
+**Skip:** GFM tables/checkboxes if `marked` defaults don't cover; live HTML→MD direction.
+
+---
+
+## Day 16 — Cron expression explainer
+
+**What:** Paste `*/5 * * * *` → human description ("Every 5 minutes") + next 5 fire times in user's timezone. Validate on type.
+
+**Why:** Cron is universally hated; this tool gets bookmarked instantly.
+
+**Where:**
+- `src/tools/cron/CronTool.tsx`
+- Add dep: [`cron-parser`](https://www.npmjs.com/package/cron-parser) and [`cronstrue`](https://www.npmjs.com/package/cronstrue).
+- Inputs: cron string, optional timezone select (default = browser TZ).
+- Outputs: human string, table of next 5 ISO timestamps.
+- Registry entry; icon `🗓️`.
+
+**Acceptance:** Handles 5-field and 6-field (with seconds) variants. Invalid input → red error, no crash.
+
+**Skip:** Quartz-specific syntax beyond what `cron-parser` supports.
+
+---
+
+## Day 17 — Diff viewer (text / JSON)
+
+**What:** Two text panels (Original / Modified) → unified or side-by-side diff with line additions/removals highlighted.
+
+**Why:** Saves trips to diffchecker.com. A "JSON diff" mode that pre-formats both sides before diffing is the killer feature.
+
+**Where:**
+- `src/tools/diff/DiffTool.tsx`
+- Add dep: [`diff`](https://www.npmjs.com/package/diff) (`diffLines`).
+- Toggle: Plain Text / JSON (latter `JSON.parse` + `JSON.stringify(_, null, 2)` both inputs before diffing).
+- Custom renderer using existing pale palette (green tint for adds, red tint for removes, both soft).
+- Registry entry; icon `🪞`.
+
+**Acceptance:** Empty inputs handled. JSON mode catches structural diffs even when key order differs (because of canonicalization).
+
+**Skip:** Inline char-level diff, word-level diff.
+
+---
+
+## Day 18 — Lorem ipsum + mock data generator
+
+**What:** Two modes in one tool:
+1. **Lorem** — generate N paragraphs / sentences / words, classic or "hipster" set.
+2. **Mock data** — pick a JSON schema (`{ name, email, avatar, address, company }`), generate N rows, copy as JSON / CSV / TS array.
+
+**Why:** Frontend devs use mocks constantly; bundling lorem in one tool keeps the registry tight.
+
+**Where:**
+- `src/tools/mock/MockTool.tsx`
+- Add dep: [`@faker-js/faker`](https://www.npmjs.com/package/@faker-js/faker) (tree-shakable; only import the modules used to keep bundle small).
+- Tab UI inside the tool; CSV serializer ~20 lines.
+- Registry entry; icon `🧪`.
+
+**Acceptance:** N=100 rows generates in <100ms. Same seed (URL state from Day 3 if landed) gives same output.
+
+**Skip:** Schema editor UI — hardcode a few useful schemas; user can request more later.
+
+---
+
+## Day 19 — CI matrix + Lighthouse budget
+
+**What:** Tighten CI:
+- Build/test on Node 20 *and* 22.
+- After build, run Lighthouse (via `treosh/lighthouse-ci-action`) against `npm run preview` and fail PR if performance < 90 or a11y < 95.
+- Cache `node_modules` more aggressively.
+
+**Why:** Prevents perf regressions silently shipping. Locks in the work from Days 4 and 5.
+
+**Where:**
+- Update `.github/workflows/ci.yml`:
+  - `strategy.matrix.node: [20, 22]`.
+  - New job `lighthouse` that depends on `verify`, boots `vite preview` on a port, runs `lhci autorun`.
+- New `lighthouserc.json` at repo root with the budgets.
+
+**Acceptance:** PR with deliberately broken perf (huge image) fails the lighthouse job. Two Node versions both pass.
+
+**Skip:** Multi-browser e2e (parking lot).
+
+---
+
+## Day 20 — Polish pass + v1.0.0 release
+
+**What:** Spend the day on small visible quality wins, then cut a real release.
+
+**Includes:**
+- 404 page with the same glass aesthetic + "Back to tools".
+- Loading skeletons in tool `Suspense` fallbacks (replace the plain "Loading…" text).
+- Custom scrollbars on `Output` (webkit + firefox).
+- Hover gradient sweep on the landing cards (subtle).
+- Footer: link to ROADMAP.md, GitHub stars badge, version number from `package.json`.
+- Tag `v1.0.0`, write a `CHANGELOG.md` covering days 1–20, draft a GitHub Release with screenshot / video.
+- Post launch: "Show HN", `r/webdev`, Twitter/X, Product Hunt scheduled.
+
+**Acceptance:**
+- `v1.0.0` tag exists; release page reads as a real announcement.
+- README badges all green.
+
+**Skip:** Anything new. Day 20 is consolidation, not features.
+
+---
+
+## Beyond 20 — parking lot
+
+Pick freely whenever inspiration strikes:
+
+- Zod / Yup schema output from JSON (Day 12 extension)
+- bcrypt / argon2 cost estimator (WASM)
+- HTTP status code lookup
+- IP / CIDR calculator
+- JWT signature verifier (HS256 + RS256 with public key)
+- HMAC generator (extends hash tool)
+- Image → base64 data URI
+- URL parser (split into protocol/host/path/query)
+- CSS unit converter (px/rem/em/%)
+- Color palette generator (extract from image, generate shades)
+- SVG → JSX converter
+- TOML ⇄ YAML ⇄ JSON converter
+- Per-tool dynamic OG images (@vercel/og style)
 - E2E tests with Playwright
 - i18n (Spanish / Hindi / Tamil)
+- Command palette: fuzzy search + recent boost
+- "Pinned tools" — drag to reorder on landing
+- Keyboard shortcut cheatsheet modal (`?` to open)
+- Shareable workspaces — multiple tool states bundled in one URL
+- WebAuthn passkey playground
+- HTTP request runner (CORS-restricted; useful inside extension)

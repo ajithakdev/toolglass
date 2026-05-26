@@ -25,4 +25,10 @@ dist-ssr
 
 node_modules/
 build/
+coverage/
 .env
+.env.local
+.env.*.local
+
+# TypeScript incremental build info
+*.tsbuildinfo

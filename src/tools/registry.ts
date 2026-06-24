@@ -92,6 +92,33 @@ export const tools: ToolMeta[] = [
     tint: 'linear-gradient(135deg, #93c5fd, #c4b5fd)',
     Component: lazy(() => import('./json/JsonTool')),
   },
+  {
+    slug: 'jwt-decode',
+    title: 'JWT Decoder',
+    short: 'Decode & inspect JWTs',
+    description: 'Paste a JWT to see its header, payload, and expiry status pretty-printed.',
+    icon: '👁️',
+    tint: 'linear-gradient(135deg, #fbcfe8, #fda4af)',
+    Component: lazy(() => import('./jwt-decode/JwtDecodeTool')),
+  },
+  {
+    slug: 'url',
+    title: 'URL Encoder',
+    short: 'Encode & decode',
+    description: 'Safely encode or decode URL components (encodeURIComponent).',
+    icon: '🔗',
+    tint: 'linear-gradient(135deg, #bfdbfe, #a7f3d0)',
+    Component: lazy(() => import('./url/UrlTool')),
+  },
+  {
+    slug: 'color',
+    title: 'Color Converter',
+    short: 'Hex ⇄ RGB ⇄ HSL',
+    description: 'Convert colors between Hex, RGB, and HSL formats with a live preview.',
+    icon: '🎨',
+    tint: 'linear-gradient(135deg, #fcd34d, #fca5a5)',
+    Component: lazy(() => import('./color/ColorTool')),
+  },
 ];
 
 export const toolBySlug = (slug: string): ToolMeta | undefined =>

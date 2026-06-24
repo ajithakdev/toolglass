@@ -6,8 +6,8 @@ export function Field({
   children,
   style,
 }: {
-  label: string;
-  hint?: string;
+  label: ReactNode;
+  hint?: ReactNode;
   children: ReactNode;
   style?: CSSProperties;
 }) {

@@ -5,4 +5,9 @@ export default defineConfig({
   base: '/toolglass/',
   plugins: [react()],
   build: { target: 'es2022', sourcemap: false },
+  test: {
+    environment: 'jsdom',
+    globals: true,
+    include: ['src/**/*.test.ts', 'src/**/*.test.tsx'],
+  },
 });

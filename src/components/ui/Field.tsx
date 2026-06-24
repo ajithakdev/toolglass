@@ -38,10 +38,11 @@ export function TextInput(props: React.InputHTMLAttributes<HTMLInputElement>) {
         padding: '12px 14px',
         borderRadius: 12,
         border: '1px solid var(--line)',
-        background: 'rgba(255,255,255,0.6)',
+        background: 'var(--surface-input)',
         backdropFilter: 'blur(10px)',
         fontSize: 14,
         outline: 'none',
+        color: 'var(--ink)',
         ...props.style,
       }}
     />
@@ -57,13 +58,14 @@ export function TextArea(props: React.TextareaHTMLAttributes<HTMLTextAreaElement
         padding: '12px 14px',
         borderRadius: 12,
         border: '1px solid var(--line)',
-        background: 'rgba(255,255,255,0.6)',
+        background: 'var(--surface-input)',
         backdropFilter: 'blur(10px)',
         fontSize: 13,
         outline: 'none',
         resize: 'vertical',
         minHeight: 120,
         fontFamily: 'var(--font-mono)',
+        color: 'var(--ink)',
         ...props.style,
       }}
     />
@@ -90,7 +92,7 @@ export function Toggle({
         alignItems: 'center',
         gap: 10,
         padding: '10px 14px',
-        background: checked ? 'rgba(167, 139, 250, 0.18)' : 'rgba(255,255,255,0.5)',
+        background: checked ? 'rgba(167, 139, 250, 0.18)' : 'var(--surface-button-off)',
         border: `1px solid ${checked ? 'rgba(167, 139, 250, 0.4)' : 'var(--line)'}`,
         borderRadius: 12,
         fontSize: 13,
@@ -109,7 +111,7 @@ export function Toggle({
           borderRadius: 999,
           background: checked
             ? 'linear-gradient(135deg, #a78bfa, #f0abfc)'
-            : 'rgba(0,0,0,0.08)',
+            : 'var(--toggle-track-off)',
           position: 'relative',
           transition: 'all 0.2s ease',
           flexShrink: 0,

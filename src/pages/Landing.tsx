@@ -16,7 +16,7 @@ export function Landing() {
             display: 'inline-block',
             padding: '6px 14px',
             borderRadius: 999,
-            background: 'rgba(255,255,255,0.6)',
+            background: 'var(--surface-pill)',
             backdropFilter: 'blur(10px)',
             border: '1px solid var(--glass-border)',
             fontSize: 12,
@@ -103,10 +103,10 @@ export function Landing() {
                     width: 52,
                     height: 52,
                     borderRadius: 14,
-                    background: 'rgba(255,255,255,0.75)',
+                    background: 'var(--surface-icon-bg)',
                     display: 'grid',
                     placeItems: 'center',
-                    boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.8)',
+                    boxShadow: 'var(--icon-highlight)',
                   }}
                 >
                   {t.icon}

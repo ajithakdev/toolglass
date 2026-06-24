@@ -60,21 +60,36 @@ export default function ColorTool() {
       <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
         <Field label="Any Color Format (Hex, RGB, HSL, Named)">
           <div style={{ display: 'flex', gap: 12 }}>
-            <input
-              type="color"
-              value={parsed?.isHex || '#000000'}
-              onChange={(e) => setInput(e.target.value)}
+            <div
               style={{
+                position: 'relative',
                 width: 42,
                 height: 42,
-                padding: 0,
-                border: 'none',
                 borderRadius: 8,
-                cursor: 'pointer',
-                background: 'none',
+                background: parsed?.isHex || 'var(--surface-button-off)',
+                boxShadow: 'inset 0 0 0 1px rgba(0,0,0,0.1), 0 2px 6px rgba(0,0,0,0.06)',
+                display: 'grid',
+                placeItems: 'center',
+                overflow: 'hidden',
                 flexShrink: 0
               }}
-            />
+              title="Pick a color"
+            >
+              <span style={{ fontSize: 16, pointerEvents: 'none', mixBlendMode: 'difference', filter: 'invert(1)', color: '#fff', opacity: 0.9 }}>💧</span>
+              <input
+                type="color"
+                value={parsed?.isHex || '#000000'}
+                onChange={(e) => setInput(e.target.value)}
+                style={{
+                  position: 'absolute',
+                  inset: -10,
+                  width: 64,
+                  height: 64,
+                  cursor: 'pointer',
+                  opacity: 0
+                }}
+              />
+            </div>
             <input
               type="text"
               className="input"

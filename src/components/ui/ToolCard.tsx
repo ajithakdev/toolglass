@@ -24,7 +24,9 @@ export function ToolCard({ tool }: { tool: ToolMeta }) {
           height: '100%',
           position: 'relative',
           overflow: 'hidden',
-          transition: 'box-shadow 0.25s ease',
+          borderRadius: 16,
+          transform: 'translateZ(0)', // forces overflow hidden on safari
+          transition: 'box-shadow 0.25s ease, transform 0.2s ease',
           textDecoration: 'none',
         }}
       >
@@ -43,7 +45,7 @@ export function ToolCard({ tool }: { tool: ToolMeta }) {
             zIndex: 2,
             boxShadow: '0 2px 4px rgba(0,0,0,0.04)',
           }}>
-            {count} ×
+            {count} {count === 1 ? 'use' : 'uses'}
           </div>
         )}
         <div

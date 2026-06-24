@@ -41,15 +41,16 @@ export function useToolStats(slug?: string) {
   }, [load]);
 
   const toggleTelemetry = useCallback(() => {
+    let nextState = false;
     setEnabled(e => {
-      const next = !e;
-      localStorage.setItem(TELEMETRY_KEY, String(next));
-      if (!next) {
+      nextState = !e;
+      localStorage.setItem(TELEMETRY_KEY, String(nextState));
+      if (!nextState) {
         localStorage.removeItem(STATS_KEY);
       }
-      window.dispatchEvent(new Event('toolglass-telemetry'));
-      return next;
+      return nextState;
     });
+    setTimeout(() => window.dispatchEvent(new Event('toolglass-telemetry')), 0);
   }, []);
 
   const increment = useCallback(() => {
@@ -66,7 +67,7 @@ export function useToolStats(slug?: string) {
         parsed[slug] = next;
         localStorage.setItem(STATS_KEY, JSON.stringify(parsed));
         setAllStats(parsed);
-        window.dispatchEvent(new Event('toolglass-telemetry'));
+        setTimeout(() => window.dispatchEvent(new Event('toolglass-telemetry')), 0);
       } catch {
         // ignore
       }

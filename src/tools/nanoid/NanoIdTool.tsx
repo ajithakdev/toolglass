@@ -1,3 +1,4 @@
+import { useToolAction } from '../../hooks/useToolAction';
 import { useEffect, useState } from 'react';
 import { Button } from '../../components/ui/Button';
 import { Field, Slider, TextInput } from '../../components/ui/Field';
@@ -39,6 +40,7 @@ function ShareButton() {
 }
 
 export default function NanoIdTool() {
+  const recordAction = useToolAction();
   const [size, setSize] = useUrlState('size', 21, Number, String);
   const [count, setCount] = useUrlState('count', 5, Number, String);
   // alphabet is NOT in URL (could be long; not sensitive, just verbose)
@@ -48,6 +50,7 @@ export default function NanoIdTool() {
   const gen = () => {
     if (!alphabet) return setIds([]);
     setIds(Array.from({ length: count }, () => nanoid(size, alphabet)));
+    recordAction();
   };
 
   useEffect(() => {

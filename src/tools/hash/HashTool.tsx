@@ -1,3 +1,4 @@
+import { useToolAction } from '../../hooks/useToolAction';
 import { useEffect, useState } from 'react';
 import { Field, TextArea } from '../../components/ui/Field';
 import { Output } from '../../components/ui/Output';
@@ -14,13 +15,19 @@ async function hash(text: string, algo: Algo): Promise<string> {
 }
 
 export default function HashTool() {
+  const recordAction = useToolAction();
   const [input, setInput] = useState('hello world');
   const [algo, setAlgo] = useState<Algo>('SHA-256');
   const [out, setOut] = useState('');
 
   useEffect(() => {
     let alive = true;
-    hash(input, algo).then((h) => alive && setOut(h));
+    hash(input, algo).then((h) => {
+      if (alive) {
+        setOut(h);
+        recordAction();
+      }
+    });
     return () => {
       alive = false;
     };

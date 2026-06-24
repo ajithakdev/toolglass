@@ -1,7 +1,8 @@
 import { motion } from 'framer-motion';
 import { type ReactNode, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { GlassCard } from './ui/GlassCard';
+import { useToolStats } from '../hooks/useToolStats';
 
 export function ToolLayout({
   title,
@@ -15,6 +16,8 @@ export function ToolLayout({
   children: ReactNode;
 }) {
   const navigate = useNavigate();
+  const { slug } = useParams();
+  const { count } = useToolStats(slug || '');
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -116,6 +119,12 @@ export function ToolLayout({
       <GlassCard strong padding={28}>
         {children}
       </GlassCard>
+
+      {count > 0 && (
+        <div style={{ textAlign: 'center', fontSize: 12, color: 'var(--ink-mute)', marginTop: 8 }}>
+          You've used this tool {count} time{count === 1 ? '' : 's'} — all on your device.
+        </div>
+      )}
     </motion.div>
   );
 }

@@ -1,3 +1,4 @@
+import { useToolAction } from '../../hooks/useToolAction';
 import { useState } from 'react';
 import { Button } from '../../components/ui/Button';
 import { Field, TextArea, TextInput } from '../../components/ui/Field';
@@ -14,6 +15,7 @@ const DEFAULT_PAYLOAD = JSON.stringify(
 const DEFAULT_HEADER = JSON.stringify({ alg: 'HS256', typ: 'JWT' }, null, 2);
 
 export default function JwtTool() {
+  const recordAction = useToolAction();
   const [header, setHeader] = useState(DEFAULT_HEADER);
   const [payload, setPayload] = useState(DEFAULT_PAYLOAD);
   const [secret, setSecret] = useState('your-256-bit-secret');
@@ -26,6 +28,7 @@ export default function JwtTool() {
       JSON.parse(payload);
       const t = await signHS256(payload, secret, header);
       setToken(t);
+      recordAction();
     } catch (e) {
       toast.push(`Invalid JSON: ${(e as Error).message}`, 'error');
     }

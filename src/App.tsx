@@ -7,6 +7,43 @@ import { ToolPage } from './pages/ToolPage';
 import { ToastProvider } from './components/ui/Toast';
 import { useTheme } from './hooks/useTheme';
 
+function InstallPwaButton() {
+  const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+
+  useEffect(() => {
+    const handler = (e: Event) => {
+      e.preventDefault();
+      setDeferredPrompt(e);
+    };
+    window.addEventListener('beforeinstallprompt', handler);
+    return () => window.removeEventListener('beforeinstallprompt', handler);
+  }, []);
+
+  if (!deferredPrompt) return null;
+
+  return (
+    <button
+      onClick={async () => {
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        if (outcome === 'accepted') setDeferredPrompt(null);
+      }}
+      style={{
+        padding: '7px 12px',
+        borderRadius: 10,
+        background: 'var(--surface-button-off)',
+        border: '1px solid var(--glass-border)',
+        fontSize: 13,
+        fontWeight: 600,
+        color: 'var(--ink)',
+        cursor: 'pointer',
+      }}
+    >
+      ↓ Install
+    </button>
+  );
+}
+
 function Shell({ children, onOpenPalette }: { children: React.ReactNode; onOpenPalette: () => void }) {
   return (
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
@@ -98,6 +135,7 @@ function Shell({ children, onOpenPalette }: { children: React.ReactNode; onOpenP
               ⌘K
             </kbd>
           </button>
+          <InstallPwaButton />
           <ThemeToggle />
           <a
             href="https://github.com/ajithakdev/toolglass"

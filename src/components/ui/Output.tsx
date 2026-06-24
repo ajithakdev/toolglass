@@ -7,11 +7,14 @@ export function Output({
   multiline,
   placeholder = 'Output will appear here',
   trailing,
+  label,
 }: {
   value: string;
   multiline?: boolean;
   placeholder?: string;
   trailing?: ReactNode;
+  /** Accessible label for screen readers, e.g. "Generated password" */
+  label?: string;
 }) {
   return (
     <div
@@ -24,26 +27,34 @@ export function Output({
         alignItems: multiline ? 'stretch' : 'center',
       }}
     >
-      <motion.div
-        key={value || 'empty'}
-        initial={{ opacity: 0, y: 4 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.18 }}
-        className="mono"
-        style={{
-          flex: 1,
-          fontSize: 14,
-          color: value ? 'var(--ink)' : 'var(--ink-mute)',
-          wordBreak: 'break-all',
-          whiteSpace: multiline ? 'pre-wrap' : 'nowrap',
-          overflow: multiline ? 'auto' : 'hidden',
-          textOverflow: 'ellipsis',
-          maxHeight: multiline ? 360 : undefined,
-          padding: multiline ? 4 : 0,
-        }}
+      {/* aria-live so screen readers announce generated results */}
+      <output
+        role="status"
+        aria-live="polite"
+        aria-label={label}
+        style={{ display: 'contents' }}
       >
-        {value || placeholder}
-      </motion.div>
+        <motion.div
+          key={value || 'empty'}
+          initial={{ opacity: 0, y: 4 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.18 }}
+          className="mono"
+          style={{
+            flex: 1,
+            fontSize: 14,
+            color: value ? 'var(--ink)' : 'var(--ink-mute)',
+            wordBreak: 'break-all',
+            whiteSpace: multiline ? 'pre-wrap' : 'nowrap',
+            overflow: multiline ? 'auto' : 'hidden',
+            textOverflow: 'ellipsis',
+            maxHeight: multiline ? 360 : undefined,
+            padding: multiline ? 4 : 0,
+          }}
+        >
+          {value || placeholder}
+        </motion.div>
+      </output>
       <div style={{ display: 'flex', gap: 8, alignSelf: multiline ? 'flex-end' : 'auto' }}>
         {trailing}
         <CopyButton value={value} />

@@ -9,7 +9,7 @@ Recommended order: low-risk visual wins first, then UX, then content, then power
 
 ---
 
-## Day 1 — Cmd-K command palette
+## ✅ Day 1 — Cmd-K command palette
 
 **What:** Press `⌘K` / `Ctrl+K` anywhere → search box → jump to any tool by name. Arrow keys + enter to select.
 
@@ -32,7 +32,7 @@ Recommended order: low-risk visual wins first, then UX, then content, then power
 
 ---
 
-## Day 2 — Persisted dark mode toggle
+## ✅ Day 2 — Persisted dark mode toggle
 
 **What:** Sun/moon toggle in nav. Stores preference in `localStorage`. Defaults to `prefers-color-scheme`.
 
@@ -52,7 +52,7 @@ Recommended order: low-risk visual wins first, then UX, then content, then power
 
 ---
 
-## Day 3 — URL-shareable tool state
+## ✅ Day 3 — URL-shareable tool state
 
 **What:** Tool options serialize to query string. Paste a Toolglass URL and the tool opens with the exact settings. Example:
 `/#/tools/password?len=32&u=1&l=1&n=1&s=0`
@@ -73,7 +73,7 @@ Recommended order: low-risk visual wins first, then UX, then content, then power
 
 ---
 
-## Day 4 — Vitest unit tests for the security-critical paths
+## ✅ Day 4 — Vitest unit tests for the security-critical paths
 
 **What:** Real tests for password CSPRNG + base64 round-trip + JWT signature shape + objectid format. Wire into CI.
 
@@ -95,7 +95,7 @@ Recommended order: low-risk visual wins first, then UX, then content, then power
 
 ---
 
-## Day 5 — A11y pass + keyboard polish
+## ✅ Day 5 — A11y pass + keyboard polish
 
 **What:** Make every tool actually usable without a mouse and announce to screen readers.
 

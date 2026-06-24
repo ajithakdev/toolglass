@@ -40,7 +40,12 @@ export default function ColorTool() {
       }
       const hsl = `hsl${a < 1 ? 'a' : ''}(${Math.round(h * 360)}, ${Math.round(s * 100)}%, ${Math.round(l * 100)}%${a < 1 ? `, ${a}` : ''})`;
 
-      return { rgb: computed, hex, hsl, color: computed };
+      const variations = [-20, -10, 0, 10, 20].map(dl => {
+        let newL = Math.max(0, Math.min(100, Math.round(l * 100) + dl));
+        return `hsl${a < 1 ? 'a' : ''}(${Math.round(h * 360)}, ${Math.round(s * 100)}%, ${newL}%${a < 1 ? `, ${a}` : ''})`;
+      });
+
+      return { rgb: computed, hex, hsl, color: computed, variations, isHex: a === 1 && hex.length === 7 ? hex : null };
     } catch {
       return null;
     }
@@ -54,22 +59,62 @@ export default function ColorTool() {
     >
       <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
         <Field label="Any Color Format (Hex, RGB, HSL, Named)">
-          <input
-            type="text"
-            className="input"
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            style={{ 
-              width: '100%', 
-              fontFamily: 'var(--font-mono)',
-              padding: '10px 14px',
-              borderRadius: 8,
-              border: '1px solid var(--glass-border)',
-              background: 'var(--surface-input)',
-              color: 'var(--ink)'
-            }}
-          />
+          <div style={{ display: 'flex', gap: 12 }}>
+            <input
+              type="color"
+              value={parsed?.isHex || '#000000'}
+              onChange={(e) => setInput(e.target.value)}
+              style={{
+                width: 42,
+                height: 42,
+                padding: 0,
+                border: 'none',
+                borderRadius: 8,
+                cursor: 'pointer',
+                background: 'none',
+                flexShrink: 0
+              }}
+            />
+            <input
+              type="text"
+              className="input"
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              style={{ 
+                flex: 1, 
+                fontFamily: 'var(--font-mono)',
+                padding: '10px 14px',
+                borderRadius: 8,
+                border: '1px solid var(--glass-border)',
+                background: 'var(--surface-input)',
+                color: 'var(--ink)',
+                outline: 'none'
+              }}
+            />
+          </div>
         </Field>
+
+        {parsed && (
+          <div>
+            <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--ink-soft)', marginBottom: 8 }}>Similar shades</div>
+            <div style={{ display: 'flex', gap: 12 }}>
+              {parsed.variations.map((v, i) => (
+                <div
+                  key={i}
+                  onClick={() => setInput(v)}
+                  title={v}
+                  style={{
+                    width: 32, height: 32, borderRadius: 6, background: v,
+                    cursor: 'pointer', boxShadow: 'inset 0 0 0 1px rgba(0,0,0,0.1), var(--icon-highlight)',
+                    transition: 'transform 0.2s',
+                  }}
+                  onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.1)'}
+                  onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
+                />
+              ))}
+            </div>
+          </div>
+        )}
 
         {parsed ? (
           <div style={{ display: 'flex', gap: 24, alignItems: 'center', flexWrap: 'wrap' }}>
@@ -119,7 +164,7 @@ function CopyRow({ label, value }: { label: string; value: string }) {
       <div style={{ width: 40, fontSize: 12, fontWeight: 600, color: 'var(--ink-soft)' }}>{label}</div>
       <div style={{ flex: 1, fontFamily: 'var(--font-mono)', fontSize: 14 }}>{value}</div>
       <div style={{ fontSize: 12, color: copied ? '#10b981' : 'var(--ink-mute)', transition: 'color 0.2s', fontWeight: 500 }}>
-        {copied ? 'Copied!' : 'Copy'}
+        {copied ? '✨ Copied!' : 'Copy'}
       </div>
     </div>
   );

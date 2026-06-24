@@ -18,7 +18,7 @@ function ShareButton() {
   };
   return (
     <Button onClick={handleShare} variant="soft">
-      {copied ? '✓ Copied!' : '🔗 Share'}
+      {copied ? '✨ Copied!' : '🔗 Share'}
     </Button>
   );
 }

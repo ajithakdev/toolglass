@@ -31,7 +31,7 @@ export function CopyButton({ value, label = 'Copy', size = 'md', disabled }: Pro
             exit={{ opacity: 0, y: 4 }}
             transition={{ duration: 0.15 }}
           >
-            ✓ Copied
+            ✨ Copied!
           </motion.span>
         ) : (
           <motion.span

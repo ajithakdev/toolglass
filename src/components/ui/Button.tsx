@@ -13,9 +13,9 @@ interface Props extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'children'
 }
 
 const sizeStyles: Record<Size, React.CSSProperties> = {
-  sm: { padding: '6px 12px', fontSize: 13, borderRadius: 10 },
-  md: { padding: '10px 18px', fontSize: 14, borderRadius: 12 },
-  lg: { padding: '14px 22px', fontSize: 15, borderRadius: 14 },
+  sm: { padding: '6px 14px', fontSize: 13, borderRadius: 10 },
+  md: { padding: '10px 20px', fontSize: 14, borderRadius: 12 },
+  lg: { padding: '14px 24px', fontSize: 15, borderRadius: 14 },
 };
 
 export function Button({
@@ -30,20 +30,22 @@ export function Button({
   const variantStyle: React.CSSProperties =
     variant === 'primary'
       ? {
-          background:
-            'linear-gradient(135deg, #a78bfa 0%, #f0abfc 50%, #fda4af 100%)',
-          color: '#1b1140',
+          background: 'linear-gradient(135deg, rgba(167, 139, 250, 0.9) 0%, rgba(240, 171, 252, 0.9) 50%, rgba(253, 164, 175, 0.9) 100%)',
+          color: '#fff',
           fontWeight: 600,
-          boxShadow:
-            '0 6px 20px -8px rgba(167, 139, 250, 0.7), inset 0 1px 0 rgba(255,255,255,0.6)',
+          boxShadow: '0 8px 30px -8px rgba(167, 139, 250, 0.6), inset 0 1px 1px rgba(255,255,255,0.4), inset 0 -2px 4px rgba(0,0,0,0.1)',
+          backdropFilter: 'blur(8px)',
+          border: '1px solid rgba(255,255,255,0.2)',
+          textShadow: '0 1px 2px rgba(0,0,0,0.1)',
         }
       : variant === 'soft'
         ? {
-            background: 'rgba(255,255,255,0.6)',
+            background: 'var(--surface-button-off)',
             color: 'var(--ink)',
             fontWeight: 500,
             border: '1px solid var(--glass-border)',
-            backdropFilter: 'blur(14px)',
+            backdropFilter: 'blur(16px)',
+            boxShadow: '0 2px 8px rgba(0,0,0,0.04), inset 0 1px 0 rgba(255,255,255,0.4)',
           }
         : {
             background: 'transparent',
@@ -53,9 +55,9 @@ export function Button({
 
   return (
     <motion.button
-      whileHover={{ y: -1, scale: 1.02 }}
-      whileTap={{ scale: 0.97 }}
-      transition={{ type: 'spring', stiffness: 380, damping: 22 }}
+      whileHover={{ y: -2, scale: 1.02 }}
+      whileTap={{ scale: 0.96 }}
+      transition={{ type: 'spring', stiffness: 400, damping: 25 }}
       className={cn(className)}
       style={{
         ...sizeStyles[size],
@@ -66,6 +68,7 @@ export function Button({
         justifyContent: 'center',
         gap: 8,
         cursor: 'pointer',
+        outline: 'none',
         ...style,
       }}
       {...(rest as React.ComponentProps<typeof motion.button>)}

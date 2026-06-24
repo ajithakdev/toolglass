@@ -6,6 +6,7 @@ import { Landing } from './pages/Landing';
 import { ToolPage } from './pages/ToolPage';
 import { ToastProvider } from './components/ui/Toast';
 import { useTheme } from './hooks/useTheme';
+import { useToolStats } from './hooks/useToolStats';
 
 function InstallPwaButton() {
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
@@ -45,6 +46,7 @@ function InstallPwaButton() {
 }
 
 function Shell({ children, onOpenPalette }: { children: React.ReactNode; onOpenPalette: () => void }) {
+  const { enabled, toggleTelemetry } = useToolStats();
   return (
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       {/* Skip to content — clip-based hide avoids horizontal scrollbar */}
@@ -161,13 +163,21 @@ function Shell({ children, onOpenPalette }: { children: React.ReactNode; onOpenP
       </main>
       <footer
         style={{
-          textAlign: 'center',
+          display: 'flex',
+          flexWrap: 'wrap',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: 16,
           padding: '16px 24px',
           fontSize: 12,
           color: 'var(--ink-mute)',
         }}
       >
-        Built client-side · No tracking · No data leaves your browser
+        <span>Built client-side · No tracking · No data leaves your browser</span>
+        <label style={{ display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer', background: 'var(--surface-nav-item)', padding: '4px 8px', borderRadius: 6, border: '1px solid var(--glass-border)' }}>
+          <input type="checkbox" checked={enabled} onChange={toggleTelemetry} style={{ accentColor: '#8b5cf6' }} />
+          <span>Local Usage Stats</span>
+        </label>
       </footer>
     </div>
   );

@@ -2,6 +2,31 @@ import { motion } from 'framer-motion';
 import { tools, toolBySlug } from '../tools/registry';
 import { useRecentTools } from '../hooks/useRecentTools';
 import { ToolCard } from '../components/ui/ToolCard';
+import { Link } from 'react-router-dom';
+
+function RecentPill({ tool }: { tool: any }) {
+  return (
+    <Link
+      to={`/tools/${tool.slug}`}
+      className="glass"
+      style={{
+        display: 'inline-flex',
+        alignItems: 'center',
+        gap: 10,
+        padding: '8px 16px',
+        borderRadius: 999,
+        textDecoration: 'none',
+        background: 'var(--surface-button-off)',
+        border: '1px solid var(--glass-border)',
+        boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
+        transition: 'all 0.2s ease',
+      }}
+    >
+      <div style={{ fontSize: 16 }}>{tool.icon}</div>
+      <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--ink)' }}>{tool.title}</div>
+    </Link>
+  );
+}
 
 export function Landing() {
   const { recents } = useRecentTools();
@@ -70,17 +95,23 @@ export function Landing() {
           </div>
           <div
             style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))',
-              gap: 18,
+              display: 'flex',
+              flexWrap: 'wrap',
+              gap: 12,
             }}
           >
             {recentTools.map((t) => (
-              t && <ToolCard key={`recent-${t.slug}`} tool={t} />
+              t && (
+                <motion.div key={`recent-${t.slug}`} whileHover={{ y: -2, scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+                  <RecentPill tool={t} />
+                </motion.div>
+              )
             ))}
           </div>
         </motion.section>
       )}
+
+      {recentTools.length > 0 && <div style={{ height: 1, background: 'var(--glass-border)', margin: '0 8px' }} />}
 
       <motion.section
         initial="hidden"
@@ -89,15 +120,23 @@ export function Landing() {
           hidden: {},
           show: { transition: { staggerChildren: 0.05 } },
         }}
-        style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))',
-          gap: 18,
-        }}
       >
-        {tools.map((t) => (
-          <ToolCard key={t.slug} tool={t} />
-        ))}
+        {recentTools.length > 0 && (
+          <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--ink-soft)', marginBottom: 16, paddingLeft: 4, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+            All Tools
+          </div>
+        )}
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))',
+            gap: 18,
+          }}
+        >
+          {tools.map((t) => (
+            <ToolCard key={t.slug} tool={t} />
+          ))}
+        </div>
       </motion.section>
     </div>
   );

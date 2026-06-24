@@ -114,7 +114,7 @@ Recommended order: low-risk visual wins first, then UX, then content, then power
 
 ---
 
-## Day 6 — Recent tools row on the landing page
+## ✅ Day 6 — Recent tools row on the landing page
 
 **What:** Top of `Landing.tsx`, show the last 3 tools the user opened. Stored in `localStorage`.
 
@@ -134,7 +134,7 @@ Recommended order: low-risk visual wins first, then UX, then content, then power
 
 ---
 
-## Day 7 — Three new high-value tools
+## ✅ Day 7 — Three new high-value tools
 
 **What:** Add three small tools that complete the dev-utility set:
 1. **JWT Decoder** — paste a JWT, see header + payload + expiry pretty-printed, with red highlight if `exp` is past.
@@ -155,7 +155,7 @@ Recommended order: low-risk visual wins first, then UX, then content, then power
 
 ---
 
-## Day 8 — PWA + offline support
+## ✅ Day 8 — PWA + offline support
 
 **What:** Installable as an app on phone/desktop. Works fully offline after first visit.
 
@@ -174,7 +174,7 @@ Recommended order: low-risk visual wins first, then UX, then content, then power
 
 ---
 
-## Day 9 — OG image + SEO basics
+## ✅ Day 9 — OG image + SEO basics
 
 **What:** Social preview card, JSON-LD structured data, sitemap.
 
@@ -193,7 +193,7 @@ Recommended order: low-risk visual wins first, then UX, then content, then power
 
 ---
 
-## Day 10 — Tool-specific telemetry-free analytics
+## ✅ Day 10 — Tool-specific telemetry-free analytics
 
 **What:** Tiny in-memory + localStorage counter: "your password generator has produced 42 passwords." Show as a quiet stat at the bottom of each tool.
 

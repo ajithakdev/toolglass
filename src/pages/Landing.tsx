@@ -1,8 +1,12 @@
 import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
-import { tools } from '../tools/registry';
+import { tools, toolBySlug } from '../tools/registry';
+import { useRecentTools } from '../hooks/useRecentTools';
+import { ToolCard } from '../components/ui/ToolCard';
 
 export function Landing() {
+  const { recents } = useRecentTools();
+  const recentTools = recents.map(toolBySlug).filter(Boolean);
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 40 }}>
       <motion.header
@@ -51,6 +55,33 @@ export function Landing() {
         </p>
       </motion.header>
 
+      {recentTools.length > 0 && (
+        <motion.section
+          initial="hidden"
+          animate="show"
+          variants={{
+            hidden: {},
+            show: { transition: { staggerChildren: 0.05 } },
+          }}
+          style={{ marginBottom: 12 }}
+        >
+          <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--ink-soft)', marginBottom: 16, paddingLeft: 4, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+            Recently Used
+          </div>
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))',
+              gap: 18,
+            }}
+          >
+            {recentTools.map((t) => (
+              t && <ToolCard key={`recent-${t.slug}`} tool={t} />
+            ))}
+          </div>
+        </motion.section>
+      )}
+
       <motion.section
         initial="hidden"
         animate="show"
@@ -65,63 +96,7 @@ export function Landing() {
         }}
       >
         {tools.map((t) => (
-          <motion.div
-            key={t.slug}
-            variants={{
-              hidden: { opacity: 0, y: 16 },
-              show: { opacity: 1, y: 0 },
-            }}
-            transition={{ duration: 0.3 }}
-            whileHover={{ y: -4 }}
-          >
-            <Link
-              to={`/tools/${t.slug}`}
-              className="glass"
-              style={{
-                display: 'block',
-                padding: 22,
-                height: '100%',
-                position: 'relative',
-                overflow: 'hidden',
-                transition: 'box-shadow 0.25s ease',
-              }}
-            >
-              <div
-                aria-hidden
-                style={{
-                  position: 'absolute',
-                  inset: 0,
-                  background: t.tint,
-                  opacity: 0.18,
-                  pointerEvents: 'none',
-                }}
-              />
-              <div style={{ position: 'relative', display: 'flex', flexDirection: 'column', gap: 12 }}>
-                <div
-                  style={{
-                    fontSize: 28,
-                    width: 52,
-                    height: 52,
-                    borderRadius: 14,
-                    background: 'var(--surface-icon-bg)',
-                    display: 'grid',
-                    placeItems: 'center',
-                    boxShadow: 'var(--icon-highlight)',
-                  }}
-                >
-                  {t.icon}
-                </div>
-                <div>
-                  <div style={{ fontSize: 17, fontWeight: 700, letterSpacing: '-0.01em' }}>
-                    {t.title}
-                  </div>
-                  <div style={{ fontSize: 13, color: 'var(--ink-soft)', marginTop: 4 }}>
-                    {t.short}
-                  </div>
-                </div>
-              </div>
-            </Link>
-          </motion.div>
+          <ToolCard key={t.slug} tool={t} />
         ))}
       </motion.section>
     </div>

@@ -4,16 +4,7 @@ import { Field, TextArea } from '../../components/ui/Field';
 import { Output } from '../../components/ui/Output';
 import { ToolLayout } from '../../components/ToolLayout';
 import { useToast } from '../../components/ui/Toast';
-
-function encode(s: string): string {
-  return btoa(String.fromCharCode(...new TextEncoder().encode(s)));
-}
-function decode(s: string): string {
-  const bin = atob(s.trim());
-  const bytes = new Uint8Array(bin.length);
-  for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
-  return new TextDecoder().decode(bytes);
-}
+import { encode, decode } from './base64';
 
 export default function Base64Tool() {
   const [mode, setMode] = useState<'encode' | 'decode'>('encode');

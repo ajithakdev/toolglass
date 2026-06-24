@@ -3,6 +3,7 @@ import { Button } from '../../components/ui/Button';
 import { Field, Slider, TextInput } from '../../components/ui/Field';
 import { Output } from '../../components/ui/Output';
 import { ToolLayout } from '../../components/ToolLayout';
+import { useUrlState } from '../../hooks/useUrlState';
 
 const DEFAULT_ALPHABET =
   'useandom-26T198340PX75pxJACKVERYMINDBUSHWOLF_GQZbfghjklqvwyzrict';
@@ -22,9 +23,25 @@ function nanoid(size: number, alphabet: string): string {
   return id;
 }
 
+function ShareButton() {
+  const [copied, setCopied] = useState(false);
+  const handleShare = () => {
+    navigator.clipboard.writeText(window.location.href).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    });
+  };
+  return (
+    <Button onClick={handleShare} variant="soft">
+      {copied ? '✓ Copied!' : '🔗 Share'}
+    </Button>
+  );
+}
+
 export default function NanoIdTool() {
-  const [size, setSize] = useState(21);
-  const [count, setCount] = useState(5);
+  const [size, setSize] = useUrlState('size', 21, Number, String);
+  const [count, setCount] = useUrlState('count', 5, Number, String);
+  // alphabet is NOT in URL (could be long; not sensitive, just verbose)
   const [alphabet, setAlphabet] = useState(DEFAULT_ALPHABET);
   const [ids, setIds] = useState<string[]>([]);
 
@@ -41,7 +58,7 @@ export default function NanoIdTool() {
   return (
     <ToolLayout
       title="NanoID"
-      description="URL-safe, compact unique IDs with configurable alphabet & length."
+      description="URL-safe, compact unique IDs with configurable alphabet &amp; length."
       icon="⚡"
     >
       <div style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
@@ -68,6 +85,7 @@ export default function NanoIdTool() {
           >
             Reset
           </Button>
+          <ShareButton />
         </div>
         <Output value={ids.join('\n')} multiline placeholder="NanoIDs will appear here" />
       </div>

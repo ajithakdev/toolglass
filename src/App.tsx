@@ -7,6 +7,7 @@ import { ToolPage } from './pages/ToolPage';
 import { ToastProvider } from './components/ui/Toast';
 import { useTheme } from './hooks/useTheme';
 import { useToolStats } from './hooks/useToolStats';
+import { Search, Download, ExternalLink, Sparkles } from 'lucide-react';
 
 function InstallPwaButton() {
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
@@ -38,9 +39,13 @@ function InstallPwaButton() {
         fontWeight: 600,
         color: 'var(--ink)',
         cursor: 'pointer',
+        display: 'flex',
+        alignItems: 'center',
+        gap: 6,
       }}
     >
-      ↓ Install
+      <Download size={14} strokeWidth={2} />
+      Install
     </button>
   );
 }
@@ -96,7 +101,7 @@ function Shell({ children, onOpenPalette }: { children: React.ReactNode; onOpenP
               boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.7)',
             }}
           >
-            ✦
+            <Sparkles size={16} strokeWidth={2} color="#fff" />
           </span>
           <span style={{ fontWeight: 700, letterSpacing: '-0.01em' }}>Toolglass</span>
         </Link>
@@ -121,8 +126,8 @@ function Shell({ children, onOpenPalette }: { children: React.ReactNode; onOpenP
               fontFamily: 'var(--font-sans)',
             }}
           >
-            🔍
-            <span>Search tools</span>
+            <Search size={14} strokeWidth={2} />
+            <span style={{ display: 'inline-block' }}>Search tools</span>
             <kbd
               style={{
                 fontSize: 11,
@@ -143,9 +148,10 @@ function Shell({ children, onOpenPalette }: { children: React.ReactNode; onOpenP
             href="https://github.com/ajithakdev/toolglass"
             target="_blank"
             rel="noreferrer"
-            style={{ fontSize: 13, color: 'var(--ink-soft)', fontWeight: 500 }}
+            style={{ fontSize: 13, color: 'var(--ink-soft)', fontWeight: 500, display: 'flex', alignItems: 'center', gap: 4, textDecoration: 'none' }}
           >
-            GitHub ↗
+            <ExternalLink size={13} strokeWidth={2} style={{ marginLeft: 2 }} />
+            GitHub
           </a>
         </div>
       </nav>

@@ -3,10 +3,8 @@ import QRCode from 'qrcode';
 import { Field, TextArea, Dropdown } from '../../components/ui/Field';
 import { ToolLayout } from '../../components/ToolLayout';
 import { Button } from '../../components/ui/Button';
-import { useToolAction } from '../../hooks/useToolAction';
 
 export default function QrTool() {
-  const recordAction = useToolAction();
   const [text, setText] = useState('https://github.com/ajithakdev/toolglass');
   const [errorCorrectionLevel, setErrorCorrectionLevel] = useState<'L' | 'M' | 'Q' | 'H'>('M');
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -21,10 +19,8 @@ export default function QrTool() {
         dark: '#1b1140',
         light: '#ffffff'
       }
-    }).then(() => {
-      recordAction();
     }).catch(console.error);
-  }, [text, errorCorrectionLevel, recordAction]);
+  }, [text, errorCorrectionLevel]);
 
   const downloadSVG = async () => {
     try {

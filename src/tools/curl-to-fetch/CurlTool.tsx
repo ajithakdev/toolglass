@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { Field, TextArea, TextInput, Dropdown } from '../../components/ui/Field';
 import { ToolLayout } from '../../components/ToolLayout';
 import { Button } from '../../components/ui/Button';
-import { useToolAction } from '../../hooks/useToolAction';
 import { Play } from 'lucide-react';
 
 function parseCurl(curlString: string) {
@@ -56,7 +55,6 @@ function parseCurl(curlString: string) {
 }
 
 export default function CurlTool() {
-  const recordAction = useToolAction();
   const [method, setMethod] = useState('GET');
   const [url, setUrl] = useState('https://jsonplaceholder.typicode.com/todos/1');
   const [headersText, setHeadersText] = useState('{\n  "Accept": "application/json"\n}');
@@ -91,7 +89,6 @@ export default function CurlTool() {
     setLoading(true);
     setError('');
     setResponse(null);
-    recordAction();
 
     let parsedHeaders = {};
     try {

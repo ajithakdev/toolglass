@@ -1,14 +1,12 @@
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo } from 'react';
 import { TextArea } from '../../components/ui/Field';
 import { marked } from 'marked';
 import DOMPurify from 'dompurify';
 import { ToolLayout } from '../../components/ToolLayout';
-import { useToolAction } from '../../hooks/useToolAction';
 import { CopyButton } from '../../components/ui/CopyButton';
 import { Button } from '../../components/ui/Button';
 
 export default function MarkdownTool() {
-  const recordAction = useToolAction();
   const [markdown, setMarkdown] = useState('# Hello World\n\nThis is a **Markdown** preview.\n\n- Write markdown on the left\n- See HTML on the right\n\n```javascript\nconsole.log("Enjoy!");\n```');
 
   const { html, rawHtml } = useMemo(() => {
@@ -20,10 +18,6 @@ export default function MarkdownTool() {
       return { html: 'Error parsing markdown', rawHtml: '' };
     }
   }, [markdown]);
-
-  useEffect(() => {
-    if (markdown.trim().length > 0) recordAction();
-  }, [markdown, recordAction]);
 
   const handlePrint = () => {
     const printWindow = window.open('', '_blank');

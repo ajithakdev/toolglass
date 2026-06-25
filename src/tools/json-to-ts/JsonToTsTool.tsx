@@ -1,8 +1,7 @@
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo } from 'react';
 import { Field, Toggle, TextInput, TextArea } from '../../components/ui/Field';
 import { ToolLayout } from '../../components/ToolLayout';
 import { Output } from '../../components/ui/Output';
-import { useToolAction } from '../../hooks/useToolAction';
 
 function toPascalCase(str: string): string {
   return str.replace(/(^\w|_\w|-\w|\s\w)/g, match => match.replace(/[_\-\s]/, '').toUpperCase());
@@ -84,7 +83,6 @@ function jsonToTs(jsonString: string, rootName: string, useInterface: boolean): 
 }
 
 export default function JsonToTsTool() {
-  const recordAction = useToolAction();
   const [input, setInput] = useState('{\n  "user": {\n    "id": 123,\n    "name": "Alice",\n    "active": true\n  },\n  "roles": ["admin", "editor"]\n}');
   const [useInterface, setUseInterface] = useState(true);
   const [rootName, setRootName] = useState('Root');
@@ -98,10 +96,6 @@ export default function JsonToTsTool() {
       return { ts: '', error: e.message };
     }
   }, [input, rootName, useInterface]);
-
-  useEffect(() => {
-    if (ts) recordAction();
-  }, [ts, recordAction]);
 
   return (
     <ToolLayout>

@@ -1,4 +1,3 @@
-import { useToolAction } from '../../hooks/useToolAction';
 import { motion } from 'framer-motion';
 import { useEffect, useMemo, useState } from 'react';
 import { Button } from '../../components/ui/Button';
@@ -24,7 +23,6 @@ function ShareButton() {
 }
 
 export default function PasswordTool() {
-  const recordAction = useToolAction();
   // URL-serialized options (allowlist — no sensitive input values)
   const [length, setLength] = useUrlState('len', 20, Number, String);
   const [uppercase, setUppercase] = useUrlState('u', true, (v) => v === '1', (v) => (v ? '1' : '0'));
@@ -37,7 +35,6 @@ export default function PasswordTool() {
 
   const regen = () => {
     setPwd(generatePassword(opts));
-    recordAction();
   };
 
   useEffect(() => {

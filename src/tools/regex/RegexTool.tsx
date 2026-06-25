@@ -1,10 +1,8 @@
 import { useState, useMemo } from 'react';
 import { Field, Toggle, TextInput, TextArea } from '../../components/ui/Field';
 import { ToolLayout } from '../../components/ToolLayout';
-import { useToolAction } from '../../hooks/useToolAction';
 
 export default function RegexTool() {
-  const recordAction = useToolAction();
   const [pattern, setPattern] = useState('(?<year>\\d{4})-(?<month>\\d{2})-(?<day>\\d{2})');
   const [flags, setFlags] = useState('g');
   const [testString, setTestString] = useState('Today is 2024-03-12, tomorrow is 2024-03-13.');
@@ -36,8 +34,6 @@ export default function RegexTool() {
         match = regex.exec(testString);
         if (match) m.push(match);
       }
-
-      if (m.length > 0) recordAction();
 
       // Highlight logic
       let hl = [];
@@ -72,7 +68,7 @@ export default function RegexTool() {
       setError(e.message);
       return { matches: [], highlighted: testString };
     }
-  }, [pattern, flags, testString, recordAction]);
+  }, [pattern, flags, testString]);
 
   return (
     <ToolLayout>

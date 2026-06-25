@@ -1,5 +1,7 @@
 import { AnimatePresence, motion } from 'framer-motion';
+import { useParams } from 'react-router-dom';
 import { useClipboard } from '../../hooks/useClipboard';
+import { useToolStats } from '../../hooks/useToolStats';
 import { useToast } from './Toast';
 import { Button } from './Button';
 
@@ -13,10 +15,13 @@ interface Props {
 export function CopyButton({ value, label = 'Copy', size = 'md', disabled }: Props) {
   const { copy, copied } = useClipboard();
   const toast = useToast();
+  const { slug } = useParams();
+  const { increment } = useToolStats(slug || '');
 
   const onClick = async () => {
     if (!value) return;
     const ok = await copy(value);
+    if (ok) increment();
     toast.push(ok ? 'Copied to clipboard' : 'Copy failed', ok ? 'success' : 'error');
   };
 
@@ -31,7 +36,7 @@ export function CopyButton({ value, label = 'Copy', size = 'md', disabled }: Pro
             exit={{ opacity: 0, y: 4 }}
             transition={{ duration: 0.15 }}
           >
-            ✨ Copied!
+            ✓ Copied!
           </motion.span>
         ) : (
           <motion.span

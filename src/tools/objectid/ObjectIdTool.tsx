@@ -1,4 +1,3 @@
-import { useToolAction } from '../../hooks/useToolAction';
 import { useEffect, useState } from 'react';
 import { Button } from '../../components/ui/Button';
 import { Field, Slider } from '../../components/ui/Field';
@@ -7,13 +6,11 @@ import { ToolLayout } from '../../components/ToolLayout';
 import { objectId } from './objectid';
 
 export default function ObjectIdTool() {
-  const recordAction = useToolAction();
   const [count, setCount] = useState(5);
   const [ids, setIds] = useState<string[]>([]);
 
   const gen = () => {
     setIds(Array.from({ length: count }, objectId));
-    recordAction();
   };
 
   useEffect(() => {

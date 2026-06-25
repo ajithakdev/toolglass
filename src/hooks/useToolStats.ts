@@ -41,13 +41,10 @@ export function useToolStats(slug?: string) {
   }, [load]);
 
   const toggleTelemetry = useCallback(() => {
-    let nextState = false;
     setEnabled(e => {
-      nextState = !e;
+      const nextState = !e;
       localStorage.setItem(TELEMETRY_KEY, String(nextState));
-      if (!nextState) {
-        localStorage.removeItem(STATS_KEY);
-      }
+      // Never delete stats data — toggle only controls visibility
       return nextState;
     });
     setTimeout(() => window.dispatchEvent(new Event('toolglass-telemetry')), 0);
@@ -55,11 +52,10 @@ export function useToolStats(slug?: string) {
 
   const increment = useCallback(() => {
     if (!slug) return;
-    
-    setCount((c) => {
-      // Re-check inside set state to avoid stale closure if disabled
-      if (localStorage.getItem(TELEMETRY_KEY) === 'false') return c;
 
+    setCount((c) => {
+      // Always increment regardless of enabled state —
+      // enabled only controls UI visibility, not storage
       const next = c + 1;
       try {
         const stored = localStorage.getItem(STATS_KEY);

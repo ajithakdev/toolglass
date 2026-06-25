@@ -1,10 +1,19 @@
 import { useState, useMemo } from 'react';
+import { Pipette } from 'lucide-react';
+import { useParams } from 'react-router-dom';
 import { Field } from '../../components/ui/Field';
 import { ToolLayout } from '../../components/ToolLayout';
+import { useToolStats } from '../../hooks/useToolStats';
+
+const PRESET_COLORS = [
+  '#FF0000', '#FF5722', '#FF9800', '#FFC107', '#FFEB3B',
+  '#4CAF50', '#009688', '#00BCD4', '#2196F3', '#3F51B5',
+  '#673AB7', '#9C27B0', '#E91E63', '#795548', '#607D8B',
+  '#000000', '#FFFFFF',
+];
 
 export default function ColorTool() {
   const [input, setInput] = useState('#8b5cf6');
-
   const parsed = useMemo(() => {
     if (!input.trim()) return null;
     try {
@@ -59,19 +68,20 @@ export default function ColorTool() {
             <div
               style={{
                 position: 'relative',
-                width: 42,
-                height: 42,
-                borderRadius: 8,
+                width: 48,
+                height: 48,
+                borderRadius: 10,
                 background: parsed?.isHex || 'var(--surface-button-off)',
                 boxShadow: 'inset 0 0 0 1px rgba(0,0,0,0.1), 0 2px 6px rgba(0,0,0,0.06)',
                 display: 'grid',
                 placeItems: 'center',
                 overflow: 'hidden',
-                flexShrink: 0
+                flexShrink: 0,
+                cursor: 'pointer',
               }}
               title="Pick a color"
             >
-              <span style={{ fontSize: 16, pointerEvents: 'none', mixBlendMode: 'difference', filter: 'invert(1)', color: '#fff', opacity: 0.9 }}>💧</span>
+              <Pipette size={20} style={{ pointerEvents: 'none', color: '#fff', filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.5))', mixBlendMode: 'difference' }} />
               <input
                 type="color"
                 value={parsed?.isHex || '#000000'}
@@ -79,8 +89,8 @@ export default function ColorTool() {
                 style={{
                   position: 'absolute',
                   inset: -10,
-                  width: 64,
-                  height: 64,
+                  width: 70,
+                  height: 70,
                   cursor: 'pointer',
                   opacity: 0
                 }}
@@ -104,6 +114,30 @@ export default function ColorTool() {
             />
           </div>
         </Field>
+
+        <div>
+          <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--ink-soft)', marginBottom: 8 }}>Preset Colors</div>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+            {PRESET_COLORS.map((c) => (
+              <div
+                key={c}
+                onClick={() => setInput(c)}
+                title={c}
+                style={{
+                  width: 28,
+                  height: 28,
+                  borderRadius: 6,
+                  background: c,
+                  cursor: 'pointer',
+                  boxShadow: 'inset 0 0 0 1px rgba(0,0,0,0.15), 0 1px 3px rgba(0,0,0,0.08)',
+                  transition: 'transform 0.15s, box-shadow 0.15s',
+                }}
+                onMouseEnter={(e) => { e.currentTarget.style.transform = 'scale(1.15)'; e.currentTarget.style.boxShadow = 'inset 0 0 0 1px rgba(0,0,0,0.15), 0 2px 8px rgba(0,0,0,0.18)'; }}
+                onMouseLeave={(e) => { e.currentTarget.style.transform = 'scale(1)'; e.currentTarget.style.boxShadow = 'inset 0 0 0 1px rgba(0,0,0,0.15), 0 1px 3px rgba(0,0,0,0.08)'; }}
+              />
+            ))}
+          </div>
+        </div>
 
         {parsed && (
           <div>
@@ -154,6 +188,9 @@ export default function ColorTool() {
 
 function CopyRow({ label, value }: { label: string; value: string }) {
   const [copied, setCopied] = useState(false);
+  const { slug = 'color' } = useParams();
+  const { increment } = useToolStats(slug);
+
   return (
     <div 
       style={{ 
@@ -162,20 +199,21 @@ function CopyRow({ label, value }: { label: string; value: string }) {
         gap: 12, 
         cursor: 'pointer',
         padding: '10px 14px',
-        background: 'var(--surface-card)',
+        background: 'var(--glass-bg)',
         borderRadius: 8,
         border: '1px solid var(--glass-border)',
       }}
       onClick={() => {
         navigator.clipboard.writeText(value);
         setCopied(true);
+        increment();
         setTimeout(() => setCopied(false), 2000);
       }}
     >
       <div style={{ width: 40, fontSize: 12, fontWeight: 600, color: 'var(--ink-soft)' }}>{label}</div>
       <div style={{ flex: 1, fontFamily: 'var(--font-mono)', fontSize: 14 }}>{value}</div>
       <div style={{ fontSize: 12, color: copied ? '#10b981' : 'var(--ink-mute)', transition: 'color 0.2s', fontWeight: 500 }}>
-        {copied ? '✨ Copied!' : 'Copy'}
+        {copied ? 'Copied!' : 'Copy'}
       </div>
     </div>
   );

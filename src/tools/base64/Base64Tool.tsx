@@ -1,4 +1,3 @@
-import { useToolAction } from '../../hooks/useToolAction';
 import { useState } from 'react';
 import { Button } from '../../components/ui/Button';
 import { Field, TextArea } from '../../components/ui/Field';
@@ -8,14 +7,12 @@ import { useToast } from '../../components/ui/Toast';
 import { encode, decode } from './base64';
 
 export default function Base64Tool() {
-  const recordAction = useToolAction();
   const [mode, setMode] = useState<'encode' | 'decode'>('encode');
   const [input, setInput] = useState('Hello, world!');
   const [out, setOut] = useState('');
   const toast = useToast();
 
   const run = () => {
-    recordAction();
     try {
       setOut(mode === 'encode' ? encode(input) : decode(input));
     } catch (e) {

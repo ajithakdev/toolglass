@@ -222,7 +222,7 @@ Recommended order: low-risk visual wins first, then UX, then content, then power
 
 ---
 
-## Day 11 — Regex tester
+## ✅ Day 11 — Regex tester
 
 **What:** Paste a regex + flags + test string → highlighted matches + capture groups table + per-match index.
 
@@ -241,7 +241,7 @@ Recommended order: low-risk visual wins first, then UX, then content, then power
 
 ---
 
-## Day 12 — JSON ⇄ TypeScript type generator
+## ✅ Day 12 — JSON ⇄ TypeScript type generator
 
 **What:** Paste JSON → emit a TypeScript `interface` / `type` for it. Toggle interface-vs-type, optional-undefined detection from arrays.
 
@@ -262,7 +262,7 @@ Recommended order: low-risk visual wins first, then UX, then content, then power
 
 ---
 
-## Day 13 — cURL → fetch converter
+## ✅ Day 13 — cURL → fetch converter
 
 **What:** Paste a `curl …` command → emit a JS `fetch(…)` snippet (and a Node `fetch` variant). Handles `-X`, `-H`, `-d`/`--data`, `--data-raw`, `-u`, `--form`, single-line and backslash-wrapped multi-line input.
 
@@ -279,7 +279,7 @@ Recommended order: low-risk visual wins first, then UX, then content, then power
 
 ---
 
-## Day 14 — QR code generator
+## ✅ Day 14 — QR code generator
 
 **What:** Text/URL → live SVG QR with size + error-correction-level controls. Download as SVG/PNG.
 
@@ -297,7 +297,7 @@ Recommended order: low-risk visual wins first, then UX, then content, then power
 
 ---
 
-## Day 15 — Markdown ⇄ HTML preview
+## ✅ Day 15 — Markdown ⇄ HTML preview
 
 **What:** Split view: Markdown on the left, rendered HTML on the right, synced scroll. "Copy HTML" button.
 

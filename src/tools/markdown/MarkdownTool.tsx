@@ -1,4 +1,5 @@
 import { useState, useMemo, useEffect } from 'react';
+import { TextArea } from '../../components/ui/Field';
 import { marked } from 'marked';
 import DOMPurify from 'dompurify';
 import { ToolLayout } from '../../components/ToolLayout';
@@ -34,8 +35,7 @@ export default function MarkdownTool() {
           <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--ink-soft)' }}>
             Markdown Input
           </div>
-          <textarea
-            className="input"
+          <TextArea
             value={markdown}
             onChange={(e) => setMarkdown(e.target.value)}
             style={{ 

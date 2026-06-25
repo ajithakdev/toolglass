@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect } from 'react';
-import { Field, Toggle } from '../../components/ui/Field';
+import { Field, Toggle, TextInput, TextArea } from '../../components/ui/Field';
 import { ToolLayout } from '../../components/ToolLayout';
 import { Output } from '../../components/ui/Output';
 import { useToolAction } from '../../hooks/useToolAction';
@@ -113,9 +113,7 @@ export default function JsonToTsTool() {
         <div style={{ display: 'flex', gap: 12, alignItems: 'flex-start', flexWrap: 'wrap' }}>
           <div style={{ flex: 1, minWidth: 200 }}>
             <Field label="Root interface name">
-              <input
-                type="text"
-                className="input"
+              <TextInput
                 value={rootName}
                 onChange={e => setRootName(e.target.value)}
               />
@@ -127,8 +125,7 @@ export default function JsonToTsTool() {
         </div>
 
         <Field label="JSON Input">
-          <textarea
-            className="input"
+          <TextArea
             value={input}
             onChange={(e) => setInput(e.target.value)}
             rows={8}

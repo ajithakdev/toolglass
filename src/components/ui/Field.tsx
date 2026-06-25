@@ -72,6 +72,45 @@ export function TextArea(props: React.TextareaHTMLAttributes<HTMLTextAreaElement
   );
 }
 
+export function Select(props: React.SelectHTMLAttributes<HTMLSelectElement>) {
+  return (
+    <div style={{ position: 'relative' }}>
+      <select
+        {...props}
+        style={{
+          width: '100%',
+          padding: '12px 32px 12px 14px',
+          borderRadius: 12,
+          border: '1px solid var(--line)',
+          background: 'var(--surface-input)',
+          backdropFilter: 'blur(10px)',
+          fontSize: 14,
+          outline: 'none',
+          color: 'var(--ink)',
+          appearance: 'none',
+          WebkitAppearance: 'none',
+          ...props.style,
+        }}
+      >
+        {props.children}
+      </select>
+      <div 
+        style={{
+          position: 'absolute',
+          right: 14,
+          top: '50%',
+          transform: 'translateY(-50%)',
+          pointerEvents: 'none',
+          color: 'var(--ink-mute)',
+          fontSize: 12
+        }}
+      >
+        ▼
+      </div>
+    </div>
+  );
+}
+
 export function Toggle({
   checked,
   onChange,

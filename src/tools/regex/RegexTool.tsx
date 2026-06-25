@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { Field, Toggle } from '../../components/ui/Field';
+import { Field, Toggle, TextInput, TextArea } from '../../components/ui/Field';
 import { ToolLayout } from '../../components/ToolLayout';
 import { useToolAction } from '../../hooks/useToolAction';
 
@@ -84,9 +84,7 @@ export default function RegexTool() {
         <div style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}>
           <div style={{ flex: 1 }}>
             <Field label="Regular Expression">
-              <input
-                type="text"
-                className="input"
+              <TextInput
                 value={pattern}
                 onChange={e => setPattern(e.target.value)}
                 placeholder="\w+"
@@ -96,9 +94,7 @@ export default function RegexTool() {
             {error && <div style={{ color: 'var(--status-error)', fontSize: 13, marginTop: 4 }}>{error}</div>}
           </div>
           <Field label="Flags">
-            <input
-              type="text"
-              className="input"
+            <TextInput
               value={flags}
               onChange={e => setFlags(e.target.value.replace(/[^gimsuy]/g, ''))}
               placeholder="g"
@@ -117,8 +113,7 @@ export default function RegexTool() {
         </fieldset>
 
         <Field label="Test String">
-          <textarea
-            className="input"
+          <TextArea
             value={testString}
             onChange={e => setTestString(e.target.value)}
             rows={4}
@@ -146,23 +141,23 @@ export default function RegexTool() {
         </div>
 
         {matches.length > 0 && (
-          <div style={{ overflowX: 'auto' }}>
+          <div className="glass" style={{ overflowX: 'auto', padding: 16 }}>
             <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13, textAlign: 'left' }}>
               <thead>
-                <tr style={{ borderBottom: '1px solid var(--glass-border)' }}>
-                  <th style={{ padding: '8px 4px', color: 'var(--ink-soft)' }}>#</th>
-                  <th style={{ padding: '8px 4px', color: 'var(--ink-soft)' }}>Match</th>
-                  <th style={{ padding: '8px 4px', color: 'var(--ink-soft)' }}>Index</th>
-                  <th style={{ padding: '8px 4px', color: 'var(--ink-soft)' }}>Groups</th>
+                <tr>
+                  <th style={{ padding: '8px 12px', color: 'var(--ink-soft)', borderBottom: '1px solid var(--glass-border)' }}>#</th>
+                  <th style={{ padding: '8px 12px', color: 'var(--ink-soft)', borderBottom: '1px solid var(--glass-border)' }}>Match</th>
+                  <th style={{ padding: '8px 12px', color: 'var(--ink-soft)', borderBottom: '1px solid var(--glass-border)' }}>Index</th>
+                  <th style={{ padding: '8px 12px', color: 'var(--ink-soft)', borderBottom: '1px solid var(--glass-border)' }}>Groups</th>
                 </tr>
               </thead>
               <tbody>
                 {matches.map((m, i) => (
-                  <tr key={i} style={{ borderBottom: '1px solid var(--glass-border)' }}>
-                    <td style={{ padding: '8px 4px', color: 'var(--ink-mute)' }}>{i + 1}</td>
-                    <td style={{ padding: '8px 4px', fontFamily: 'var(--font-mono)', fontWeight: 600 }}>{m[0]}</td>
-                    <td style={{ padding: '8px 4px', fontFamily: 'var(--font-mono)', color: 'var(--ink-mute)' }}>{m.index}</td>
-                    <td style={{ padding: '8px 4px', fontFamily: 'var(--font-mono)', color: 'var(--ink-soft)' }}>
+                  <tr key={i} style={{ borderBottom: i === matches.length - 1 ? 'none' : '1px solid var(--line)' }}>
+                    <td style={{ padding: '8px 12px', color: 'var(--ink-mute)' }}>{i + 1}</td>
+                    <td style={{ padding: '8px 12px', fontFamily: 'var(--font-mono)', fontWeight: 600 }}>{m[0]}</td>
+                    <td style={{ padding: '8px 12px', fontFamily: 'var(--font-mono)', color: 'var(--ink-mute)' }}>{m.index}</td>
+                    <td style={{ padding: '8px 12px', fontFamily: 'var(--font-mono)', color: 'var(--ink-soft)' }}>
                       {m.length > 1 ? JSON.stringify(m.slice(1).reduce((acc: Record<string, string>, val, idx) => {
                         acc[idx + 1] = val;
                         return acc;

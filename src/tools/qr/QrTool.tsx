@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import QRCode from 'qrcode';
-import { Field } from '../../components/ui/Field';
+import { Field, TextArea, Select } from '../../components/ui/Field';
 import { ToolLayout } from '../../components/ToolLayout';
 import { Button } from '../../components/ui/Button';
 import { useToolAction } from '../../hooks/useToolAction';
@@ -68,8 +68,7 @@ export default function QrTool() {
       <div style={{ display: 'flex', flexDirection: 'column', gap: 24, alignItems: 'center' }}>
         <div style={{ width: '100%', maxWidth: 400 }}>
           <Field label="Text or URL">
-            <textarea
-              className="input"
+            <TextArea
               value={text}
               onChange={(e) => setText(e.target.value)}
               rows={3}
@@ -80,8 +79,7 @@ export default function QrTool() {
 
         <div style={{ width: '100%', maxWidth: 400 }}>
           <Field label="Error Correction Level">
-            <select
-              className="input"
+            <Select
               value={errorCorrectionLevel}
               onChange={(e) => setErrorCorrectionLevel(e.target.value as any)}
             >
@@ -89,17 +87,18 @@ export default function QrTool() {
               <option value="M">Medium (~15% restored)</option>
               <option value="Q">Quartile (~25% restored)</option>
               <option value="H">High (~30% restored)</option>
-            </select>
+            </Select>
           </Field>
         </div>
 
         <div style={{
-          padding: 16,
-          background: '#fff',
-          borderRadius: 16,
-          boxShadow: 'var(--icon-highlight)'
+          padding: 24,
+          background: 'var(--surface-icon-bg)',
+          borderRadius: 24,
+          boxShadow: 'var(--glass-shadow)',
+          border: '1px solid var(--glass-border)',
         }}>
-          <canvas ref={canvasRef} style={{ width: 256, height: 256, display: 'block' }} />
+          <canvas ref={canvasRef} style={{ width: 256, height: 256, display: 'block', borderRadius: 12 }} />
         </div>
 
         <div style={{ display: 'flex', gap: 12 }}>

@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect } from 'react';
-import { Field } from '../../components/ui/Field';
+import { Field, TextArea } from '../../components/ui/Field';
 import { ToolLayout } from '../../components/ToolLayout';
 import { Output } from '../../components/ui/Output';
 import { useToolAction } from '../../hooks/useToolAction';
@@ -109,8 +109,7 @@ export default function CurlTool() {
     >
       <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
         <Field label="cURL Command">
-          <textarea
-            className="input"
+          <TextArea
             value={input}
             onChange={(e) => setInput(e.target.value)}
             rows={5}

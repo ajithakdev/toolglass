@@ -56,11 +56,7 @@ export default function PasswordTool() {
   };
 
   return (
-    <ToolLayout
-      title="Password Generator"
-      description="Cryptographically strong, customizable passwords — generated entirely in your browser."
-      icon="🔐"
-    >
+    <ToolLayout>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 22 }}>
         <Output value={pwd} />
 

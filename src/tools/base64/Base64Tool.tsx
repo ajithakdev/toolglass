@@ -24,11 +24,7 @@ export default function Base64Tool() {
   };
 
   return (
-    <ToolLayout
-      title="Base64 Encode / Decode"
-      description="Unicode-safe Base64 conversion."
-      icon="🧬"
-    >
+    <ToolLayout>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
         <div style={{ display: 'flex', gap: 8 }}>
           <Button

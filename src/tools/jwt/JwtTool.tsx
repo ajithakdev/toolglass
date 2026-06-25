@@ -42,11 +42,7 @@ export default function JwtTool() {
   };
 
   return (
-    <ToolLayout
-      title="JWT Generator"
-      description="Sign JSON Web Tokens with HS256 — all in-browser."
-      icon="🪪"
-    >
+    <ToolLayout>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
         <Field label="Header">
           <TextArea value={header} onChange={(e) => setHeader(e.target.value)} rows={4} />

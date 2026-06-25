@@ -174,7 +174,7 @@ function Shell({ children, onOpenPalette }: { children: React.ReactNode; onOpenP
         }}
       >
         <span>Built client-side · No tracking · No data leaves your browser</span>
-        <label style={{ display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer', background: 'var(--surface-nav-item)', padding: '4px 8px', borderRadius: 6, border: '1px solid var(--glass-border)' }}>
+        <label style={{ display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer', background: 'var(--surface-nav-item)', padding: '4px 8px', borderRadius: 6, border: '1px solid var(--glass-border)', userSelect: 'none' }}>
           <input type="checkbox" checked={enabled} onChange={toggleTelemetry} style={{ accentColor: '#8b5cf6' }} />
           <span>Local Usage Stats</span>
         </label>

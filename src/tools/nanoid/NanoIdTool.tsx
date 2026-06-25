@@ -59,11 +59,7 @@ export default function NanoIdTool() {
   }, [size, count, alphabet]);
 
   return (
-    <ToolLayout
-      title="NanoID"
-      description="URL-safe, compact unique IDs with configurable alphabet &amp; length."
-      icon="⚡"
-    >
+    <ToolLayout>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
         <Field label="Length" hint={`${size}`}>
           <Slider value={size} min={4} max={64} onChange={setSize} />

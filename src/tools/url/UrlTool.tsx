@@ -23,11 +23,7 @@ export default function UrlTool() {
   }, [input, mode]);
 
   return (
-    <ToolLayout
-      title="URL Encode / Decode"
-      description="Percent-encode or decode URL components safely."
-      icon="🔗"
-    >
+    <ToolLayout>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
         <div style={{ display: 'flex', gap: 8 }}>
           <Button

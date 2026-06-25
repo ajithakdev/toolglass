@@ -1,4 +1,5 @@
-import type { CSSProperties, ReactNode } from 'react';
+import { useState, useRef, useEffect, type CSSProperties, type ReactNode } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
 
 export function Field({
   label,
@@ -107,6 +108,121 @@ export function Select(props: React.SelectHTMLAttributes<HTMLSelectElement>) {
       >
         ▼
       </div>
+    </div>
+  );
+}
+
+export function Dropdown({
+  value,
+  options,
+  onChange,
+}: {
+  value: string;
+  options: { label: string; value: string }[];
+  onChange: (v: string) => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!open) return;
+    const handler = (e: MouseEvent) => {
+      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+        setOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, [open]);
+
+  const selected = options.find((o) => o.value === value) || options[0];
+
+  return (
+    <div ref={containerRef} style={{ position: 'relative', width: '100%' }}>
+      <button
+        type="button"
+        onClick={() => setOpen(!open)}
+        style={{
+          width: '100%',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          padding: '12px 14px',
+          borderRadius: 12,
+          border: `1px solid ${open ? 'rgba(139, 92, 246, 0.4)' : 'var(--line)'}`,
+          background: 'var(--surface-input)',
+          backdropFilter: 'blur(10px)',
+          fontSize: 14,
+          color: 'var(--ink)',
+          textAlign: 'left',
+          boxShadow: open ? '0 0 0 4px rgba(139, 92, 246, 0.1)' : 'none',
+          transition: 'all 0.2s',
+        }}
+      >
+        <span>{selected?.label}</span>
+        <span style={{ fontSize: 10, color: 'var(--ink-mute)', transform: open ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }}>▼</span>
+      </button>
+
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ opacity: 0, y: -4, scale: 0.98 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -4, scale: 0.98 }}
+            transition={{ duration: 0.15 }}
+            style={{
+              position: 'absolute',
+              top: 'calc(100% + 8px)',
+              left: 0,
+              right: 0,
+              zIndex: 100,
+              background: 'var(--surface-palette)',
+              backdropFilter: 'blur(40px) saturate(200%)',
+              border: '1px solid var(--surface-palette-border)',
+              borderRadius: 16,
+              padding: 6,
+              boxShadow: '0 12px 40px -8px rgba(40, 0, 100, 0.3), 0 4px 12px -4px rgba(80, 40, 140, 0.1)',
+              maxHeight: 260,
+              overflowY: 'auto'
+            }}
+          >
+            {options.map((opt) => (
+              <button
+                key={opt.value}
+                type="button"
+                onClick={() => {
+                  onChange(opt.value);
+                  setOpen(false);
+                }}
+                style={{
+                  width: '100%',
+                  textAlign: 'left',
+                  padding: '10px 12px',
+                  borderRadius: 10,
+                  fontSize: 14,
+                  background: opt.value === value ? 'rgba(139, 92, 246, 0.12)' : 'transparent',
+                  color: 'var(--ink)',
+                  border: 'none',
+                  cursor: 'pointer',
+                  transition: 'background 0.1s',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between'
+                }}
+                onMouseEnter={(e) => {
+                  if (opt.value !== value) e.currentTarget.style.background = 'rgba(139, 92, 246, 0.05)';
+                }}
+                onMouseLeave={(e) => {
+                  if (opt.value !== value) e.currentTarget.style.background = 'transparent';
+                }}
+              >
+                {opt.label}
+                {opt.value === value && <span style={{ color: 'var(--accent)', fontSize: 12 }}>✓</span>}
+              </button>
+            ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

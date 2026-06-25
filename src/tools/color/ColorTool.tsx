@@ -52,11 +52,7 @@ export default function ColorTool() {
   }, [input]);
 
   return (
-    <ToolLayout
-      title="Color Converter"
-      description="Convert colors between Hex, RGB, and HSL. Provides live preview."
-      icon="🎨"
-    >
+    <ToolLayout>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
         <Field label="Any Color Format (Hex, RGB, HSL, Named)">
           <div style={{ display: 'flex', gap: 12 }}>

@@ -54,7 +54,7 @@ export function ToolCard({ tool }: { tool: ToolMeta }) {
             position: 'absolute',
             inset: 0,
             background: tool.tint,
-            opacity: 0.18,
+            opacity: 'var(--tint-opacity)',
             pointerEvents: 'none',
           }}
         />

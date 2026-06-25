@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import QRCode from 'qrcode';
-import { Field, TextArea, Select } from '../../components/ui/Field';
+import { Field, TextArea, Dropdown } from '../../components/ui/Field';
 import { ToolLayout } from '../../components/ToolLayout';
 import { Button } from '../../components/ui/Button';
 import { useToolAction } from '../../hooks/useToolAction';
@@ -60,11 +60,7 @@ export default function QrTool() {
   };
 
   return (
-    <ToolLayout
-      title="QR Code"
-      description="Generate QR codes from text or URLs instantly."
-      icon="▦"
-    >
+    <ToolLayout>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 24, alignItems: 'center' }}>
         <div style={{ width: '100%', maxWidth: 400 }}>
           <Field label="Text or URL">
@@ -79,15 +75,16 @@ export default function QrTool() {
 
         <div style={{ width: '100%', maxWidth: 400 }}>
           <Field label="Error Correction Level">
-            <Select
+            <Dropdown
               value={errorCorrectionLevel}
-              onChange={(e) => setErrorCorrectionLevel(e.target.value as any)}
-            >
-              <option value="L">Low (~7% restored)</option>
-              <option value="M">Medium (~15% restored)</option>
-              <option value="Q">Quartile (~25% restored)</option>
-              <option value="H">High (~30% restored)</option>
-            </Select>
+              onChange={(v) => setErrorCorrectionLevel(v as any)}
+              options={[
+                { value: 'L', label: 'Low (~7% restored)' },
+                { value: 'M', label: 'Medium (~15% restored)' },
+                { value: 'Q', label: 'Quartile (~25% restored)' },
+                { value: 'H', label: 'High (~30% restored)' },
+              ]}
+            />
           </Field>
         </div>
 

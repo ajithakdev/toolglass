@@ -31,7 +31,7 @@ export default function UuidTool() {
   }, [count]);
 
   return (
-    <ToolLayout title="UUID v4" description="RFC 4122 v4 UUIDs, in bulk." icon="🆔">
+    <ToolLayout>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
         <Field label="Count" hint={`${count}`}>
           <Slider value={count} min={1} max={50} onChange={setCount} />

@@ -104,11 +104,7 @@ export default function JsonToTsTool() {
   }, [ts, recordAction]);
 
   return (
-    <ToolLayout
-      title="JSON to TypeScript"
-      description="Convert JSON objects into TypeScript interfaces or types automatically."
-      icon="🧾"
-    >
+    <ToolLayout>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
         <div style={{ display: 'flex', gap: 12, alignItems: 'flex-start', flexWrap: 'wrap' }}>
           <div style={{ flex: 1, minWidth: 200 }}>

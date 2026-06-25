@@ -4,20 +4,19 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import { GlassCard } from './ui/GlassCard';
 import { useToolStats } from '../hooks/useToolStats';
 
+import { toolBySlug } from '../tools/registry';
+
 export function ToolLayout({
-  title,
-  description,
-  icon,
   children,
 }: {
-  title: string;
-  description: string;
-  icon: string;
   children: ReactNode;
 }) {
   const navigate = useNavigate();
   const { slug } = useParams();
+  const tool = toolBySlug(slug || '');
   const { count } = useToolStats(slug || '');
+
+  if (!tool) return null;
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -97,7 +96,7 @@ export function ToolLayout({
             boxShadow: 'var(--icon-highlight)',
           }}
         >
-          {icon}
+          {tool.icon}
         </div>
         <div>
           <h1
@@ -108,10 +107,10 @@ export function ToolLayout({
               letterSpacing: '-0.02em',
             }}
           >
-            {title}
+            {tool.title}
           </h1>
           <p style={{ margin: '4px 0 0', color: 'var(--ink-soft)', fontSize: 14 }}>
-            {description}
+            {tool.description}
           </p>
         </div>
       </div>

@@ -32,11 +32,7 @@ export default function JwtDecodeTool() {
     : false;
 
   return (
-    <ToolLayout
-      title="JWT Decoder"
-      description="Decode and inspect JSON Web Tokens locally."
-      icon="👁️"
-    >
+    <ToolLayout>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
         <Field label="JWT String">
           <TextArea 

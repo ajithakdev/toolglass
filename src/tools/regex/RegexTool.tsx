@@ -75,11 +75,7 @@ export default function RegexTool() {
   }, [pattern, flags, testString, recordAction]);
 
   return (
-    <ToolLayout
-      title="Regex Tester"
-      description="Write and test regular expressions in real-time. Matches are highlighted."
-      icon="🔍"
-    >
+    <ToolLayout>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
         <div style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}>
           <div style={{ flex: 1 }}>

@@ -22,11 +22,7 @@ export default function ObjectIdTool() {
   }, [count]);
 
   return (
-    <ToolLayout
-      title="Mongo ObjectId"
-      description="24-character BSON ObjectIds: timestamp + machine + counter."
-      icon="🍃"
-    >
+    <ToolLayout>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
         <Field label="Count" hint={`${count}`}>
           <Slider value={count} min={1} max={50} onChange={setCount} />

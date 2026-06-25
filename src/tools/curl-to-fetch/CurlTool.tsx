@@ -1,12 +1,11 @@
-import { useState, useMemo, useEffect } from 'react';
-import { Field, TextArea } from '../../components/ui/Field';
+import { useState } from 'react';
+import { Field, TextArea, TextInput, Dropdown } from '../../components/ui/Field';
 import { ToolLayout } from '../../components/ToolLayout';
-import { Output } from '../../components/ui/Output';
+import { Button } from '../../components/ui/Button';
 import { useToolAction } from '../../hooks/useToolAction';
+import { Play } from 'lucide-react';
 
 function parseCurl(curlString: string) {
-  // basic regex based parser, handling quotes and backslashes
-  // Not a full shell parser, but works for typical API docs
   let str = curlString.replace(/\\\n/g, ' ').trim();
   if (!str.startsWith('curl ')) return null;
 
@@ -18,28 +17,12 @@ function parseCurl(curlString: string) {
 
   for (let i = 5; i < str.length; i++) {
     const c = str[i];
-    if (escape) {
-      current += c;
-      escape = false;
-      continue;
-    }
-    if (c === '\\') {
-      escape = true;
-      continue;
-    }
-    if (c === "'" && !inDouble) {
-      inSingle = !inSingle;
-      continue;
-    }
-    if (c === '"' && !inSingle) {
-      inDouble = !inDouble;
-      continue;
-    }
+    if (escape) { current += c; escape = false; continue; }
+    if (c === '\\') { escape = true; continue; }
+    if (c === "'" && !inDouble) { inSingle = !inSingle; continue; }
+    if (c === '"' && !inSingle) { inDouble = !inDouble; continue; }
     if (/\s/.test(c) && !inSingle && !inDouble) {
-      if (current.length > 0) {
-        args.push(current);
-        current = '';
-      }
+      if (current.length > 0) { args.push(current); current = ''; }
       continue;
     }
     current += c;
@@ -69,65 +52,174 @@ function parseCurl(curlString: string) {
       url = arg;
     }
   }
-
   return { url, fetchOptions };
 }
 
 export default function CurlTool() {
   const recordAction = useToolAction();
-  const [input, setInput] = useState("curl -X POST https://api.example.com/v1/users \\\n  -H 'Authorization: Bearer token123' \\\n  -H 'Content-Type: application/json' \\\n  -d '{\"name\":\"Alice\"}'");
+  const [method, setMethod] = useState('GET');
+  const [url, setUrl] = useState('https://jsonplaceholder.typicode.com/todos/1');
+  const [headersText, setHeadersText] = useState('{\n  "Accept": "application/json"\n}');
+  const [bodyText, setBodyText] = useState('');
+  
+  const [response, setResponse] = useState<{
+    status: number;
+    statusText: string;
+    time: number;
+    data: string;
+    headers: Record<string, string>;
+  } | null>(null);
+  
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
-  const { jsCode, nodeCode, error } = useMemo(() => {
-    if (!input.trim()) return { jsCode: '', nodeCode: '', error: null };
+  const handlePasteCurl = () => {
+    navigator.clipboard.readText().then(text => {
+      const parsed = parseCurl(text);
+      if (parsed) {
+        setUrl(parsed.url);
+        setMethod(parsed.fetchOptions.method || 'GET');
+        setHeadersText(JSON.stringify(parsed.fetchOptions.headers || {}, null, 2));
+        setBodyText(parsed.fetchOptions.body || '');
+      } else {
+        alert("Clipboard doesn't contain a valid cURL command");
+      }
+    }).catch(() => alert("Failed to read clipboard"));
+  };
+
+  const handleSend = async () => {
+    setLoading(true);
+    setError('');
+    setResponse(null);
+    recordAction();
+
+    let parsedHeaders = {};
     try {
-      const parsed = parseCurl(input);
-      if (!parsed) throw new Error('Input does not appear to be a valid cURL command');
-
-      const { url, fetchOptions } = parsed;
-      const optString = Object.keys(fetchOptions.headers).length === 0 && fetchOptions.method === 'GET' && !fetchOptions.body 
-        ? '' 
-        : `, ${JSON.stringify(fetchOptions, null, 2)}`;
-
-      const js = `fetch('${url}'${optString})\n  .then(res => res.json())\n  .then(console.log);`;
-      const node = `const fetch = require('node-fetch');\n\nfetch('${url}'${optString})\n  .then(res => res.json())\n  .then(console.log);`;
-      
-      return { jsCode: js, nodeCode: node, error: null };
-    } catch (e: any) {
-      return { jsCode: '', nodeCode: '', error: e.message };
+      parsedHeaders = headersText.trim() ? JSON.parse(headersText) : {};
+    } catch (e) {
+      setError('Invalid JSON in Headers');
+      setLoading(false);
+      return;
     }
-  }, [input]);
 
-  useEffect(() => {
-    if (jsCode) recordAction();
-  }, [jsCode, recordAction]);
+    const start = performance.now();
+    try {
+      const res = await fetch(url, {
+        method,
+        headers: parsedHeaders,
+        body: ['GET', 'HEAD'].includes(method) ? undefined : bodyText || undefined
+      });
+      const end = performance.now();
+      
+      const resHeaders: Record<string, string> = {};
+      res.headers.forEach((v, k) => { resHeaders[k] = v; });
+
+      let data = await res.text();
+      try {
+        data = JSON.stringify(JSON.parse(data), null, 2);
+      } catch (e) {
+        // Not JSON, leave as text
+      }
+
+      setResponse({
+        status: res.status,
+        statusText: res.statusText,
+        time: Math.round(end - start),
+        data,
+        headers: resHeaders
+      });
+    } catch (e: any) {
+      setError(e.message || 'Network request failed (CORS or network error)');
+    }
+    setLoading(false);
+  };
 
   return (
-    <ToolLayout
-      title="cURL to fetch"
-      description="Convert cURL commands into JavaScript fetch() code."
-      icon="📡"
-    >
+    <ToolLayout>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
-        <Field label="cURL Command">
-          <TextArea
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            rows={5}
-            placeholder="curl https://api.example.com/..."
-            style={{ fontFamily: 'var(--font-mono)' }}
-          />
-        </Field>
+        <div style={{ display: 'flex', gap: 12, alignItems: 'flex-end' }}>
+          <div style={{ width: 140 }}>
+            <Field label="Method">
+              <Dropdown
+                value={method}
+                onChange={setMethod}
+                options={[
+                  { value: 'GET', label: 'GET' },
+                  { value: 'POST', label: 'POST' },
+                  { value: 'PUT', label: 'PUT' },
+                  { value: 'PATCH', label: 'PATCH' },
+                  { value: 'DELETE', label: 'DELETE' },
+                  { value: 'OPTIONS', label: 'OPTIONS' }
+                ]}
+              />
+            </Field>
+          </div>
+          <div style={{ flex: 1 }}>
+            <Field label="URL">
+              <TextInput
+                value={url}
+                onChange={(e) => setUrl(e.target.value)}
+                placeholder="https://api.example.com/v1/resource"
+                style={{ fontFamily: 'var(--font-mono)' }}
+              />
+            </Field>
+          </div>
+          <Button onClick={handleSend} variant="primary" style={{ height: 44, padding: '0 24px', display: 'flex', gap: 8 }}>
+            {loading ? 'Sending...' : <><Play size={16} /> Send</>}
+          </Button>
+        </div>
 
-        {error ? (
-          <div style={{ color: 'var(--status-error)' }}>{error}</div>
-        ) : (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
-            <Field label="Browser (fetch)">
-              <Output value={jsCode} multiline />
-            </Field>
-            <Field label="Node.js (node-fetch)">
-              <Output value={nodeCode} multiline />
-            </Field>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 24 }}>
+          <Field label="Headers (JSON)">
+            <TextArea
+              value={headersText}
+              onChange={(e) => setHeadersText(e.target.value)}
+              rows={4}
+              style={{ fontFamily: 'var(--font-mono)' }}
+            />
+          </Field>
+          <Field label="Body">
+            <TextArea
+              value={bodyText}
+              onChange={(e) => setBodyText(e.target.value)}
+              rows={4}
+              style={{ fontFamily: 'var(--font-mono)' }}
+            />
+          </Field>
+        </div>
+
+        <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
+          <Button onClick={handlePasteCurl} variant="soft" size="sm">
+            Import from cURL
+          </Button>
+        </div>
+
+        <div style={{ height: 1, background: 'var(--line)', margin: '12px 0' }} />
+
+        <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--ink-soft)' }}>
+          Response
+        </div>
+
+        {error && (
+          <div style={{ color: 'var(--status-error)', padding: 16, background: 'rgba(239, 68, 68, 0.1)', borderRadius: 12 }}>
+            {error}
+          </div>
+        )}
+
+        {response && (
+          <div className="glass" style={{ padding: 16, borderRadius: 16 }}>
+            <div style={{ display: 'flex', gap: 16, marginBottom: 16, fontSize: 13, fontWeight: 600 }}>
+              <span style={{ color: response.status >= 200 && response.status < 300 ? '#10b981' : '#ef4444' }}>
+                {response.status} {response.statusText}
+              </span>
+              <span style={{ color: 'var(--ink-mute)' }}>{response.time} ms</span>
+            </div>
+            <TextArea
+              value={response.data}
+              readOnly
+              rows={12}
+              style={{ fontFamily: 'var(--font-mono)', fontSize: 13, background: 'var(--surface-icon-bg)' }}
+            />
           </div>
         )}
       </div>

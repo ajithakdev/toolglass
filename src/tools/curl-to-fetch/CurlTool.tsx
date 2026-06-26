@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState, useEffect } from 'react';
 import { Field, TextArea, TextInput, Dropdown } from '../../components/ui/Field';
 import { ToolLayout } from '../../components/ToolLayout';
@@ -59,7 +60,7 @@ interface HistoryItem {
 }
 
 function parseCurl(curlString: string) {
-  let str = curlString.replace(/\\\n/g, ' ').trim();
+  const str = curlString.replace(/\\\n/g, ' ').trim();
   if (!str.startsWith('curl ')) return null;
 
   const args: string[] = [];
@@ -536,7 +537,7 @@ export default function CurlTool() {
       });
 
       addHistoryItem(req);
-    } catch (e: any) {
+    } catch {
       toast.push('Connection failed', 'error', toastId);
       setSavedRequests((prev) => {
         const updated = prev.map(r => {
@@ -689,7 +690,7 @@ export default function CurlTool() {
       } else {
         try {
           data = JSON.stringify(JSON.parse(data), null, 2);
-        } catch (e) {
+        } catch {
           // Not JSON
         }
       }

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState, useEffect, useRef } from 'react';
 import QRCode from 'qrcode';
 import { Field, TextArea, Dropdown } from '../../components/ui/Field';

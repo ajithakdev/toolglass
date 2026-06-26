@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState, useMemo } from 'react';
 import { Field, Toggle, TextInput, TextArea } from '../../components/ui/Field';
 import { ToolLayout } from '../../components/ToolLayout';
@@ -36,7 +37,7 @@ export default function RegexTool() {
       }
 
       // Highlight logic
-      let hl = [];
+      const hl = [];
       let lastIdx = 0;
       m.forEach((match, i) => {
         const start = match.index;

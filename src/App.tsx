@@ -10,6 +10,7 @@ import { useToolStats } from './hooks/useToolStats';
 import { Search, Download, ExternalLink, Sparkles } from 'lucide-react';
 
 function InstallPwaButton() {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
 
   useEffect(() => {

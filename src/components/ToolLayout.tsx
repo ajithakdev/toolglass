@@ -16,8 +16,6 @@ export function ToolLayout({
   const tool = toolBySlug(slug || '');
   const { count } = useToolStats(slug || '');
 
-  if (!tool) return null;
-
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Backspace') {
@@ -31,6 +29,8 @@ export function ToolLayout({
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [navigate]);
+
+  if (!tool) return null;
 
   return (
     <motion.div

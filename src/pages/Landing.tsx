@@ -15,7 +15,7 @@ const CATEGORIES = [
   { name: 'Utilities', slugs: ['timestamp', 'regex', 'markdown'] }
 ];
 
-function RecentPill({ tool }: { tool: any }) {
+function RecentPill({ tool }: { tool: { slug: string; icon: React.ReactNode; title: string } }) {
   return (
     <Link
       to={`/tools/${tool.slug}`}
@@ -33,6 +33,7 @@ function RecentPill({ tool }: { tool: any }) {
       }}
     >
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: 0.7 }}>
+        {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
         {cloneElement(tool.icon as React.ReactElement, { size: 14, strokeWidth: 2 } as any)}
       </div>
       <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--ink)', lineHeight: 1 }}>{tool.title}</div>

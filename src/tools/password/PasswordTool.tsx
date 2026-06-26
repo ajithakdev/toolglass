@@ -30,7 +30,9 @@ export default function PasswordTool() {
   const [numbers, setNumbers] = useUrlState('n', true, (v) => v === '1', (v) => (v ? '1' : '0'));
   const [symbols, setSymbols] = useUrlState('s', true, (v) => v === '1', (v) => (v ? '1' : '0'));
 
-  const opts: PwdOptions = { length, uppercase, lowercase, numbers, symbols };
+  const opts = useMemo<PwdOptions>(() => ({
+    length, uppercase, lowercase, numbers, symbols
+  }), [length, uppercase, lowercase, numbers, symbols]);
   const [pwd, setPwd] = useState('');
 
   const regen = () => {

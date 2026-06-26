@@ -34,9 +34,11 @@ export default function ColorTool() {
 
       const hex = '#' + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1).toUpperCase() + (a < 1 ? Math.round(a * 255).toString(16).padStart(2, '0').toUpperCase() : '');
 
-      let r_ = r / 255, g_ = g / 255, b_ = b / 255;
+      const r_ = r / 255, g_ = g / 255, b_ = b / 255;
       const max = Math.max(r_, g_, b_), min = Math.min(r_, g_, b_);
-      let h = 0, s = 0, l = (max + min) / 2;
+      let h = 0;
+      let s = 0;
+      const l = (max + min) / 2;
       if (max !== min) {
         const d = max - min;
         s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
@@ -50,7 +52,7 @@ export default function ColorTool() {
       const hsl = `hsl${a < 1 ? 'a' : ''}(${Math.round(h * 360)}, ${Math.round(s * 100)}%, ${Math.round(l * 100)}%${a < 1 ? `, ${a}` : ''})`;
 
       const variations = [-20, -10, 0, 10, 20].map(dl => {
-        let newL = Math.max(0, Math.min(100, Math.round(l * 100) + dl));
+        const newL = Math.max(0, Math.min(100, Math.round(l * 100) + dl));
         return `hsl${a < 1 ? 'a' : ''}(${Math.round(h * 360)}, ${Math.round(s * 100)}%, ${newL}%${a < 1 ? `, ${a}` : ''})`;
       });
 

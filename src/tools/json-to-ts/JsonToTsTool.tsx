@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState, useMemo } from 'react';
 import { Field, Toggle, TextInput, TextArea } from '../../components/ui/Field';
 import { ToolLayout } from '../../components/ToolLayout';
@@ -28,7 +29,7 @@ function inferType(value: any, name: string, useInterface: boolean, options: { d
 
   if (typeof value === 'object') {
     let tName = toPascalCase(name);
-    let originalTName = tName;
+    const originalTName = tName;
     let counter = 2;
     while (options.dedup.has(tName)) {
       tName = `${originalTName}${counter++}`;

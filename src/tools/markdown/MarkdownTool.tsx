@@ -14,7 +14,7 @@ export default function MarkdownTool() {
       const raw = marked.parse(markdown) as string;
       const sanitized = DOMPurify.sanitize(raw);
       return { html: sanitized, rawHtml: raw };
-    } catch (e) {
+    } catch {
       return { html: 'Error parsing markdown', rawHtml: '' };
     }
   }, [markdown]);

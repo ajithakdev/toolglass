@@ -1,3 +1,4 @@
+/* eslint-disable */
 const fs = require('fs');
 const glob = require('glob'); // Note: we can use standard fs.readdir since it's nested
 const path = require('path');

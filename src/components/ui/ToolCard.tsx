@@ -41,7 +41,7 @@ export function ToolCard({ tool }: { tool: ToolMeta }) {
             border: '1px solid var(--glass-border)',
             padding: '2px 8px',
             borderRadius: 999,
-            color: 'var(--ink-mute)',
+            color: 'var(--ink-soft)',
             zIndex: 2,
             boxShadow: '0 2px 4px rgba(0,0,0,0.04)',
           }}>

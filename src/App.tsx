@@ -139,7 +139,7 @@ function Shell({ children, onOpenPalette }: { children: React.ReactNode; onOpenP
                 color: 'var(--ink-mute)',
               }}
             >
-              ⌘K
+              Ctrl K
             </kbd>
           </button>
           <InstallPwaButton />

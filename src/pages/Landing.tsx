@@ -53,7 +53,14 @@ const fadeUp: Variants = {
 export function Landing() {
   const { recents } = useRecentTools();
   const recentTools = recents.map(toolBySlug).filter(Boolean);
-  const [activeCategory, setActiveCategory] = useState<string>('all');
+  const [activeCategory, setActiveCategory] = useState<string>(() => {
+    return localStorage.getItem('toolglass_active_category') || 'all';
+  });
+
+  const handleSetCategory = (catName: string) => {
+    setActiveCategory(catName);
+    localStorage.setItem('toolglass_active_category', catName);
+  };
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 32 }}>
@@ -172,7 +179,7 @@ export function Landing() {
           msOverflowStyle: 'none'
         }}>
           <button
-            onClick={() => setActiveCategory('all')}
+            onClick={() => handleSetCategory('all')}
             className="glass"
             style={{
               display: 'flex',
@@ -196,7 +203,7 @@ export function Landing() {
           {CATEGORIES.map((cat) => (
             <button
               key={cat.name}
-              onClick={() => setActiveCategory(cat.name)}
+              onClick={() => handleSetCategory(cat.name)}
               className="glass"
               style={{
                 padding: '8px 16px',

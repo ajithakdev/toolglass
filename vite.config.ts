@@ -3,7 +3,7 @@ import react from '@vitejs/plugin-react';
 import { VitePWA } from 'vite-plugin-pwa';
 
 export default defineConfig({
-  base: '/toolglass/',
+  base: process.env.GITHUB_ACTIONS ? '/toolglass/' : '/',
   plugins: [
     react(),
     VitePWA({

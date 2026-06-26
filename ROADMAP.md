@@ -114,7 +114,7 @@ Recommended order: low-risk visual wins first, then UX, then content, then power
 
 ---
 
-## Day 6 — Recent tools row on the landing page
+## ✅ Day 6 — Recent tools row on the landing page
 
 **What:** Top of `Landing.tsx`, show the last 3 tools the user opened. Stored in `localStorage`.
 
@@ -134,7 +134,7 @@ Recommended order: low-risk visual wins first, then UX, then content, then power
 
 ---
 
-## Day 7 — Three new high-value tools
+## ✅ Day 7 — Three new high-value tools
 
 **What:** Add three small tools that complete the dev-utility set:
 1. **JWT Decoder** — paste a JWT, see header + payload + expiry pretty-printed, with red highlight if `exp` is past.
@@ -155,7 +155,7 @@ Recommended order: low-risk visual wins first, then UX, then content, then power
 
 ---
 
-## Day 8 — PWA + offline support
+## ✅ Day 8 — PWA + offline support
 
 **What:** Installable as an app on phone/desktop. Works fully offline after first visit.
 
@@ -174,7 +174,7 @@ Recommended order: low-risk visual wins first, then UX, then content, then power
 
 ---
 
-## Day 9 — OG image + SEO basics
+## ✅ Day 9 — OG image + SEO basics
 
 **What:** Social preview card, JSON-LD structured data, sitemap.
 
@@ -193,7 +193,7 @@ Recommended order: low-risk visual wins first, then UX, then content, then power
 
 ---
 
-## Day 10 — Tool-specific telemetry-free analytics
+## ✅ Day 10 — Tool-specific telemetry-free analytics
 
 **What:** Tiny in-memory + localStorage counter: "your password generator has produced 42 passwords." Show as a quiet stat at the bottom of each tool.
 
@@ -222,7 +222,7 @@ Recommended order: low-risk visual wins first, then UX, then content, then power
 
 ---
 
-## Day 11 — Regex tester
+## ✅ Day 11 — Regex tester
 
 **What:** Paste a regex + flags + test string → highlighted matches + capture groups table + per-match index.
 
@@ -241,7 +241,7 @@ Recommended order: low-risk visual wins first, then UX, then content, then power
 
 ---
 
-## Day 12 — JSON ⇄ TypeScript type generator
+## ✅ Day 12 — JSON ⇄ TypeScript type generator
 
 **What:** Paste JSON → emit a TypeScript `interface` / `type` for it. Toggle interface-vs-type, optional-undefined detection from arrays.
 
@@ -262,7 +262,7 @@ Recommended order: low-risk visual wins first, then UX, then content, then power
 
 ---
 
-## Day 13 — cURL → fetch converter
+## ✅ Day 13 — cURL → fetch converter
 
 **What:** Paste a `curl …` command → emit a JS `fetch(…)` snippet (and a Node `fetch` variant). Handles `-X`, `-H`, `-d`/`--data`, `--data-raw`, `-u`, `--form`, single-line and backslash-wrapped multi-line input.
 
@@ -279,7 +279,7 @@ Recommended order: low-risk visual wins first, then UX, then content, then power
 
 ---
 
-## Day 14 — QR code generator
+## ✅ Day 14 — QR code generator
 
 **What:** Text/URL → live SVG QR with size + error-correction-level controls. Download as SVG/PNG.
 
@@ -297,7 +297,7 @@ Recommended order: low-risk visual wins first, then UX, then content, then power
 
 ---
 
-## Day 15 — Markdown ⇄ HTML preview
+## ✅ Day 15 — Markdown ⇄ HTML preview
 
 **What:** Split view: Markdown on the left, rendered HTML on the right, synced scroll. "Copy HTML" button.
 

@@ -28,11 +28,7 @@ export default function TimestampTool() {
   };
 
   return (
-    <ToolLayout
-      title="Timestamp Converter"
-      description="Unix ⇄ ISO ⇄ local time."
-      icon="⏱️"
-    >
+    <ToolLayout>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
         <Field label="Unix timestamp (sec or ms)">
           <TextInput value={ts} onChange={(e) => setTs(e.target.value)} />

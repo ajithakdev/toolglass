@@ -18,7 +18,9 @@ export default function UuidTool() {
   const [count, setCount] = useState(5);
   const [ids, setIds] = useState<string[]>([]);
 
-  const gen = () => setIds(Array.from({ length: count }, uuidv4));
+  const gen = () => {
+    setIds(Array.from({ length: count }, uuidv4));
+  };
 
   useEffect(() => {
     gen();
@@ -26,7 +28,7 @@ export default function UuidTool() {
   }, [count]);
 
   return (
-    <ToolLayout title="UUID v4" description="RFC 4122 v4 UUIDs, in bulk." icon="🆔">
+    <ToolLayout>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
         <Field label="Count" hint={`${count}`}>
           <Slider value={count} min={1} max={50} onChange={setCount} />

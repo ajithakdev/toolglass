@@ -1,24 +1,26 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '../../components/ui/Button';
 import { Field, TextArea } from '../../components/ui/Field';
 import { Output } from '../../components/ui/Output';
 import { ToolLayout } from '../../components/ToolLayout';
-import { useToast } from '../../components/ui/Toast';
-import { encode, decode } from './base64';
+import { useUrlState } from '../../hooks/useUrlState';
 
-export default function Base64Tool() {
-  const [mode, setMode] = useState<'encode' | 'decode'>('encode');
-  const [input, setInput] = useState('Hello, world!');
+export default function UrlTool() {
+  const [mode, setMode] = useUrlState<'encode' | 'decode'>('mode', 'encode', v => v as 'encode' | 'decode', v => v);
+  const [input, setInput] = useUrlState('input', 'Hello, world!', v => v, v => v);
   const [out, setOut] = useState('');
-  const toast = useToast();
 
-  const run = () => {
+  useEffect(() => {
     try {
-      setOut(mode === 'encode' ? encode(input) : decode(input));
+      if (input) {
+        setOut(mode === 'encode' ? encodeURIComponent(input) : decodeURIComponent(input));
+      } else {
+        setOut('');
+      }
     } catch (e) {
-      toast.push(`Failed: ${(e as Error).message}`, 'error');
+      setOut(`Error: ${(e as Error).message}`);
     }
-  };
+  }, [input, mode]);
 
   return (
     <ToolLayout>
@@ -43,17 +45,13 @@ export default function Base64Tool() {
           <TextArea value={input} onChange={(e) => setInput(e.target.value)} rows={5} />
         </Field>
         <div style={{ display: 'flex', gap: 10 }}>
-          <Button variant="primary" onClick={run}>
-            ✦ Run
-          </Button>
           <Button
             variant="soft"
             onClick={() => {
               setInput('');
-              setOut('');
             }}
           >
-            Reset
+            Clear
           </Button>
         </div>
         <Output value={out} multiline placeholder="Result will appear here" />

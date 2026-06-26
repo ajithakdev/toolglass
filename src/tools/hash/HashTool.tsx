@@ -20,18 +20,18 @@ export default function HashTool() {
 
   useEffect(() => {
     let alive = true;
-    hash(input, algo).then((h) => alive && setOut(h));
+    hash(input, algo).then((h) => {
+      if (alive) {
+        setOut(h);
+      }
+    });
     return () => {
       alive = false;
     };
   }, [input, algo]);
 
   return (
-    <ToolLayout
-      title="Hash Generator"
-      description="Compute SHA hashes via the Web Crypto API."
-      icon="#️⃣"
-    >
+    <ToolLayout>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
         <Field label="Input">
           <TextArea value={input} onChange={(e) => setInput(e.target.value)} rows={5} />

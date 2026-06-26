@@ -2,6 +2,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { Suspense, useEffect, useState } from 'react';
 import { Navigate, useParams } from 'react-router-dom';
 import { toolBySlug } from '../tools/registry';
+import { useRecentTools } from '../hooks/useRecentTools';
 
 /* ── Cycling phrases shown while the tool chunk loads ────────────── */
 const PHRASES = [
@@ -128,6 +129,14 @@ function Loader() {
 export function ToolPage() {
   const { slug = '' } = useParams();
   const tool = toolBySlug(slug);
+  const { addRecent } = useRecentTools();
+
+  useEffect(() => {
+    if (tool) {
+      addRecent(tool.slug);
+    }
+  }, [tool, addRecent]);
+
   if (!tool) return <Navigate to="/" replace />;
   const { Component } = tool;
   return (

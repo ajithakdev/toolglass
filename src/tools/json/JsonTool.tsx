@@ -21,11 +21,7 @@ export default function JsonTool() {
   };
 
   return (
-    <ToolLayout
-      title="JSON Formatter"
-      description="Validate, beautify, or minify JSON."
-      icon="{ }"
-    >
+    <ToolLayout>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
         <Field label="JSON Input" hint={err ? `⚠ ${err}` : undefined}>
           <TextArea

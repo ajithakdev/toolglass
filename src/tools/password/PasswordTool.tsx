@@ -17,7 +17,7 @@ function ShareButton() {
   };
   return (
     <Button onClick={handleShare} variant="soft">
-      {copied ? '✓ Copied!' : '🔗 Share'}
+      {copied ? '✨ Copied!' : '🔗 Share'}
     </Button>
   );
 }
@@ -30,10 +30,14 @@ export default function PasswordTool() {
   const [numbers, setNumbers] = useUrlState('n', true, (v) => v === '1', (v) => (v ? '1' : '0'));
   const [symbols, setSymbols] = useUrlState('s', true, (v) => v === '1', (v) => (v ? '1' : '0'));
 
-  const opts: PwdOptions = { length, uppercase, lowercase, numbers, symbols };
+  const opts = useMemo<PwdOptions>(() => ({
+    length, uppercase, lowercase, numbers, symbols
+  }), [length, uppercase, lowercase, numbers, symbols]);
   const [pwd, setPwd] = useState('');
 
-  const regen = () => setPwd(generatePassword(opts));
+  const regen = () => {
+    setPwd(generatePassword(opts));
+  };
 
   useEffect(() => {
     regen();
@@ -51,11 +55,7 @@ export default function PasswordTool() {
   };
 
   return (
-    <ToolLayout
-      title="Password Generator"
-      description="Cryptographically strong, customizable passwords — generated entirely in your browser."
-      icon="🔐"
-    >
+    <ToolLayout>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 22 }}>
         <Output value={pwd} />
 

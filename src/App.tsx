@@ -6,8 +6,53 @@ import { Landing } from './pages/Landing';
 import { ToolPage } from './pages/ToolPage';
 import { ToastProvider } from './components/ui/Toast';
 import { useTheme } from './hooks/useTheme';
+import { useToolStats } from './hooks/useToolStats';
+import { Search, Download, ExternalLink, Sparkles } from 'lucide-react';
+
+function InstallPwaButton() {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+
+  useEffect(() => {
+    const handler = (e: Event) => {
+      e.preventDefault();
+      setDeferredPrompt(e);
+    };
+    window.addEventListener('beforeinstallprompt', handler);
+    return () => window.removeEventListener('beforeinstallprompt', handler);
+  }, []);
+
+  if (!deferredPrompt) return null;
+
+  return (
+    <button
+      onClick={async () => {
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        if (outcome === 'accepted') setDeferredPrompt(null);
+      }}
+      style={{
+        padding: '7px 12px',
+        borderRadius: 10,
+        background: 'var(--surface-button-off)',
+        border: '1px solid var(--glass-border)',
+        fontSize: 13,
+        fontWeight: 600,
+        color: 'var(--ink)',
+        cursor: 'pointer',
+        display: 'flex',
+        alignItems: 'center',
+        gap: 6,
+      }}
+    >
+      <Download size={14} strokeWidth={2} />
+      Install
+    </button>
+  );
+}
 
 function Shell({ children, onOpenPalette }: { children: React.ReactNode; onOpenPalette: () => void }) {
+  const { enabled, toggleTelemetry } = useToolStats();
   return (
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       {/* Skip to content — clip-based hide avoids horizontal scrollbar */}
@@ -57,7 +102,7 @@ function Shell({ children, onOpenPalette }: { children: React.ReactNode; onOpenP
               boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.7)',
             }}
           >
-            ✦
+            <Sparkles size={16} strokeWidth={2} color="#fff" />
           </span>
           <span style={{ fontWeight: 700, letterSpacing: '-0.01em' }}>Toolglass</span>
         </Link>
@@ -82,8 +127,8 @@ function Shell({ children, onOpenPalette }: { children: React.ReactNode; onOpenP
               fontFamily: 'var(--font-sans)',
             }}
           >
-            🔍
-            <span>Search tools</span>
+            <Search size={14} strokeWidth={2} />
+            <span style={{ display: 'inline-block' }}>Search tools</span>
             <kbd
               style={{
                 fontSize: 11,
@@ -95,17 +140,19 @@ function Shell({ children, onOpenPalette }: { children: React.ReactNode; onOpenP
                 color: 'var(--ink-mute)',
               }}
             >
-              ⌘K
+              Ctrl K
             </kbd>
           </button>
+          <InstallPwaButton />
           <ThemeToggle />
           <a
             href="https://github.com/ajithakdev/toolglass"
             target="_blank"
             rel="noreferrer"
-            style={{ fontSize: 13, color: 'var(--ink-soft)', fontWeight: 500 }}
+            style={{ fontSize: 13, color: 'var(--ink-soft)', fontWeight: 500, display: 'flex', alignItems: 'center', gap: 4, textDecoration: 'none' }}
           >
-            GitHub ↗
+            <ExternalLink size={13} strokeWidth={2} style={{ marginLeft: 2 }} />
+            GitHub
           </a>
         </div>
       </nav>
@@ -123,13 +170,21 @@ function Shell({ children, onOpenPalette }: { children: React.ReactNode; onOpenP
       </main>
       <footer
         style={{
-          textAlign: 'center',
+          display: 'flex',
+          flexWrap: 'wrap',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: 16,
           padding: '16px 24px',
           fontSize: 12,
           color: 'var(--ink-mute)',
         }}
       >
-        Built client-side · No tracking · No data leaves your browser
+        <span>Built client-side · No tracking · No data leaves your browser</span>
+        <label style={{ display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer', background: 'var(--surface-nav-item)', padding: '4px 8px', borderRadius: 6, border: '1px solid var(--glass-border)', userSelect: 'none' }}>
+          <input type="checkbox" checked={enabled} onChange={toggleTelemetry} style={{ accentColor: '#8b5cf6' }} />
+          <span>Local Usage Stats</span>
+        </label>
       </footer>
     </div>
   );

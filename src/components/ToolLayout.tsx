@@ -1,20 +1,20 @@
 import { motion } from 'framer-motion';
 import { type ReactNode, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { GlassCard } from './ui/GlassCard';
+import { useToolStats } from '../hooks/useToolStats';
+
+import { toolBySlug } from '../tools/registry';
 
 export function ToolLayout({
-  title,
-  description,
-  icon,
   children,
 }: {
-  title: string;
-  description: string;
-  icon: string;
   children: ReactNode;
 }) {
   const navigate = useNavigate();
+  const { slug } = useParams();
+  const tool = toolBySlug(slug || '');
+  const { count } = useToolStats(slug || '');
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -29,6 +29,8 @@ export function ToolLayout({
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [navigate]);
+
+  if (!tool) return null;
 
   return (
     <motion.div
@@ -94,7 +96,7 @@ export function ToolLayout({
             boxShadow: 'var(--icon-highlight)',
           }}
         >
-          {icon}
+          {tool.icon}
         </div>
         <div>
           <h1
@@ -105,10 +107,10 @@ export function ToolLayout({
               letterSpacing: '-0.02em',
             }}
           >
-            {title}
+            {tool.title}
           </h1>
           <p style={{ margin: '4px 0 0', color: 'var(--ink-soft)', fontSize: 14 }}>
-            {description}
+            {tool.description}
           </p>
         </div>
       </div>
@@ -116,6 +118,12 @@ export function ToolLayout({
       <GlassCard strong padding={28}>
         {children}
       </GlassCard>
+
+      {count > 0 && (
+        <div style={{ textAlign: 'center', fontSize: 12, color: 'var(--ink-mute)', marginTop: 8 }}>
+          You've used this tool {count} time{count === 1 ? '' : 's'} — all on your device.
+        </div>
+      )}
     </motion.div>
   );
 }

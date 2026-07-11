@@ -175,7 +175,7 @@ export function Dropdown({
               top: 'calc(100% + 8px)',
               left: 0,
               right: 0,
-              zIndex: 100,
+              zIndex: 500,
               background: 'var(--surface-palette)',
               backdropFilter: 'blur(40px) saturate(200%)',
               border: '1px solid var(--surface-palette-border)',
@@ -183,13 +183,15 @@ export function Dropdown({
               padding: 6,
               boxShadow: '0 12px 40px -8px rgba(40, 0, 100, 0.3), 0 4px 12px -4px rgba(80, 40, 140, 0.1)',
               maxHeight: 260,
-              overflowY: 'auto'
+              overflowY: 'auto',
+              overflowX: 'hidden',
             }}
           >
             {options.map((opt) => (
               <button
                 key={opt.value}
                 type="button"
+                title={opt.label}
                 onClick={() => {
                   onChange(opt.value);
                   setOpen(false);
@@ -207,7 +209,9 @@ export function Dropdown({
                   transition: 'background 0.1s',
                   display: 'flex',
                   alignItems: 'center',
-                  justifyContent: 'space-between'
+                  justifyContent: 'space-between',
+                  gap: 8,
+                  overflow: 'hidden',
                 }}
                 onMouseEnter={(e) => {
                   if (opt.value !== value) e.currentTarget.style.background = 'rgba(139, 92, 246, 0.05)';
@@ -216,8 +220,10 @@ export function Dropdown({
                   if (opt.value !== value) e.currentTarget.style.background = 'transparent';
                 }}
               >
-                {opt.label}
-                {opt.value === value && <span style={{ color: 'var(--accent)', fontSize: 12 }}>✓</span>}
+                <span style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', flex: 1 }}>
+                  {opt.label}
+                </span>
+                {opt.value === value && <span style={{ color: 'var(--accent)', fontSize: 12, flexShrink: 0 }}>✓</span>}
               </button>
             ))}
           </motion.div>

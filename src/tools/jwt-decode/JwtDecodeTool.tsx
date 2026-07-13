@@ -6,30 +6,28 @@ import { Output } from '../../components/ui/Output';
 export default function JwtDecodeTool() {
   const [input, setInput] = useState('');
   
-  const decoded = useMemo(() => {
-    if (!input.trim()) return null;
+  const { decoded, isExpired } = useMemo(() => {
+    if (!input.trim()) return { decoded: null, isExpired: false };
     try {
       const parts = input.split('.');
       if (parts.length !== 3) throw new Error('Invalid JWT format (must have 3 parts separated by dots)');
       
       const decodeB64 = (str: string) => {
         const b64 = str.replace(/-/g, '+').replace(/_/g, '/');
-        // Pad with = to make it a multiple of 4
         const padded = b64.padEnd(b64.length + (4 - (b64.length % 4)) % 4, '=');
         return decodeURIComponent(atob(padded).split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join(''));
       };
 
       const header = JSON.parse(decodeB64(parts[0]));
       const payload = JSON.parse(decodeB64(parts[1]));
-      return { header, payload, error: null };
+      const expired = payload && typeof payload.exp === 'number'
+        ? (payload.exp * 1000 < Date.now())
+        : false;
+      return { decoded: { header, payload, error: null }, isExpired: expired };
     } catch (e) {
-      return { error: (e as Error).message };
+      return { decoded: { error: (e as Error).message }, isExpired: false };
     }
   }, [input]);
-
-  const isExpired = decoded?.payload && typeof decoded.payload.exp === 'number' 
-    ? (decoded.payload.exp * 1000 < Date.now()) 
-    : false;
 
   return (
     <ToolLayout>

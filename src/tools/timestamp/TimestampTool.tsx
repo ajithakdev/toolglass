@@ -249,7 +249,13 @@ export default function TimestampTool() {
 
   // ── URL & Local states ──
   const [activeMode, setActiveMode] = useUrlState('mode', 'convert', (r) => r, (v) => v);
-  const [convertInput, setConvertInput] = useUrlState('q', String(Math.floor(Date.now() / 1000)), (r) => r, (v) => v);
+  // Use lazy initializer so Date.now() is called once (not during every render)
+  const [convertInput, setConvertInput] = useUrlState(
+    'q',
+    (() => String(Math.floor(Date.now() / 1000)))(),
+    (r) => r,
+    (v) => v,
+  );
   const [batchInput, setBatchInput] = useUrlState('batch', '', (r) => r, (v) => v);
   const [cronInput, setCronInput] = useUrlState('cron', '*/5 * * * *', (r) => r, (v) => v);
 
@@ -280,10 +286,10 @@ export default function TimestampTool() {
   const [copiedSnippetIndex, setCopiedSnippetIndex] = useState<number | null>(null);
   const flyoutRef = useRef<HTMLDivElement>(null);
 
-  // Auto relative tick
-  const [, setTick] = useState(0);
+  // Live clock: tracks current unix second so Date.now() is not called during render
+  const [nowTs, setNowTs] = useState(() => Math.floor(Date.now() / 1000));
   useEffect(() => {
-    const timer = setInterval(() => setTick((t) => t + 1), 1000);
+    const timer = setInterval(() => setNowTs(Math.floor(Date.now() / 1000)), 1000);
     return () => clearInterval(timer);
   }, []);
 
@@ -368,9 +374,9 @@ export default function TimestampTool() {
   }
 
   // 3. Diff & Duration — only parse when on diff tab
-  const d1 = activeMode === 'diff' ? parseSmartDate(diffDate1 === 'now' ? String(Math.floor(Date.now() / 1000)) : diffDate1) : null;
-  const d2 = activeMode === 'diff' ? parseSmartDate(diffDate2 === 'now' ? String(Math.floor(Date.now() / 1000)) : diffDate2) : null;
-  const baseD = activeMode === 'diff' ? parseSmartDate(diffBase === 'now' ? String(Math.floor(Date.now() / 1000)) : diffBase) : null;
+  const d1 = activeMode === 'diff' ? parseSmartDate(diffDate1 === 'now' ? String(nowTs) : diffDate1) : null;
+  const d2 = activeMode === 'diff' ? parseSmartDate(diffDate2 === 'now' ? String(nowTs) : diffDate2) : null;
+  const baseD = activeMode === 'diff' ? parseSmartDate(diffBase === 'now' ? String(nowTs) : diffBase) : null;
 
   // Offset validation
   const isValidOffset = diffOffset.trim() === '' || OFFSET_REGEX.test(diffOffset.trim());
@@ -393,8 +399,8 @@ export default function TimestampTool() {
         addHistory(val, 'convert', parsed.toISOString(), { q: val });
       }
     } else if (activeMode === 'diff' && diffMode === 'range') {
-      const parsed1 = parseSmartDate(diffDate1 === 'now' ? String(Math.floor(Date.now() / 1000)) : diffDate1);
-      const parsed2 = parseSmartDate(diffDate2 === 'now' ? String(Math.floor(Date.now() / 1000)) : diffDate2);
+      const parsed1 = parseSmartDate(diffDate1 === 'now' ? String(nowTs) : diffDate1);
+      const parsed2 = parseSmartDate(diffDate2 === 'now' ? String(nowTs) : diffDate2);
       const label = `${diffDate1} ↔ ${diffDate2}`;
       if (parsed1 && parsed2 && label !== lastLoggedRef.current) {
         lastLoggedRef.current = label;
@@ -408,8 +414,7 @@ export default function TimestampTool() {
         addHistory(label, 'cron', describeCron(label), { cron: label });
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [convertInput, activeMode, diffDate1, diffDate2, diffMode, cronInput]);
+  }, [convertInput, activeMode, diffDate1, diffDate2, diffMode, cronInput, nowTs]);
 
   return (
     <ToolLayout>

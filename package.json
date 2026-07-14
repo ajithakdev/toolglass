@@ -25,14 +25,14 @@
     "deploy": "gh-pages -d dist"
   },
   "dependencies": {
-    "dompurify": "^3.4.11",
-    "framer-motion": "^12.41.0",
-    "lucide-react": "^1.21.0",
-    "marked": "^18.0.5",
+    "dompurify": "^3.4.12",
+    "framer-motion": "^12.42.2",
+    "lucide-react": "^1.24.0",
+    "marked": "^18.0.6",
     "qrcode": "^1.5.4",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
-    "react-router-dom": "^7.18.0"
+    "react-router-dom": "^7.18.1"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

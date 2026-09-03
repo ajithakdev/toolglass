@@ -79,7 +79,7 @@ function jsonToTs(jsonString: string, rootName: string, useInterface: boolean): 
     
     return options.out.reverse().join('\n\n');
   } catch (e: any) {
-    throw new Error(e.message);
+    throw new Error(e.message, { cause: e });
   }
 }
 

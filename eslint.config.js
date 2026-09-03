@@ -18,6 +18,7 @@ export default tseslint.config(
       'react-hooks/purity': 'off',
       'react-hooks/set-state-in-render': 'off',
       'react-hooks/error-boundaries': 'off',
+      'react-hooks/refs': 'off',
       'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
       '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
     },

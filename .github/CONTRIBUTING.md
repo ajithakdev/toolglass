@@ -37,11 +37,20 @@ This project uses **strict TypeScript** (`strict: true` in `tsconfig.json`). All
 
 ## Testing
 
-Tests use **Vitest** with `jsdom` environment. Test files live alongside source as `*.test.ts` / `*.test.tsx`.
+Tests use **Vitest** with `jsdom` environment. The test suite is organized in the `tests/` directory mirroring `src/`:
+- `tests/tools/` — tool-specific unit and UI tests (e.g. `tests/tools/passwordTool.test.tsx`, `tests/tools/uuid.test.tsx`)
+- `tests/components/` — UI primitives (`tests/components/ui/`) and layout component tests
+- `tests/hooks/` — custom React hook tests (`useUrlState`, `useClipboard`, etc.)
+- `tests/pages/` — page routing and navigation integration tests
+- `tests/setup.ts` — centralized test environment setup and DOM polyfills
+- `tests/test-utils.tsx` — reusable helpers (`renderWithProviders`, `simulateInput`, `waitFor`)
+
+Source-adjacent test files (`src/**/*.test.ts` / `src/**/*.test.tsx`) are also automatically detected and run by Vitest.
 
 ```bash
 npm test                        # run all tests once
-npm test -- tests/crypto        # run a specific test file or path
+npm test -- tests/tools/        # run tool tests
+npm test -- tests/hooks/        # run hook tests
 npm run test:coverage           # coverage report
 ```
 

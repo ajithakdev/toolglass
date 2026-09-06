@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { act } from 'react';
 import { createRoot } from 'react-dom/client';
 import { ToastProvider, useToast } from '../../../src/components/ui/Toast';
@@ -74,7 +74,16 @@ describe('Toast and ToastProvider', () => {
     expect(container.textContent).toContain('Updated message');
   });
 
-  it('auto-dismisses toasts after timer completes', async () => {
+  it('auto-dismisses toasts when dismissal timeout triggers', async () => {
+    let capturedCallback: (() => void) | null = null;
+    vi.spyOn(window, 'setTimeout').mockImplementation(((cb: () => void, ms?: number) => {
+      if (ms === 2800) {
+        capturedCallback = cb;
+        return 123 as unknown as number;
+      }
+      return 1;
+    }) as unknown as typeof window.setTimeout);
+
     renderToaster();
 
     const successBtn = Array.from(container.querySelectorAll('button')).find(
@@ -86,8 +95,10 @@ describe('Toast and ToastProvider', () => {
     });
     expect(container.textContent).toContain('Success message');
 
+    expect(capturedCallback).not.toBeNull();
     await act(async () => {
-      await new Promise((r) => setTimeout(r, 3100));
+      capturedCallback!();
+      await Promise.resolve();
     });
 
     expect(container.textContent).not.toContain('Success message');

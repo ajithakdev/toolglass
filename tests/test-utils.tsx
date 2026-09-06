@@ -77,3 +77,29 @@ export async function waitAct(ms = 50): Promise<void> {
     await new Promise((resolve) => setTimeout(resolve, ms));
   });
 }
+
+/**
+ * Condition-based wait that polls an assertion until it passes or times out.
+ * Eliminates fixed long sleeps and timing sensitivity in tests.
+ */
+export async function waitFor(
+  assertion: () => void | Promise<void>,
+  { timeout = 1000, interval = 10 } = {}
+): Promise<void> {
+  const start = Date.now();
+  let lastError: unknown;
+  while (Date.now() - start < timeout) {
+    try {
+      await act(async () => {
+        await assertion();
+      });
+      return;
+    } catch (err) {
+      lastError = err;
+      await act(async () => {
+        await new Promise((r) => setTimeout(r, interval));
+      });
+    }
+  }
+  throw lastError;
+}

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { objectId } from './objectid';
+import { objectId } from '../../src/tools/objectid/objectid';
 
 describe('objectId', () => {
   it('produces a 24-character hex string', () => {

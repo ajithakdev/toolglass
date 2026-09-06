@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { signHS256 } from './jwt';
+import { signHS256 } from '../../src/tools/jwt/jwt';
 
 describe('JWT signHS256', () => {
   it('produces a token with exactly 3 dot-separated parts', async () => {

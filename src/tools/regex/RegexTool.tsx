@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useState, useMemo } from 'react';
+import { useState, useMemo } from 'react'; // useState kept for pattern/flags/testString
+import type { ReactNode } from 'react';
 import { Field, Toggle, TextInput, TextArea } from '../../components/ui/Field';
 import { ToolLayout } from '../../components/ToolLayout';
 
@@ -7,69 +8,64 @@ export default function RegexTool() {
   const [pattern, setPattern] = useState('(?<year>\\d{4})-(?<month>\\d{2})-(?<day>\\d{2})');
   const [flags, setFlags] = useState('g');
   const [testString, setTestString] = useState('Today is 2024-03-12, tomorrow is 2024-03-13.');
-  const [error, setError] = useState<string | null>(null);
-
   const toggleFlag = (flag: string) => {
     setFlags(prev => prev.includes(flag) ? prev.replace(flag, '') : prev + flag);
   };
 
-  const { matches, highlighted } = useMemo(() => {
-    setError(null);
-    if (!pattern) return { matches: [], highlighted: testString };
+  const { matches, highlighted, error: regexError } = useMemo(() => {
+    if (!pattern) return { matches: [], highlighted: testString as ReactNode, error: null };
 
+    let regex: RegExp;
     try {
-      const regex = new RegExp(pattern, flags);
-      const m = [];
-      let match;
-      
-      // If it's global, we can iterate
-      if (flags.includes('g')) {
-        let max = 1000;
-        while ((match = regex.exec(testString)) !== null && max-- > 0) {
-          m.push(match);
-          if (match[0].length === 0) {
-            regex.lastIndex++; // prevent infinite loop on empty matches
-          }
-        }
-      } else {
-        match = regex.exec(testString);
-        if (match) m.push(match);
-      }
-
-      // Highlight logic
-      const hl = [];
-      let lastIdx = 0;
-      m.forEach((match, i) => {
-        const start = match.index;
-        const end = start + match[0].length;
-        if (start > lastIdx) {
-          hl.push(<span key={`text-${lastIdx}`}>{testString.substring(lastIdx, start)}</span>);
-        }
-        hl.push(
-          <mark 
-            key={`match-${i}`} 
-            style={{ 
-              background: 'rgba(167, 139, 250, 0.4)', 
-              color: 'var(--ink)', 
-              borderRadius: 4, 
-              padding: '0 2px' 
-            }}
-          >
-            {match[0]}
-          </mark>
-        );
-        lastIdx = end;
-      });
-      if (lastIdx < testString.length) {
-        hl.push(<span key={`text-${lastIdx}`}>{testString.substring(lastIdx)}</span>);
-      }
-
-      return { matches: m, highlighted: hl.length > 0 ? hl : testString };
+      regex = new RegExp(pattern, flags);
     } catch (e: any) {
-      setError(e.message);
-      return { matches: [], highlighted: testString };
+      return { matches: [], highlighted: testString as ReactNode, error: e.message as string };
     }
+
+    const m: RegExpExecArray[] = [];
+    if (flags.includes('g')) {
+      let max = 1000;
+      let match: RegExpExecArray | null;
+      while ((match = regex.exec(testString)) !== null && max-- > 0) {
+        m.push(match);
+        if (match[0].length === 0) regex.lastIndex++;
+      }
+    } else {
+      const match = regex.exec(testString);
+      if (match) m.push(match);
+    }
+
+    // Build highlight spans outside try/catch (no JSX in catch blocks)
+    const hl: ReactNode[] = [];
+    let lastIdx = 0;
+    m.forEach((match, i) => {
+      const start = match.index;
+      const end = start + match[0].length;
+      if (start > lastIdx) {
+        hl.push(<span key={`text-${lastIdx}`}>{testString.substring(lastIdx, start)}</span>);
+      }
+      hl.push(
+        <mark
+          key={`match-${i}`}
+          style={{
+            background: 'rgba(167, 139, 250, 0.4)',
+            color: 'var(--ink)',
+            borderRadius: 4,
+            padding: '0 2px'
+          }}
+        >
+          {match[0]}
+        </mark>
+      );
+      lastIdx = end;
+    });
+    if (lastIdx < testString.length) {
+      hl.push(<span key={`text-${lastIdx}`}>{testString.substring(lastIdx)}</span>);
+    }
+
+    return { matches: m, highlighted: hl.length > 0 ? hl : testString as ReactNode, error: null };
   }, [pattern, flags, testString]);
+
 
   return (
     <ToolLayout>
@@ -84,7 +80,7 @@ export default function RegexTool() {
                 style={{ fontFamily: 'var(--font-mono)' }}
               />
             </Field>
-            {error && <div style={{ color: 'var(--status-error)', fontSize: 13, marginTop: 4 }}>{error}</div>}
+            {regexError && <div style={{ color: 'var(--status-error)', fontSize: 13, marginTop: 4 }}>{regexError}</div>}
           </div>
           <Field label="Flags">
             <TextInput

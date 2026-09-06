@@ -47,13 +47,15 @@ export function ToastProvider({ children }: { children: ReactNode }) {
         style={{
           position: 'fixed',
           top: 80,
-          right: 24,
+          right: 16,
+          left: 'auto',
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'flex-end',
           gap: 10,
           pointerEvents: 'none',
           zIndex: 10000,
+          maxWidth: 'calc(100vw - 32px)',
         }}
       >
         <AnimatePresence>

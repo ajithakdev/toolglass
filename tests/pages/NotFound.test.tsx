@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { act } from 'react';
 import { createRoot, type Root } from 'react-dom/client';
 import { MemoryRouter } from 'react-router-dom';
-import { NotFound } from './NotFound';
+import { NotFound } from '../../src/pages/NotFound';
 
 // Configure act environment for React 19
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

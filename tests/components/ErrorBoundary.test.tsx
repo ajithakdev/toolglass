@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { act, useState } from 'react';
 import { createRoot, type Root } from 'react-dom/client';
 import { MemoryRouter } from 'react-router-dom';
-import { ErrorBoundary } from './ErrorBoundary';
+import { ErrorBoundary } from '../../src/components/ErrorBoundary';
 
 // Configure act environment for React 19
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

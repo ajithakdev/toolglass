@@ -11,7 +11,7 @@ import {
   scrubStorageAuth,
   SavedRequest,
   HistoryItem
-} from './curlSecurity';
+} from '../../src/tools/curl-to-fetch/curlSecurity';
 
 describe('curlSecurity utilities', () => {
   beforeEach(() => {

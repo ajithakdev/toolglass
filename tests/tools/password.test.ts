@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { CHARSETS, generatePassword, type PwdOptions } from './password';
+import { CHARSETS, generatePassword, type PwdOptions } from '../../src/tools/password/password';
 
 const fullOpts: PwdOptions = {
   length: 20,

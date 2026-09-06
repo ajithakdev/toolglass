@@ -1,26 +1,10 @@
+# Dependabot configuration for toolglass
+# Routine scheduled version updates are disabled (open-pull-requests-limit: 0) to eliminate commit noise and unnecessary churn.
+# Dependabot automated security fixes are enabled at the repository level and will continue to automatically open PRs for CVEs and vulnerability alerts.
 version: 2
 updates:
   - package-ecosystem: npm
     directory: /
     schedule:
       interval: monthly
-    open-pull-requests-limit: 3
-    ignore:
-      # eslint-plugin-react-hooks 7.x enables strict experimental rules (purity, set-state-in-effect)
-      # which fail linting on existing components until architecture is refactored
-      - dependency-name: "eslint-plugin-react-hooks"
-        update-types: ["version-update:semver-major"]
-      # TypeScript major version updates should be performed manually to maintain tool stability
-      - dependency-name: "typescript"
-        update-types: ["version-update:semver-major"]
-    groups:
-      dev-dependencies:
-        dependency-type: development
-      runtime:
-        dependency-type: production
-
-  - package-ecosystem: github-actions
-    directory: /
-    schedule:
-      interval: monthly
-    open-pull-requests-limit: 2
+    open-pull-requests-limit: 0

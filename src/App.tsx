@@ -8,6 +8,8 @@ import { ToastProvider } from './components/ui/Toast';
 import { useTheme } from './hooks/useTheme';
 import { useToolStats } from './hooks/useToolStats';
 import { Search, Download, ExternalLink, Sparkles } from 'lucide-react';
+import { ErrorBoundary } from './components/ErrorBoundary';
+import { NotFound } from './pages/NotFound';
 
 function InstallPwaButton() {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -209,11 +211,13 @@ export default function App() {
   return (
     <ToastProvider>
       <Shell onOpenPalette={() => setPaletteOpen(true)}>
-        <Routes>
-          <Route path="/" element={<Landing />} />
-          <Route path="/tools/:slug" element={<ToolPage />} />
-          <Route path="*" element={<Landing />} />
-        </Routes>
+        <ErrorBoundary>
+          <Routes>
+            <Route path="/" element={<Landing />} />
+            <Route path="/tools/:slug" element={<ToolPage />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </ErrorBoundary>
       </Shell>
       <CommandPalette open={paletteOpen} onClose={() => setPaletteOpen(false)} />
     </ToastProvider>

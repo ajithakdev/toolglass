@@ -1,8 +1,10 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import { Suspense, useEffect, useState } from 'react';
-import { Navigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { toolBySlug } from '../tools/registry';
 import { useRecentTools } from '../hooks/useRecentTools';
+import { ErrorBoundary } from '../components/ErrorBoundary';
+import { NotFound } from './NotFound';
 
 /* ── Cycling phrases shown while the tool chunk loads ────────────── */
 const PHRASES = [
@@ -137,11 +139,16 @@ export function ToolPage() {
     }
   }, [tool, addRecent]);
 
-  if (!tool) return <Navigate to="/" replace />;
+  if (!tool) {
+    return <NotFound attemptedSlug={slug} isToolNotFound={true} />;
+  }
+
   const { Component } = tool;
   return (
-    <Suspense fallback={<Loader />}>
-      <Component />
-    </Suspense>
+    <ErrorBoundary toolTitle={tool.title}>
+      <Suspense fallback={<Loader />}>
+        <Component />
+      </Suspense>
+    </ErrorBoundary>
   );
 }

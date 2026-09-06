@@ -6,11 +6,25 @@ import { Button } from '../../components/ui/Button';
 import {
   Play, Clipboard, Plus, Trash2, KeyRound, Globe,
   FileJson, Check, Copy, Sparkles, Save, Download, Upload,
-  History as HistoryIcon, Edit2
+  History as HistoryIcon, Edit2, ShieldAlert, ShieldCheck, Lock
 } from 'lucide-react';
 import { useParams } from 'react-router-dom';
 import { useToolStats } from '../../hooks/useToolStats';
 import { useToast } from '../../components/ui/Toast';
+import {
+  HeaderParam,
+  SavedRequest,
+  HistoryItem,
+  isSensitiveHeader,
+  sanitizeHeaders,
+  hasAuthCredentials,
+  sanitizeSavedRequest,
+  sanitizeHistoryItem,
+  saveSessionAuth,
+  getSessionAuth,
+  clearSessionAuth,
+  scrubStorageAuth
+} from './curlSecurity';
 
 interface QueryParam {
   key: string;
@@ -19,45 +33,6 @@ interface QueryParam {
   file?: File;
 }
 
-interface HeaderParam {
-  key: string;
-  value: string;
-}
-
-interface SavedRequest {
-  id: string;
-  name: string;
-  url: string;
-  method: string;
-  headers: HeaderParam[];
-  queryParams: { key: string; value: string; type: 'text' }[];
-  authType: 'none' | 'bearer' | 'basic';
-  bearerToken: string;
-  basicUser: string;
-  basicPass: string;
-  bodyText: string;
-  autoCopyPath?: string;
-  runCount?: number;
-  avgTime?: number;
-  description?: string;
-  lastStatus?: number;
-  lastStatusText?: string;
-  lastRunTimestamp?: number;
-}
-
-interface HistoryItem {
-  id: string;
-  timestamp: number;
-  url: string;
-  method: string;
-  headers: HeaderParam[];
-  queryParams: { key: string; value: string; type: 'text' }[];
-  authType: 'none' | 'bearer' | 'basic';
-  bearerToken: string;
-  basicUser: string;
-  basicPass: string;
-  bodyText: string;
-}
 
 function parseCurl(curlString: string) {
   const str = curlString.replace(/\\\n/g, ' ').trim();
@@ -209,11 +184,13 @@ export default function CurlTool() {
   const [error, setError] = useState('');
   const [lineWrap, setLineWrap] = useState(false);
 
-  // Saved Workflows & History State
+  // Saved Workflows & History State (100% Privacy sanitized from localStorage)
   const [savedRequests, setSavedRequests] = useState<SavedRequest[]>(() => {
     try {
       const stored = localStorage.getItem('toolglass_saved_requests');
-      return stored ? JSON.parse(stored) : [];
+      if (!stored) return [];
+      const parsed: SavedRequest[] = JSON.parse(stored);
+      return Array.isArray(parsed) ? parsed.map(sanitizeSavedRequest) : [];
     } catch {
       return [];
     }
@@ -222,7 +199,9 @@ export default function CurlTool() {
   const [requestHistory, setRequestHistory] = useState<HistoryItem[]>(() => {
     try {
       const stored = localStorage.getItem('toolglass_request_history');
-      return stored ? JSON.parse(stored) : [];
+      if (!stored) return [];
+      const parsed: HistoryItem[] = JSON.parse(stored);
+      return Array.isArray(parsed) ? parsed.map(sanitizeHistoryItem) : [];
     } catch {
       return [];
     }
@@ -232,7 +211,21 @@ export default function CurlTool() {
   const [saveName, setSaveName] = useState('');
   const [saveDescription, setSaveDescription] = useState('');
   const [autoCopyPath, setAutoCopyPath] = useState('');
+  const [saveToSession, setSaveToSession] = useState(false);
   const [editingWorkflowId, setEditingWorkflowId] = useState<string | null>(null);
+
+  // Privacy migration: Scrub any legacy unencrypted tokens from localStorage on mount
+  useEffect(() => {
+    const { scrubbedSaved, scrubbedHistory } = scrubStorageAuth();
+    if (scrubbedSaved > 0 || scrubbedHistory > 0) {
+      toast.push(
+        `Privacy Protection: Cleared legacy unencrypted credentials from ${scrubbedSaved + scrubbedHistory} stored items.`,
+        'info'
+      );
+      setSavedRequests((prev) => prev.map(sanitizeSavedRequest));
+      setRequestHistory((prev) => prev.map(sanitizeHistoryItem));
+    }
+  }, [toast]);
 
   // Keyboard shortcut Alt+Z to toggle word wrap
   useEffect(() => {
@@ -310,36 +303,81 @@ export default function CurlTool() {
     setMethod(config.method || 'GET');
     setQueryParams(config.queryParams && config.queryParams.length ? config.queryParams : [{ key: '', value: '', type: 'text' }]);
     setAuthType(config.authType || 'none');
-    setBearerToken(config.bearerToken || '');
-    setBasicUser(config.basicUser || '');
-    setBasicPass(config.basicPass || '');
+
+    // Restore credentials from tab's sessionStorage if available for this workflow ID
+    const sessionAuth = config.id ? getSessionAuth(config.id) : null;
+    const token = sessionAuth?.bearerToken || config.bearerToken || '';
+    const user = sessionAuth?.basicUser || config.basicUser || '';
+    const pass = sessionAuth?.basicPass || config.basicPass || '';
+
+    setBearerToken(token);
+    setBasicUser(user);
+    setBasicPass(pass);
     setHeaders(config.headers && config.headers.length ? config.headers : [{ key: '', value: '' }]);
     setBodyText(config.bodyText || '');
     setMainTab('testing'); // Switch back to editor
-    toast.push('Request loaded into builder', 'info');
+
+    if (config.authType && config.authType !== 'none' && !token && !pass) {
+      toast.push(`Request loaded. Please enter credentials for ${config.authType.toUpperCase()} authentication.`, 'info');
+    } else {
+      toast.push('Request loaded into builder', 'info');
+    }
   };
 
   const addHistoryItem = (config: any) => {
-    const newItem: HistoryItem = {
+    const rawItem: HistoryItem = {
       id: Date.now().toString(),
       timestamp: Date.now(),
       url: config.url,
       method: config.method,
       queryParams: config.queryParams || [],
       authType: config.authType || 'none',
-      bearerToken: config.bearerToken || '',
-      basicUser: config.basicUser || '',
-      basicPass: config.basicPass || '',
-      headers: config.headers || [],
+      bearerToken: '',
+      basicUser: '',
+      basicPass: '',
+      headers: sanitizeHeaders(config.headers || []),
       bodyText: config.bodyText || '',
     };
+
+    const newItem = sanitizeHistoryItem(rawItem);
 
     setRequestHistory((prev) => {
       const filtered = prev.filter(item => item.url !== config.url || item.method !== config.method);
       const updated = [newItem, ...filtered].slice(0, 15); // Limit to last 15 requests
-      localStorage.setItem('toolglass_request_history', JSON.stringify(updated));
+      localStorage.setItem('toolglass_request_history', JSON.stringify(updated.map(sanitizeHistoryItem)));
       return updated;
     });
+  };
+
+  const handleClearHistory = () => {
+    setRequestHistory([]);
+    localStorage.removeItem('toolglass_request_history');
+    toast.push('Request history cleared', 'info');
+  };
+
+  const handleForgetActiveCredentials = () => {
+    setBearerToken('');
+    setBasicUser('');
+    setBasicPass('');
+    setHeaders(prev => {
+      const filtered = prev.filter(h => !isSensitiveHeader(h.key));
+      return filtered.length > 0 ? filtered : [{ key: '', value: '' }];
+    });
+    clearSessionAuth();
+    toast.push('Active credentials forgotten and purged from memory.', 'success');
+  };
+
+  const handleForgetAllSavedCredentials = () => {
+    clearSessionAuth();
+    const { scrubbedSaved, scrubbedHistory } = scrubStorageAuth();
+    setSavedRequests(prev => prev.map(sanitizeSavedRequest));
+    setRequestHistory(prev => prev.map(sanitizeHistoryItem));
+    toast.push(
+      scrubbedSaved > 0 || scrubbedHistory > 0
+        ? `Purged all credentials! Scrubbed ${scrubbedSaved} workflows and ${scrubbedHistory} history items.`
+        : 'All session credentials and stored auth data purged.',
+      'success'
+    );
   };
 
   const getDetectedKeys = () => {
@@ -360,6 +398,9 @@ export default function CurlTool() {
       return;
     }
 
+    const currentConfig = getCurrentRequestConfig();
+    const hasCreds = hasAuthCredentials(currentConfig);
+
     if (editingWorkflowId) {
       setSavedRequests((prev) => {
         const updated = prev.map((r) => {
@@ -373,29 +414,44 @@ export default function CurlTool() {
           }
           return r;
         });
-        localStorage.setItem('toolglass_saved_requests', JSON.stringify(updated));
+        localStorage.setItem('toolglass_saved_requests', JSON.stringify(updated.map(sanitizeSavedRequest)));
         return updated;
       });
+      if (saveToSession && hasCreds) {
+        saveSessionAuth(editingWorkflowId, {
+          bearerToken: currentConfig.bearerToken,
+          basicUser: currentConfig.basicUser,
+          basicPass: currentConfig.basicPass
+        });
+      }
       toast.push(`Workflow "${saveName}" updated!`, 'success');
     } else {
       if (savedRequests.length >= 50) {
         toast.push('Maximum limit of 50 workflows reached. Please delete some before saving new ones.', 'error');
         return;
       }
-      const currentConfig = getCurrentRequestConfig();
-      const newWorkflow: SavedRequest = {
-        id: Date.now().toString(),
+      const newId = Date.now().toString();
+      const sanitizedConfig = sanitizeSavedRequest({
+        id: newId,
         name: saveName.trim(),
         description: saveDescription.trim() || undefined,
         autoCopyPath: autoCopyPath.trim() || undefined,
         runCount: 0,
         avgTime: 0,
         ...currentConfig
-      };
+      });
+
+      if (saveToSession && hasCreds) {
+        saveSessionAuth(newId, {
+          bearerToken: currentConfig.bearerToken,
+          basicUser: currentConfig.basicUser,
+          basicPass: currentConfig.basicPass
+        });
+      }
 
       setSavedRequests((prev) => {
-        const updated = [newWorkflow, ...prev];
-        localStorage.setItem('toolglass_saved_requests', JSON.stringify(updated));
+        const updated = [sanitizedConfig, ...prev];
+        localStorage.setItem('toolglass_saved_requests', JSON.stringify(updated.map(sanitizeSavedRequest)));
         return updated;
       });
       toast.push(`Workflow "${saveName}" saved!`, 'success');
@@ -405,6 +461,7 @@ export default function CurlTool() {
     setSaveName('');
     setSaveDescription('');
     setAutoCopyPath('');
+    setSaveToSession(false);
     setEditingWorkflowId(null);
   };
 
@@ -417,9 +474,10 @@ export default function CurlTool() {
   };
 
   const handleDeleteRequest = (id: string, name: string) => {
+    clearSessionAuth(id);
     setSavedRequests((prev) => {
       const updated = prev.filter(r => r.id !== id);
-      localStorage.setItem('toolglass_saved_requests', JSON.stringify(updated));
+      localStorage.setItem('toolglass_saved_requests', JSON.stringify(updated.map(sanitizeSavedRequest)));
       return updated;
     });
     toast.push(`Workflow "${name}" deleted`, 'info');
@@ -457,17 +515,37 @@ export default function CurlTool() {
       return;
     }
 
+    // Resolve authentication: check in-memory or sessionStorage
+    const sessionAuth = getSessionAuth(req.id);
+    const token = req.bearerToken?.trim() || sessionAuth?.bearerToken?.trim() || '';
+    const user = req.basicUser?.trim() || sessionAuth?.basicUser?.trim() || '';
+    const pass = req.basicPass?.trim() || sessionAuth?.basicPass?.trim() || '';
+
+    if (req.authType === 'bearer' && !token) {
+      loadRequestConfig(req);
+      setActiveTab('auth');
+      toast.push(`Bearer token required: Please enter token to run "${req.name}"`, 'error', toastId);
+      return;
+    }
+
+    if (req.authType === 'basic' && !user && !pass) {
+      loadRequestConfig(req);
+      setActiveTab('auth');
+      toast.push(`Basic auth credentials required: Please enter credentials to run "${req.name}"`, 'error', toastId);
+      return;
+    }
+
     const requestHeaders: Record<string, string> = {};
     req.headers.forEach((h) => {
-      if (h.key.trim()) {
+      if (h.key.trim() && !isSensitiveHeader(h.key)) {
         requestHeaders[h.key.trim()] = h.value.trim();
       }
     });
 
-    if (req.authType === 'bearer' && req.bearerToken?.trim()) {
-      requestHeaders['Authorization'] = `Bearer ${req.bearerToken.trim().replace(/^bearer\s+/i, '')}`;
-    } else if (req.authType === 'basic' && (req.basicUser?.trim() || req.basicPass?.trim())) {
-      requestHeaders['Authorization'] = `Basic ${btoa(`${req.basicUser}:${req.basicPass}`)}`;
+    if (req.authType === 'bearer' && token) {
+      requestHeaders['Authorization'] = `Bearer ${token.replace(/^bearer\s+/i, '')}`;
+    } else if (req.authType === 'basic' && (user || pass)) {
+      requestHeaders['Authorization'] = `Basic ${btoa(`${user}:${pass}`)}`;
     }
 
     let requestBody: any = undefined;
@@ -532,7 +610,7 @@ export default function CurlTool() {
           }
           return r;
         });
-        localStorage.setItem('toolglass_saved_requests', JSON.stringify(updated));
+        localStorage.setItem('toolglass_saved_requests', JSON.stringify(updated.map(sanitizeSavedRequest)));
         return updated;
       });
 
@@ -551,21 +629,22 @@ export default function CurlTool() {
           }
           return r;
         });
-        localStorage.setItem('toolglass_saved_requests', JSON.stringify(updated));
+        localStorage.setItem('toolglass_saved_requests', JSON.stringify(updated.map(sanitizeSavedRequest)));
         return updated;
       });
     }
   };
 
   const handleExportWorkflows = () => {
-    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(savedRequests, null, 2));
+    const sanitized = savedRequests.map(sanitizeSavedRequest);
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(sanitized, null, 2));
     const downloadAnchor = document.createElement('a');
     downloadAnchor.setAttribute("href", dataStr);
     downloadAnchor.setAttribute("download", "toolglass_workflows.json");
     document.body.appendChild(downloadAnchor);
     downloadAnchor.click();
     downloadAnchor.remove();
-    toast.push('Workflows exported successfully', 'success');
+    toast.push('Workflows exported successfully (credentials excluded for privacy)', 'success');
   };
 
   const handleImportWorkflows = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -576,12 +655,13 @@ export default function CurlTool() {
       try {
         const parsed = JSON.parse(event.target?.result as string);
         if (Array.isArray(parsed)) {
+          const sanitized = parsed.map(sanitizeSavedRequest);
           setSavedRequests((prev) => {
-            const updated = [...parsed, ...prev];
-            localStorage.setItem('toolglass_saved_requests', JSON.stringify(updated));
+            const updated = [...sanitized, ...prev];
+            localStorage.setItem('toolglass_saved_requests', JSON.stringify(updated.map(sanitizeSavedRequest)));
             return updated;
           });
-          toast.push('Workflows imported successfully', 'success');
+          toast.push('Workflows imported securely (credentials stripped)', 'success');
         } else {
           toast.push('Invalid JSON file format', 'error');
         }
@@ -1090,6 +1170,47 @@ export default function CurlTool() {
                 {/* Auth tab */}
                 {activeTab === 'auth' && (
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+                    <div style={{
+                      display: 'flex',
+                      flexWrap: 'wrap',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      gap: 8,
+                      padding: '8px 12px',
+                      borderRadius: 8,
+                      background: 'rgba(139, 92, 246, 0.06)',
+                      border: '1px solid rgba(139, 92, 246, 0.15)',
+                      fontSize: 12,
+                      color: 'var(--ink-soft)'
+                    }}>
+                      <span style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                        <ShieldCheck size={14} style={{ color: 'var(--accent)' }} />
+                        100% Client Privacy: Credentials are kept in memory only and never saved to localStorage.
+                      </span>
+                      {(bearerToken.trim() || basicUser.trim() || basicPass.trim()) && (
+                        <button
+                          type="button"
+                          onClick={handleForgetActiveCredentials}
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: 4,
+                            background: 'none',
+                            border: 'none',
+                            color: 'var(--status-error)',
+                            fontSize: 11,
+                            fontWeight: 600,
+                            cursor: 'pointer',
+                            padding: '2px 6px',
+                            borderRadius: 4
+                          }}
+                          title="Purge credentials from active memory"
+                        >
+                          <KeyRound size={12} /> Forget Credentials
+                        </button>
+                      )}
+                    </div>
+
                     <div>
                       <label style={{ fontSize: 12, fontWeight: 700, color: 'var(--ink-soft)', marginBottom: 6, display: 'block' }}>Auth Type</label>
                       <div style={{ display: 'flex', gap: 12 }}>
@@ -1177,6 +1298,26 @@ export default function CurlTool() {
                           placeholder="Header Value"
                           style={{ fontSize: 13, fontFamily: 'var(--font-mono)' }}
                         />
+                        {isSensitiveHeader(header.key) && (
+                          <span
+                            title="Sensitive header: Excluded from persistent storage & history logs"
+                            style={{
+                              fontSize: 10,
+                              fontWeight: 700,
+                              color: '#f59e0b',
+                              background: 'rgba(245, 158, 11, 0.1)',
+                              border: '1px solid rgba(245, 158, 11, 0.25)',
+                              padding: '2px 6px',
+                              borderRadius: 4,
+                              whiteSpace: 'nowrap',
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              gap: 3
+                            }}
+                          >
+                            <ShieldAlert size={11} /> Sensitive
+                          </span>
+                        )}
                         <button
                           onClick={() => {
                             const newHeaders = headers.filter((_, idx) => idx !== index);
@@ -1349,6 +1490,15 @@ export default function CurlTool() {
                   <Download size={13} /> Export JSON
                 </Button>
                 <Button
+                  onClick={handleForgetAllSavedCredentials}
+                  variant="soft"
+                  size="sm"
+                  style={{ display: 'flex', gap: 6, alignItems: 'center', color: 'var(--status-error)' }}
+                  title="Purge all credentials from local session and scrub localStorage"
+                >
+                  <ShieldAlert size={13} /> Forget Stored Credentials
+                </Button>
+                <Button
                   onClick={() => {
                     setSaveName('');
                     setSaveDescription('');
@@ -1422,6 +1572,24 @@ export default function CurlTool() {
 
                     {/* Usage Stats and status info badge */}
                     <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, alignItems: 'center', fontSize: 11, color: 'var(--ink-mute)' }}>
+                      {req.authType !== 'none' && (
+                        <span
+                          style={{
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: 4,
+                            padding: '2px 6px',
+                            borderRadius: 4,
+                            background: 'rgba(139, 92, 246, 0.12)',
+                            color: 'var(--accent)',
+                            fontWeight: 700,
+                            fontSize: 10
+                          }}
+                          title="Credentials are omitted from persistent localStorage for privacy"
+                        >
+                          <Lock size={10} /> {req.authType.toUpperCase()} Auth Required
+                        </span>
+                      )}
                       {(req.runCount !== undefined && req.runCount > 0) && (
                         <span>
                           ⚡ <strong>{req.runCount}</strong> run{req.runCount === 1 ? '' : 's'} · avg: <strong>{req.avgTime} ms</strong>
@@ -1531,14 +1699,26 @@ export default function CurlTool() {
         {/* Tab 3: Request History Log (Grows naturally in Y axis, descending order) */}
         {mainTab === 'history' && (
           <div className="glass" style={{ borderRadius: 16, border: '1px solid var(--glass-border)', padding: 24, display: 'flex', flexDirection: 'column', gap: 20 }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 10 }}>
               <div>
                 <h3 style={{ margin: 0, fontSize: 18, fontWeight: 700, color: 'var(--ink)' }}>Request History</h3>
                 <p style={{ margin: '4px 0 0', fontSize: 12, color: 'var(--ink-soft)' }}>
-                  A log of your recent request configurations run on the builder (latest first, max 15)
+                  A log of your recent request configurations (latest first, max 15) · Auth credentials excluded for privacy
                 </p>
               </div>
-              <span style={{ fontSize: 12, color: 'var(--ink-mute)' }}>Last 15 executions</span>
+              <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
+                <span style={{ fontSize: 12, color: 'var(--ink-mute)' }}>Last 15 executions</span>
+                {requestHistory.length > 0 && (
+                  <Button
+                    onClick={handleClearHistory}
+                    variant="soft"
+                    size="sm"
+                    style={{ display: 'flex', gap: 4, alignItems: 'center' }}
+                  >
+                    <Trash2 size={12} /> Clear History
+                  </Button>
+                )}
+              </div>
             </div>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
@@ -1683,6 +1863,42 @@ export default function CurlTool() {
               )}
             </div>
 
+            {(() => {
+              const currentConfig = getCurrentRequestConfig();
+              const hasCreds = hasAuthCredentials(currentConfig);
+              if (!hasCreds) return null;
+              return (
+                <div style={{
+                  padding: '12px 14px',
+                  borderRadius: 10,
+                  background: 'rgba(245, 158, 11, 0.08)',
+                  border: '1px solid rgba(245, 158, 11, 0.25)',
+                  display: 'flex',
+                  gap: 10,
+                  alignItems: 'flex-start'
+                }}>
+                  <ShieldAlert size={18} style={{ color: '#f59e0b', flexShrink: 0, marginTop: 2 }} />
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                    <span style={{ fontSize: 12, fontWeight: 700, color: '#f59e0b' }}>
+                      Client Privacy & Security Protection Active
+                    </span>
+                    <span style={{ fontSize: 11, color: 'var(--ink-soft)', lineHeight: 1.4 }}>
+                      Credentials (Bearer tokens, Basic Auth passwords, and Authorization headers) are <strong>never stored in persistent localStorage</strong> to protect your security.
+                    </span>
+                    <label style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 4, cursor: 'pointer', fontSize: 11, color: 'var(--ink)' }}>
+                      <input
+                        type="checkbox"
+                        checked={saveToSession}
+                        onChange={(e) => setSaveToSession(e.target.checked)}
+                        style={{ cursor: 'pointer' }}
+                      />
+                      <span>Remember credentials in this browser tab only (sessionStorage — cleared when tab closes)</span>
+                    </label>
+                  </div>
+                </div>
+              );
+            })()}
+
             <Field label="Workflow Name *">
               <TextInput
                 value={saveName}
@@ -1783,20 +1999,28 @@ export default function CurlTool() {
                   type="button"
                   onClick={() => {
                     const currentConfig = getCurrentRequestConfig();
+                    const hasCreds = hasAuthCredentials(currentConfig);
+                    if (saveToSession && hasCreds) {
+                      saveSessionAuth(editingWorkflowId, {
+                        bearerToken: currentConfig.bearerToken,
+                        basicUser: currentConfig.basicUser,
+                        basicPass: currentConfig.basicPass
+                      });
+                    }
                     setSavedRequests((prev) => {
                       const updated = prev.map((r) => {
                         if (r.id === editingWorkflowId) {
-                          return {
+                          return sanitizeSavedRequest({
                             ...r,
                             ...currentConfig
-                          };
+                          });
                         }
                         return r;
                       });
-                      localStorage.setItem('toolglass_saved_requests', JSON.stringify(updated));
+                      localStorage.setItem('toolglass_saved_requests', JSON.stringify(updated.map(sanitizeSavedRequest)));
                       return updated;
                     });
-                    toast.push('Request parameters updated from builder!', 'success');
+                    toast.push('Request parameters updated securely from builder!', 'success');
                   }}
                   style={{
                     padding: '4px 10px',

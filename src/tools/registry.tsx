@@ -17,6 +17,7 @@ import {
   Globe2,
   QrCode,
   FileText,
+  Type,
   Terminal,
 } from 'lucide-react';
 
@@ -183,6 +184,15 @@ export const tools: ToolMeta[] = [
     icon: <FileText size={22} strokeWidth={1.5} color="var(--ink)" />,
     tint: 'linear-gradient(135deg, #bfdbfe, #c4b5fd)',
     Component: lazy(() => import('./markdown/MarkdownTool')),
+  },
+  {
+    slug: 'case-converter',
+    title: 'Text Case Converter & Slug',
+    short: 'camel, snake, kebab & slugs',
+    description: 'Transform text between camelCase, PascalCase, snake_case, kebab-case, and URL slugs.',
+    icon: <Type size={22} strokeWidth={1.5} color="var(--ink)" />,
+    tint: 'linear-gradient(135deg, #fed7aa, #f472b6)',
+    Component: lazy(() => import('./case-converter/CaseConverterTool')),
   },
   {
     slug: 'chmod',

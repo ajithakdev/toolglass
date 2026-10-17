@@ -9,11 +9,12 @@ export default defineConfig({
     VitePWA({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.svg', 'icon-192.png', 'icon-512.png'],
+      workbox: { globPatterns: ['**/*.{js,css,html,woff2}'] },
       manifest: {
         name: 'Toolglass',
         short_name: 'Toolglass',
         description: 'Frosted developer utilities. entirely in your browser.',
-        theme_color: '#f8fafc',
+        theme_color: '#f3e7ff',
         background_color: '#f8fafc',
         icons: [
           {

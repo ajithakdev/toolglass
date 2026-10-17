@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom';
 import { Field } from '../../components/ui/Field';
 import { ToolLayout } from '../../components/ToolLayout';
 import { useToolStats } from '../../hooks/useToolStats';
+import { useClipboard } from '../../hooks/useClipboard';
 
 const PRESET_COLORS = [
   '#FF0000', '#FF5722', '#FF9800', '#FFC107', '#FFEB3B',
@@ -189,7 +190,7 @@ export default function ColorTool() {
 }
 
 function CopyRow({ label, value }: { label: string; value: string }) {
-  const [copied, setCopied] = useState(false);
+  const { copy, copied } = useClipboard(2000);
   const { slug = 'color' } = useParams();
   const { increment } = useToolStats(slug);
 
@@ -206,10 +207,7 @@ function CopyRow({ label, value }: { label: string; value: string }) {
         border: '1px solid var(--glass-border)',
       }}
       onClick={() => {
-        navigator.clipboard.writeText(value);
-        setCopied(true);
-        increment();
-        setTimeout(() => setCopied(false), 2000);
+        copy(value).then((ok) => ok && increment());
       }}
     >
       <div style={{ width: 40, fontSize: 12, fontWeight: 600, color: 'var(--ink-soft)' }}>{label}</div>

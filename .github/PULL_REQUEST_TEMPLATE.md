@@ -39,5 +39,5 @@ npm test src/tools/<slug>/    # Run tests for a specific tool
 A good PR description is short, links context, and tells the reviewer exactly what to verify:
 
 > Adds a new NanoID tool with configurable alphabet and length. Follows the
-> registry pattern — only `src/tools/registry.ts` and the new `nanoid/` folder
+> registry pattern — only `src/tools/registry.tsx` and the new `nanoid/` folder
 > were touched. Closes #15.

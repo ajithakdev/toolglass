@@ -44,18 +44,17 @@ export function useToolStats(slug?: string) {
     setEnabled(e => {
       const nextState = !e;
       localStorage.setItem(TELEMETRY_KEY, String(nextState));
-      // Never delete stats data — toggle only controls visibility
+      // Never delete stats data — toggle pauses counting and hides counts
       return nextState;
     });
     setTimeout(() => window.dispatchEvent(new Event('toolglass-telemetry')), 0);
   }, []);
 
   const increment = useCallback(() => {
-    if (!slug) return;
+    // Unchecking "Local Usage Stats" stops counting; existing counts are kept
+    if (!slug || localStorage.getItem(TELEMETRY_KEY) === 'false') return;
 
     setCount((c) => {
-      // Always increment regardless of enabled state —
-      // enabled only controls UI visibility, not storage
       const next = c + 1;
       try {
         const stored = localStorage.getItem(STATS_KEY);

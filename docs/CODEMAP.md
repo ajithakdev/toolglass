@@ -1,6 +1,6 @@
 # Toolglass code map
 
-Mapped at commit: `18d4d8d` (2026-10-10). 81 tracked files, about 9,500 lines of source.
+Mapped at commit: `18d4d8d` (2026-10-10), updated for branch `fix/known-issues` (2026-10-17). 81 tracked files, about 9,500 lines of source.
 
 Check for drift before trusting this file: `git diff --stat 18d4d8d..HEAD -- src`
 
@@ -29,13 +29,12 @@ index.html
 
 | File | Notes |
 |---|---|
-| `package.json` | Scripts: dev, build, preview, lint, test, test:coverage, deploy. `"type": "module"`. |
+| `package.json` | Scripts: dev, build, preview, lint, test, test:coverage. `"type": "module"`. Deploys only through CI. |
 | `vite.config.ts` (45) | `base` is `/toolglass/` only when `GITHUB_ACTIONS` is set, else `/`. PWA plugin (autoUpdate). Vitest config: jsdom, globals, `src/**/*.test.{ts,tsx}`. |
 | `tsconfig.json` | strict, noUnusedLocals, noUnusedParameters, `include: ["src"]`. |
 | `eslint.config.js` (26) | Flat config. Several `react-hooks/*` rules turned off (set-state-in-effect, purity, refs, error-boundaries, set-state-in-render). |
-| `index.html` (42) | Meta, OG tags, JSON-LD, Google Fonts (Inter, JetBrains Mono). |
-| `.github/workflows/ci-cd.yml` (60) | `verify` job: install, lint, build, test, upload Pages artifact. `deploy` job: Pages, main only. |
-| `patch.js` (37), `update_tools.js` (38) | Dead one-off codemod scripts. See Gotchas. |
+| `index.html` (39) | Meta, OG tags, JSON-LD. Fonts are self-hosted (see `index.css`). |
+| `.github/workflows/ci-cd.yml` | `verify` job: `npm ci`, lint, build, test, upload Pages artifact. `deploy` job: Pages, main only; it alone has `pages`/`id-token` write. |
 | `public/` | favicon.svg, icon-192.png, icon-512.png, og-image.png, robots.txt, sitemap.xml. |
 | `README.md` (112), `ROADMAP.md` (442), `SECURITY.md`, `CODE_OF_CONDUCT.md`, `.github/CONTRIBUTING.md` (96) | Human docs. ROADMAP is a 20-day plan; days 1-15 done, 16-20 open. |
 
@@ -53,7 +52,7 @@ index.html
 
 | File | Notes |
 |---|---|
-| `Landing.tsx` (268) | `CATEGORIES` L9-16 maps category name to slugs (hardcoded, must be edited per new tool). `RecentPill` L18-42. Category filter persisted in localStorage. |
+| `Landing.tsx` (272) | `LISTED` L8-15 maps category name to slugs; `CATEGORIES` L18-19 appends an "Other" group for any registered slug not listed. `RecentPill` L21-45. Category filter persisted in localStorage. |
 | `ToolPage.tsx` (154) | `Loader` L19-128 (Suspense fallback). `ToolPage` L131-154: unknown slug renders `NotFound`, else `ErrorBoundary > Suspense > Component`. Calls `addRecent(slug)`. |
 | `NotFound.tsx` (377) | Props `attemptedSlug`, `isToolNotFound`. Suggests tools; default suggestions hardcoded at L60 (`timestamp`, `jwt`, `password`). Has a test. |
 
@@ -78,10 +77,10 @@ index.html
 | File | Signature | Notes |
 |---|---|---|
 | `useClipboard.ts` (34) | `useClipboard(resetMs = 1500)` returns `{ copy, copied }` | Falls back to `execCommand('copy')`. |
-| `useTheme.ts` (39) | returns `{ theme, toggle }` | Writes theme to localStorage on every mount, so the OS-change listener at L25-29 never fires after first load. |
+| `useTheme.ts` (44) | returns `{ theme, toggle }` | Sets `data-theme`, `color-scheme`, and the `theme-color` meta. Stores the theme only when the user toggles; until then it follows the OS. |
 | `useRecentTools.ts` (30) | returns `{ recents, addRecent }` | Keeps last 3 slugs. |
-| `useToolStats.ts` (75) | `useToolStats(slug?)` returns `{ count, allStats, increment, enabled, toggleTelemetry }` | `enabled` only hides the UI. `increment` always writes. Syncs across components with a `toolglass-telemetry` window event. |
-| `useUrlState.ts` (60) | `useUrlState(key, default, parse, stringify)` returns `[value, setValue]` | Value is derived from the URL. Writes are debounced 200 ms with `replace: true`. No local state. See Gotchas. |
+| `useToolStats.ts` (74) | `useToolStats(slug?)` returns `{ count, allStats, increment, enabled, toggleTelemetry }` | When disabled, counts are hidden and `increment` does nothing; stored counts are kept. Syncs across components with a `toolglass-telemetry` window event. |
+| `useUrlState.ts` (73) | `useUrlState(key, default, parse, stringify)` returns `[value, setValue]`; `intParam(min, max, fallback)` | Local state updates at once; the URL write is debounced 200 ms with `replace: true`. Re-syncs on external URL changes. Use `intParam` as `parse` for numeric params so crafted links are clamped. Has a test. |
 
 ### src/tools
 
@@ -95,7 +94,7 @@ Registry: `registry.tsx` (189). `ToolMeta` L22-30: `slug`, `title`, `short`, `de
 | `jwt` | `jwt/JwtTool.tsx` (65) | `jwt/jwt.ts` (33): `b64url`, `strToB64Url`, `signHS256` | yes | HS256 only, Web Crypto. |
 | `uuid` | `uuid/UuidTool.tsx` (48) | inline | no | v4. |
 | `objectid` | `objectid/ObjectIdTool.tsx` (39) | `objectid/objectid.ts` (26): `MACHINE_ID`, `counter`, `objectId` | yes | |
-| `nanoid` | `nanoid/NanoIdTool.tsx` (90) | inline | no | URL state: `size`, `count`. |
+| `nanoid` | `nanoid/NanoIdTool.tsx` (69) | `nanoid.ts` | yes | URL state: `size`, `count` (clamped). Generator uses 32-bit values with rejection sampling and ignores duplicate alphabet characters. |
 | `hash` | `hash/HashTool.tsx` (57) | inline | no | SHA-1/256/384/512 via `crypto.subtle`. |
 | `base64` | `base64/Base64Tool.tsx` (63) | `base64/base64.ts` (12): `encode`, `decode` | yes | Smallest complete tool. Use as the template. |
 | `timestamp` | `timestamp/TimestampTool.tsx` (1151) | inline | no | Multi-mode. URL state: `mode`, `batch`, `cron`, `diffMode`, `d1`, `d2`, `db`, `do`. History in localStorage. Section map below. |
@@ -107,18 +106,18 @@ Registry: `registry.tsx` (189). `ToolMeta` L22-30: `slug`, `title`, `short`, `de
 | `json-to-ts` | `json-to-ts/JsonToTsTool.tsx` (136) | inline, converter above L86 | no | |
 | `api-tester` | `curl-to-fetch/CurlTool.tsx` (2083) | `curl-to-fetch/curlSecurity.ts` (252) | yes (286) | Largest file. HTTP client, cURL import, saved workflows, history. Section map below. |
 | `qr` | `qr/QrTool.tsx` (109) | `qrcode` package | no | PNG and SVG export. |
-| `markdown` | `markdown/MarkdownTool.tsx` (106) | `marked` + `dompurify` | no | Output is sanitized before render. |
+| `markdown` | `markdown/MarkdownTool.tsx` (104) | `marked` + `dompurify` | no | Output is sanitized before render and before "Copy HTML". |
 
 `curlSecurity.ts` exports: types `HeaderParam`, `SavedRequest`, `HistoryItem`, `SessionAuthData`; `isSensitiveHeader`, `sanitizeHeaders`, `hasAuthCredentials`, `sanitizeSavedRequest`, `sanitizeHistoryItem`, `saveSessionAuth`, `getSessionAuth`, `clearSessionAuth`, `scrubStorageAuth`.
 
-Tests (7 files): `components/ErrorBoundary.test.tsx`, `pages/NotFound.test.tsx`, `tools/base64/base64.test.ts`, `tools/curl-to-fetch/curlSecurity.test.ts`, `tools/jwt/jwt.test.ts`, `tools/objectid/objectid.test.ts`, `tools/password/password.test.ts`.
+Tests (9 files): `components/ErrorBoundary.test.tsx`, `pages/NotFound.test.tsx`, `hooks/useUrlState.test.tsx`, `tools/nanoid/nanoid.test.ts`, `tools/base64/base64.test.ts`, `tools/curl-to-fetch/curlSecurity.test.ts`, `tools/jwt/jwt.test.ts`, `tools/objectid/objectid.test.ts`, `tools/password/password.test.ts`.
 
 ## Adding a tool
 
 1. Create `src/tools/<slug>/<Name>Tool.tsx`, default export, body wrapped in `<ToolLayout>`. Copy `base64/Base64Tool.tsx`.
 2. Put pure logic in `src/tools/<slug>/<slug>.ts` and test it in `<slug>.test.ts`.
 3. Append an entry to `tools` in `src/tools/registry.tsx` (icon from `lucide-react`, `size={22} strokeWidth={1.5} color="var(--ink)"`).
-4. Add the slug to a category in `CATEGORIES`, `src/pages/Landing.tsx` L9-16. The landing grid iterates `CATEGORIES` (L236-238), so a tool missing from every category is not shown on the landing page at all. It stays reachable by URL and command palette.
+4. Add the slug to a category in `LISTED`, `src/pages/Landing.tsx` L8-15. A tool left out lands in the "Other" group.
 5. Also update by hand: `public/sitemap.xml`, the tool table in `README.md`, and the tool rows in this file.
 
 ## Conventions
@@ -155,17 +154,13 @@ Note the mixed naming: one hyphenated key, one `tg_` prefix, the rest `toolglass
 
 ## Network
 
-Only `fetch` calls in the app: `tools/curl-to-fetch/CurlTool.tsx:558` and `:754`, both user-initiated requests in the API Tester. `index.html` loads Google Fonts.
+Only `fetch` calls in the app: `tools/curl-to-fetch/CurlTool.tsx:558` and `:754`, both user-initiated requests in the API Tester. Fonts are self-hosted in `src/assets/fonts/` (latin subset) and precached by the service worker.
 
 ## Gotchas
 
-- `npm run deploy` (gh-pages) builds with `base: '/'` because `GITHUB_ACTIONS` is unset locally. The site is served from `/toolglass/`, so a local deploy would break asset paths. Deploy through CI.
-- `patch.js` and `update_tools.js` use `require` in an ESM package, `update_tools.js` requires `glob` (not a dependency), and `patch.js` injects a `useToolAction` hook that does not exist in `src/hooks/`. Neither can run. Neither is referenced anywhere.
-- `useUrlState` has no local state. `setValue` only schedules a URL write 200 ms later, so the returned value does not change until then. Text inputs bound directly to it (`url/UrlTool.tsx:10`, several in `timestamp/TimestampTool.tsx:251-267`) drop keystrokes. Reproduced in jsdom; see issue 1 in `docs/KNOWN-ISSUES.md`.
-- `ToolLayout` Backspace handler checks only INPUT and TEXTAREA. Focus in a `<select>` or a contenteditable element still triggers navigation.
-- `useToolStats.increment` writes even when the "Local Usage Stats" box is unchecked. The toggle hides counts; it does not stop counting. This is intentional per the comment at `hooks/useToolStats.ts:57`.
-- `CATEGORIES` in `Landing.tsx` is a second list of slugs. A registered tool left out of it silently disappears from the landing page.
-- ESLint ignores only `dist` and `node_modules`, and its TS rules apply to `**/*.{ts,tsx}`. Root `.js` files get base JS rules; both codemod scripts opt out with `/* eslint-disable */`.
+- `vite.config.ts` sets `base: '/toolglass/'` only when `GITHUB_ACTIONS` is set. A local `npm run build` is for local preview, not for publishing.
+- `ToolLayout` Backspace goes to `/` unless focus is in an input, textarea, select, or contenteditable, or a modifier key is held.
+- ESLint ignores only `dist` and `node_modules`, and its TS rules apply to `**/*.{ts,tsx}`.
 
 ## Section maps for large files
 

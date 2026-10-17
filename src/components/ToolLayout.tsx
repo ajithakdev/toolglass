@@ -14,13 +14,14 @@ export function ToolLayout({
   const navigate = useNavigate();
   const { slug } = useParams();
   const tool = toolBySlug(slug || '');
-  const { count } = useToolStats(slug || '');
+  const { count, enabled } = useToolStats(slug || '');
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Backspace') {
-        const tag = document.activeElement?.tagName;
-        if (tag !== 'INPUT' && tag !== 'TEXTAREA') {
+      if (e.key === 'Backspace' && !e.ctrlKey && !e.metaKey && !e.altKey && !e.shiftKey) {
+        const el = document.activeElement as HTMLElement | null;
+        const tag = el?.tagName;
+        if (tag !== 'INPUT' && tag !== 'TEXTAREA' && tag !== 'SELECT' && !el?.isContentEditable) {
           e.preventDefault();
           navigate('/');
         }
@@ -119,7 +120,7 @@ export function ToolLayout({
         {children}
       </GlassCard>
 
-      {count > 0 && (
+      {enabled && count > 0 && (
         <div style={{ textAlign: 'center', fontSize: 12, color: 'var(--ink-mute)', marginTop: 8 }}>
           You've used this tool {count} time{count === 1 ? '' : 's'} — all on your device.
         </div>

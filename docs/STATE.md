@@ -1,15 +1,16 @@
 # Toolglass working state
 
-Last updated: 2026-10-10, at commit `18d4d8d` on `main`. Working tree was clean before the context docs were added.
+Last updated: 2026-10-17, on branch `fix/known-issues` (from `main` at `e176815`).
 
 Update this file at the end of each work session. Keep it short. Delete entries once they are done and merged.
 
 ## In progress
 
-Nothing.
+- Branch `fix/known-issues`: fixes most findings from the 2026-10-10 list. Needs a PR and a browser check of typing in the URL and Timestamp tools, the theme toggle, and fonts.
 
 ## Last session
 
+- 2026-10-17: Fixed `useUrlState` dropped keystrokes (with a test), clamped NanoID and password URL params, NanoID alphabet sampling, Backspace shortcut, theme persistence and `color-scheme`, self-hosted fonts, usage-stats toggle now stops counting, sanitized Markdown copy, clipboard error handling, `Math.random` ids, "Other" landing category, CI `npm ci` and job permissions, removed `deploy` script, dead scripts, and unused deps. Lint, build, and 51 tests pass.
 - 2026-10-10: Added `AGENTS.md`, `CLAUDE.md`, `docs/CODEMAP.md`, `docs/STATE.md`. Added `docs/KNOWN-ISSUES.md`. No source changes. Baseline on Node 24.21.0: lint clean, build passes, 41 tests pass.
 
 ## Open pull requests (checked 2026-10-10)
@@ -32,8 +33,8 @@ Refresh with `gh pr list` and `gh issue list`. About 40 issues are open, mostly 
 
 ## Known issues
 
-18 open findings, ranked, in `docs/KNOWN-ISSUES.md`. Highest: issue 1, `useUrlState` drops keystrokes (reproduced).
+6 low-severity findings left in `docs/KNOWN-ISSUES.md`.
 
 ## Next steps
 
-None chosen. Candidates: fix issue 1 and add a hook test, work down `docs/KNOWN-ISSUES.md`, review and rebase PRs #92 to #94, or continue the roadmap at day 17.
+Open a PR for `fix/known-issues`. Then: close issue #41, review and rebase PRs #92 to #94, or continue the roadmap at day 17.

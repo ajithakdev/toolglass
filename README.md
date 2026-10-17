@@ -37,7 +37,7 @@ Toolglass is a zero-telemetry, offline-first suite of developer tools running en
 
 ## 💡 Key Principles
 
-1. **Zero Network Calls:** Everything executes on the client thread using standard Web APIs (`crypto.subtle`, `crypto.getRandomValues`, `DOMParser`).
+1. **Zero Network Calls:** Apart from requests you send yourself in the API Tester, everything executes on the client thread using standard Web APIs (`crypto.subtle`, `crypto.getRandomValues`, `DOMParser`).
 2. **Cryptographic Rigor:** Randomness is strictly backed by CSPRNG with rejection sampling to eliminate modulo bias. We never use `Math.random()`.
 3. **Instant Keyboard Navigation:** Hit `⌘K` or `Ctrl+K` anywhere to open the command palette and jump between tools without taking your hands off the keyboard.
 4. **Shareable State:** Key tool configurations sync to URL query params (debounced) so you can bookmark or share exact settings with teammates.

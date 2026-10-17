@@ -10,6 +10,7 @@ import {
 } from 'lucide-react';
 import { useParams } from 'react-router-dom';
 import { useToolStats } from '../../hooks/useToolStats';
+import { useClipboard } from '../../hooks/useClipboard';
 import { useToast } from '../../components/ui/Toast';
 import {
   HeaderParam,
@@ -138,6 +139,7 @@ export default function CurlTool() {
   const { slug = 'api-tester' } = useParams();
   const { increment } = useToolStats(slug);
   const toast = useToast();
+  const { copy } = useClipboard();
 
   const [method, setMethod] = useState('GET');
   const [url, setUrl] = useState('https://jsonplaceholder.typicode.com/todos/1');
@@ -273,7 +275,7 @@ export default function CurlTool() {
         setBodyText(parsed.fetchOptions.body || '');
         increment();
       }
-    }).catch(() => {});
+    }).catch(() => toast.push('Clipboard access was blocked', 'error'));
   };
 
   const getCurrentRequestConfig = () => {
@@ -579,8 +581,11 @@ export default function CurlTool() {
         if (parsedJson) {
           const val = getNestedValue(parsedJson, req.autoCopyPath.trim());
           if (val !== null && val !== undefined) {
-            await navigator.clipboard.writeText(val);
-            toast.push(`"${req.autoCopyPath}" copied to clipboard!`, 'success', toastId);
+            if (await copy(String(val))) {
+              toast.push(`"${req.autoCopyPath}" copied to clipboard!`, 'success', toastId);
+            } else {
+              toast.push('Clipboard access was blocked', 'error', toastId);
+            }
           } else {
             toast.push(`Field "${req.autoCopyPath}" not found`, 'error', toastId);
           }
@@ -801,10 +806,12 @@ export default function CurlTool() {
 
   const handleCopyResponse = () => {
     if (response) {
-      navigator.clipboard.writeText(response.rawData);
-      setIsCopiedResponse(true);
-      setTimeout(() => setIsCopiedResponse(false), 2000);
-      increment();
+      copy(response.rawData).then((ok) => {
+        if (!ok) return toast.push('Clipboard access was blocked', 'error');
+        setIsCopiedResponse(true);
+        setTimeout(() => setIsCopiedResponse(false), 2000);
+        increment();
+      });
     }
   };
 

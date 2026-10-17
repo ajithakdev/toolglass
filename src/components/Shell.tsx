@@ -67,6 +67,7 @@ function InstallButton() {
 const NAV = [
   { to: '/', label: 'Home', end: true },
   { to: '/tools', label: 'Tools', end: false },
+  { to: '/about', label: 'About', end: false },
 ];
 
 function Header({ onOpenPalette }: { onOpenPalette: () => void }) {

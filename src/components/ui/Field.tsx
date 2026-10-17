@@ -119,6 +119,7 @@ export function Dropdown({
 }) {
   const [open, setOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     if (!open) return;
@@ -134,15 +135,24 @@ export function Dropdown({
   const selected = options.find((o) => o.value === value) || options[0];
 
   return (
-    <div ref={containerRef} style={{ position: 'relative', width: '100%' }}>
+    <div
+      ref={containerRef}
+      style={{ position: 'relative', width: '100%' }}
+      // Escape closes from the trigger or any option, and returns focus to the trigger
+      onKeyDown={(e) => {
+        if (e.key === 'Escape' && open) {
+          e.stopPropagation();
+          setOpen(false);
+          triggerRef.current?.focus();
+        }
+      }}
+    >
       <button
         type="button"
+        ref={triggerRef}
         aria-haspopup="listbox"
         aria-expanded={open}
         onClick={() => setOpen(!open)}
-        onKeyDown={(e) => {
-          if (e.key === 'Escape') setOpen(false);
-        }}
         style={{
           width: '100%',
           display: 'flex',

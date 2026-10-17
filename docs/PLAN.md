@@ -44,7 +44,6 @@ Three modes: Auto (follows the OS live), Light, Dark. The control is a three-way
 /tools                Tools hub (search, filters, favorites, recents)
 /tools/<slug>         One tool
 /about                What Toolglass is, privacy model, open source, how to contribute
-/privacy              Short, plain-language privacy page
 *                     404 with tool suggestions
 ```
 
@@ -104,7 +103,7 @@ Done when: every existing tool opens at `/tools/<slug>`, old hash links redirect
    - Act 5, proof: the live privacy meter and an offline badge.
    - Act 6, ending: "Bookmark it" with the shortcut for the visitor's OS, and install as an app.
 2. Tools hub: instant search (title, keywords, "replaces"), category and audience filters, favorites with drag-to-reorder (#35), recents, usage counts (#36).
-3. About and Privacy pages.
+3. About page, including the privacy model and a list of everything stored locally (a separate /privacy page was folded in here).
 4. Command palette: same search as the hub, screen-reader fixes (#68), shortcut cheatsheet (#34), global "copy last output" (#43).
 
 ### Phase 3: Migrate existing tools (`redesign/tools-migrate`)

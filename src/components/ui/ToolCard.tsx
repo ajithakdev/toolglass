@@ -1,88 +1,84 @@
 import { motion } from 'framer-motion';
+import { Star } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import type { ToolMeta } from '../../tools/registry';
+import { useFavorites } from '../../hooks/useFavorites';
 import { useToolStats } from '../../hooks/useToolStats';
+import { fadeUp } from '../../lib/motion';
+import type { ToolMeta } from '../../tools/registry';
 
-export function ToolCard({ tool }: { tool: ToolMeta }) {
+export function ToolCard({ tool, compact }: { tool: ToolMeta; compact?: boolean }) {
   const { allStats, enabled } = useToolStats();
+  const { isFavorite, toggleFavorite } = useFavorites();
   const count = allStats[tool.slug] || 0;
+  const fav = isFavorite(tool.slug);
+
   return (
-    <motion.div
-      variants={{
-        hidden: { opacity: 0, y: 16 },
-        show: { opacity: 1, y: 0 },
-      }}
-      transition={{ duration: 0.3 }}
-      whileHover={{ y: -4 }}
-    >
+    <motion.div variants={fadeUp} className="glass lift tool-card" style={{ position: 'relative', borderRadius: 'var(--radius-lg)' }}>
       <Link
         to={`/tools/${tool.slug}`}
-        className="glass"
+        className="stretched"
         style={{
-          display: 'block',
-          padding: 22,
+          display: 'flex',
+          gap: 'var(--s-4)',
+          alignItems: compact ? 'center' : 'flex-start',
+          flexDirection: compact ? 'row' : 'column',
+          padding: compact ? 'var(--s-3) var(--s-4)' : 'var(--s-5)',
           height: '100%',
-          position: 'relative',
-          overflow: 'hidden',
-          borderRadius: 16,
-          transform: 'translateZ(0)', // forces overflow hidden on safari
-          transition: 'box-shadow 0.25s ease, transform 0.2s ease',
-          textDecoration: 'none',
         }}
       >
-        {enabled && count > 0 && (
-          <div style={{
-            position: 'absolute',
-            top: 16,
-            right: 16,
-            fontSize: 11,
-            fontWeight: 700,
-            background: 'var(--surface-nav-item)',
-            border: '1px solid var(--glass-border)',
-            padding: '2px 8px',
-            borderRadius: 999,
-            color: 'var(--ink-soft)',
-            zIndex: 2,
-            boxShadow: '0 2px 4px rgba(0,0,0,0.04)',
-          }}>
-            {count} {count === 1 ? 'use' : 'uses'}
-          </div>
-        )}
-        <div
+        <span
           aria-hidden
           style={{
-            position: 'absolute',
-            inset: 0,
-            background: tool.tint,
-            opacity: 'var(--tint-opacity)',
-            pointerEvents: 'none',
+            width: compact ? 36 : 44,
+            height: compact ? 36 : 44,
+            flexShrink: 0,
+            borderRadius: 'var(--radius-sm)',
+            display: 'grid',
+            placeItems: 'center',
+            background: 'var(--surface-3)',
+            boxShadow: 'var(--edge), var(--e1)',
           }}
-        />
-        <div style={{ position: 'relative', display: 'flex', flexDirection: 'column', gap: 12 }}>
-          <div
-            style={{
-              fontSize: 28,
-              width: 52,
-              height: 52,
-              borderRadius: 14,
-              background: 'var(--surface-icon-bg)',
-              display: 'grid',
-              placeItems: 'center',
-              boxShadow: 'var(--icon-highlight)',
-            }}
-          >
-            {tool.icon}
-          </div>
-          <div>
-            <div style={{ fontSize: 17, fontWeight: 700, letterSpacing: '-0.01em', color: 'var(--ink)' }}>
-              {tool.title}
-            </div>
-            <div style={{ fontSize: 13, color: 'var(--ink-soft)', marginTop: 4 }}>
-              {tool.short}
-            </div>
-          </div>
-        </div>
+        >
+          {tool.icon}
+        </span>
+        <span style={{ display: 'flex', flexDirection: 'column', gap: 3, minWidth: 0, paddingRight: compact ? 28 : 0 }}>
+          <span style={{ fontSize: compact ? 14 : 'var(--t-md)', fontWeight: 600, letterSpacing: '-0.012em', color: 'var(--ink)' }}>
+            {tool.title}
+          </span>
+          <span style={{ fontSize: 'var(--t-sm)', color: 'var(--ink-soft)', lineHeight: 1.45 }}>{tool.short}</span>
+          {!compact && tool.replaces && (
+            <span style={{ fontSize: 'var(--t-xs)', color: 'var(--ink-mute)', marginTop: 6 }}>Instead of {tool.replaces}</span>
+          )}
+        </span>
+        {!compact && enabled && count > 0 && (
+          <span className="num" style={{ marginTop: 'auto', fontSize: 'var(--t-xs)', color: 'var(--ink-mute)' }}>
+            Used {count} {count === 1 ? 'time' : 'times'}
+          </span>
+        )}
       </Link>
+      <button
+        type="button"
+        onClick={() => toggleFavorite(tool.slug)}
+        aria-pressed={fav}
+        aria-label={fav ? `Remove ${tool.title} from favorites` : `Add ${tool.title} to favorites`}
+        title={fav ? 'Remove from favorites' : 'Add to favorites'}
+        className="fav-btn"
+        style={{
+          position: 'absolute',
+          top: compact ? '50%' : 12,
+          right: 12,
+          transform: compact ? 'translateY(-50%)' : undefined,
+          zIndex: 2,
+          width: 32,
+          height: 32,
+          borderRadius: 999,
+          display: 'grid',
+          placeItems: 'center',
+          color: fav ? 'var(--accent)' : 'var(--ink-mute)',
+        }}
+      >
+        <Star size={16} strokeWidth={1.9} fill={fav ? 'currentColor' : 'none'} />
+      </button>
     </motion.div>
   );
 }

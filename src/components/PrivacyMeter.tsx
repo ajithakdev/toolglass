@@ -1,23 +1,12 @@
-import { useEffect, useState } from 'react';
-import { countThirdParty } from '../lib/privacy';
+import { useThirdPartyCount } from '../hooks/useThirdPartyCount';
 
 // A fact, not a claim: read from the browser's own resource timing log
 export function PrivacyMeter() {
-  const [count, setCount] = useState(0);
+  const count = useThirdPartyCount();
 
-  useEffect(() => {
-    if (typeof PerformanceObserver === 'undefined') return;
-    const all = new Set<PerformanceEntry>(performance.getEntriesByType('resource'));
-    const update = () => setCount(countThirdParty([...all], location.origin));
-    update();
-    const obs = new PerformanceObserver((list) => {
-      list.getEntries().forEach((e) => all.add(e));
-      update();
-    });
-    obs.observe({ type: 'resource', buffered: true });
-    return () => obs.disconnect();
-  }, []);
-
+  if (count === null) {
+    return <span style={{ fontSize: 'var(--t-xs)', color: 'var(--ink-mute)' }}>This browser can't count network requests</span>;
+  }
   const clean = count === 0;
   return (
     <span

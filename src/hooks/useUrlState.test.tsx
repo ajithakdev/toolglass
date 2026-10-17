@@ -132,6 +132,28 @@ describe('useUrlState with several keys and navigation', () => {
   });
 });
 
+describe('useUrlState defaults', () => {
+  it('removes the param when the value returns to its default', () => {
+    vi.useFakeTimers();
+    const container = document.createElement('div');
+    document.body.appendChild(container);
+    const root = createRoot(container);
+    act(() => {
+      root.render(
+        <MemoryRouter initialEntries={['/?q=abc&keep=1']}>
+          <Harness />
+        </MemoryRouter>,
+      );
+    });
+    act(() => type(container.querySelector('input')!, ''));
+    act(() => vi.advanceTimersByTime(200));
+    expect(container.querySelector('output')!.textContent).toBe('?keep=1');
+    act(() => root.unmount());
+    container.remove();
+    vi.useRealTimers();
+  });
+});
+
 describe('intParam', () => {
   const parse = intParam(1, 50, 5);
 

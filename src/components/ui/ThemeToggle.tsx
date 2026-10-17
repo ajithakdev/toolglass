@@ -29,7 +29,7 @@ export function ThemeToggle({ size = 'sm' }: { size?: 'sm' | 'md' }) {
     document.startViewTransition(() => setMode(next)).ready.then(() => {
       document.documentElement.animate(
         { clipPath: [`circle(0px at ${x}px ${y}px)`, `circle(${r}px at ${x}px ${y}px)`] },
-        { duration: 520, easing: 'cubic-bezier(0.23, 1, 0.32, 1)', pseudoElement: '::view-transition-new(root)' },
+        { duration: 280, easing: 'cubic-bezier(0.23, 1, 0.32, 1)', pseudoElement: '::view-transition-new(root)' },
       );
     });
   };

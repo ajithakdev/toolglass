@@ -1,6 +1,6 @@
 # Toolglass working state
 
-Last updated: 2026-10-18, on branch `redesign/design-system`.
+Last updated: 2026-10-18, on branch `redesign/design-system` (Phases 1 and 2).
 
 Update this file at the end of each work session. Keep it short. Delete entries once they are done and merged.
 
@@ -8,8 +8,9 @@ Update this file at the end of each work session. Keep it short. Delete entries 
 
 Redesign, per `docs/PLAN.md`. Phase 0 merged (#115). Site live at https://toolglass.ajithakdev.com.
 
-- Phase 1 on `redesign/design-system`: tokens, Geist fonts, logo, rebuilt primitives, segmented theme switch, new shell with privacy meter.
-- Next: Phase 2 (home, tools hub, about). Phase 3 must clear hard-coded hex colors and emoji in tools (55 hex values at last count).
+- Phases 1 and 2 together in PR #117 (`redesign/design-system`): design system, shell, home (3D hero, pinned clutter scene), tools hub, about.
+- Next: Phase 3 (migrate the 19 tools onto the new primitives; clear hard-coded hex colors and emoji; API Tester mobile #23/#24; split CurlTool #64).
+- Main JS bundle is 143 KB gzip, over the 100 KB target; look at framer-motion usage in Phase 5.
 
 ## Last session
 

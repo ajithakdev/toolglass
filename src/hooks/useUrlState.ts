@@ -4,11 +4,12 @@ import { useSearchParams, type SetURLSearchParams } from 'react-router-dom';
 // All hooks on a page share one pending-write queue and one debounce timer, so
 // settings changed together (e.g. a Reset) land in a single URL update instead
 // of later writes overwriting earlier ones.
-const pending = new Map<string, { str: string; onWritten: () => void }>();
+// str null = remove the param (value is back at its default)
+const pending = new Map<string, { str: string | null; onWritten: () => void }>();
 let flushTimer: ReturnType<typeof setTimeout> | null = null;
 let latestSetter: SetURLSearchParams | null = null;
 
-function queueWrite(key: string, str: string, onWritten: () => void, setter: SetURLSearchParams) {
+function queueWrite(key: string, str: string | null, onWritten: () => void, setter: SetURLSearchParams) {
   pending.set(key, { str, onWritten });
   latestSetter = setter;
   if (flushTimer) clearTimeout(flushTimer);
@@ -20,7 +21,7 @@ function queueWrite(key: string, str: string, onWritten: () => void, setter: Set
     latestSetter?.(
       (prev) => {
         const updated = new URLSearchParams(prev);
-        writes.forEach(([k, w]) => updated.set(k, w.str));
+        writes.forEach(([k, w]) => (w.str === null ? updated.delete(k) : updated.set(k, w.str)));
         return updated;
       },
       { replace: true },
@@ -66,8 +67,11 @@ export function useUrlState<T>(
     (next: T) => {
       setLocal(next);
       const str = stringify(next);
-      queueWrite(key, str, () => (writtenRef.current = str), setSearchParams);
+      // Defaults stay out of the URL so shared links are short
+      const atDefault = str === stringify(defaultVal);
+      queueWrite(key, atDefault ? null : str, () => (writtenRef.current = atDefault ? null : str), setSearchParams);
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [key, stringify, setSearchParams],
   );
 

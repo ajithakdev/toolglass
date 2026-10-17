@@ -17,6 +17,29 @@ export const HOME: PageMeta = {
     'Free tools that run entirely in your browser: passwords, QR codes, JSON, timestamps, and more. No sign-up, no uploads, no ads.',
 };
 
+// Trailing slash: GitHub Pages serves a folder's index.html at /tools/ (tools/ also holds each tool's .html)
+export const TOOLS: PageMeta = {
+  path: '/tools/',
+  title: 'All tools | Toolglass',
+  description: 'Every Toolglass tool in one place: images, text, time, security, developer, and design tools. Free, private, and in your browser.',
+};
+
+export const ABOUT: PageMeta = {
+  path: '/about',
+  title: 'About and privacy | Toolglass',
+  description: 'Why Toolglass exists, how it keeps your data on your device, and how to contribute.',
+};
+
+/** Meta for a client-side route, or undefined for unknown paths. */
+export function pageForPath(pathname: string): PageMeta | undefined {
+  const p = pathname.replace(/\/+$/, '') || '/';
+  if (p === '/') return HOME;
+  if (p === '/tools') return TOOLS;
+  if (p === '/about') return ABOUT;
+  const tool = p.startsWith('/tools/') ? catalog.find((t) => t.slug === p.slice(7)) : undefined;
+  return tool ? toolPage(tool) : undefined;
+}
+
 export const toolPage = (t: ToolInfo): PageMeta => ({
   path: `/tools/${t.slug}`,
   title: `${t.title} — free and private | Toolglass`,
@@ -24,7 +47,7 @@ export const toolPage = (t: ToolInfo): PageMeta => ({
 });
 
 /** Every page that gets its own HTML file and sitemap entry. */
-export const allPages = (): PageMeta[] => [HOME, ...catalog.map(toolPage)];
+export const allPages = (): PageMeta[] => [HOME, TOOLS, ABOUT, ...catalog.map(toolPage)];
 
 const esc = (s: string) =>
   s.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');

@@ -1,6 +1,6 @@
 # Toolglass code map
 
-Mapped at commit: `b7f874e` (2026-10-18), branch `redesign/foundation`. Includes `catalog.ts`, `seo.ts`, and the chmod and case-converter tools.
+Mapped at commit: `02a69e5` (`main`, 2026-10-18) plus branch `redesign/design-system` (Phases 1 and 2 of `docs/PLAN.md`).
 
 Check for drift before trusting this file: `git diff --stat 18d4d8d..HEAD -- src`
 
@@ -12,7 +12,9 @@ Numbers in parentheses are line counts. Use them to judge read cost.
 index.html
   src/main.tsx (17)            legacy /#/ redirect, StrictMode > BrowserRouter > App
     src/App.tsx                MotionConfig > ToastProvider > Shell (header, main, footer) > ErrorBoundary > Routes
-      /                        pages/Landing.tsx
+      /                        pages/Home.tsx
+      /tools                   pages/ToolsHub.tsx
+      /about                   pages/About.tsx
       /tools/:slug             pages/ToolPage.tsx  -> toolBySlug(slug) -> lazy Component
       *                        pages/NotFound.tsx
     CommandPalette             sibling of Shell, opened by Ctrl/Cmd+K
@@ -49,6 +51,8 @@ index.html
 | `lib/cn.ts` (3) | `cn(...parts)` | Joins truthy class names. |
 | `lib/motion.ts` | `EASE_OUT`, `spring`, `fadeUp`, `fade`, `stagger()` | Shared framer-motion presets. |
 | `lib/platform.ts` | `IS_MAC`, `shortcut(key)` | Shortcut labels per OS. |
+| `lib/search.ts` | `searchTools(tools, query)` | Word-AND ranking over title, keywords, replaces, description; accent-insensitive. Used by hub, hero search, and command palette. Has a test. |
+| `lib/listStore.ts` | `createListStore(key, max)` | Shared localStorage-backed string list (`useSyncExternalStore`). Backs recents and favorites. Has a test. |
 | `lib/privacy.ts` | `countThirdParty` | Used by `PrivacyMeter`. Has a test. |
 | `view-transitions.d.ts` (10) | none | Types for `document.startViewTransition`. |
 
@@ -56,7 +60,9 @@ index.html
 
 | File | Notes |
 |---|---|
-| `Landing.tsx` (272) | `LISTED` L8-15 maps category name to slugs; `CATEGORIES` L18-19 appends an "Other" group for any registered slug not listed. `RecentPill` L21-45. Category filter persisted in localStorage. |
+| `Home.tsx` | Six acts: `Hero` (copy, `HeroSearch`, lazy `GlassScene` with a logo poster until the first frame), `Collapse` (pinned 340vh scene: clutter cards pulled into the glass, then a real toolbar; `CollapseStill` for reduced motion), `ForEveryone` (audience switch + tool cards), `Proof` (live third-party request count), `Ending`. Scroll maps use `useRange` (JS-computed; see Gotchas). |
+| `ToolsHub.tsx` | `/tools`. Search, category chips, audience switch (all in the URL: `q`, `cat`, `for`), favorites rail (drag to reorder), recents rail, grouped grid, empty state linking to a tool request. Has a test. |
+| `About.tsx` | `/about`. Privacy model, live meter, table of everything stored locally with a "clear all" button, open source links. |
 | `ToolPage.tsx` (154) | `Loader` L19-128 (Suspense fallback). `ToolPage` L131-154: unknown slug renders `NotFound`, else `ErrorBoundary > Suspense > Component`. Calls `addRecent(slug)`. |
 | `NotFound.tsx` (377) | Props `attemptedSlug`, `isToolNotFound`. Suggests tools; default suggestions hardcoded at L60 (`timestamp`, `jwt`, `password`). Has a test. |
 
@@ -64,6 +70,8 @@ index.html
 
 | File | Notes |
 |---|---|
+| `home/GlassScene.tsx` | Lazy three.js scene: two `MeshPhysicalMaterial` panes (transmission, dispersion) refracting a ring of glyph tiles and a light disc. Time-based animation, pointer parallax, scroll progress prop, pauses offscreen/hidden, one static frame for reduced motion, lower DPR on modest hardware, disposes everything on unmount. |
+| `home/HeroSearch.tsx` | ARIA combobox over `searchTools`; Enter opens the highlighted tool. |
 | `Shell.tsx` | `Shell`, `Kbd`. Sticky glass header (logo, Home/Tools nav with sliding indicator, search, install, theme switch), footer (privacy meter, usage-count opt-out, GitHub). |
 | `Logo.tsx` | Two-pane glass mark; mirrors `public/favicon.svg`. |
 | `PrivacyMeter.tsx` | Live count of requests to other origins via `PerformanceObserver` (Resource Timing). |
@@ -76,7 +84,7 @@ index.html
 | `ui/CopyButton.tsx` (55) | Props `value`, `label`, `size`, `disabled`. Copies, toasts, and calls `increment()` for the current slug. |
 | `ui/GlassCard.tsx` (21) | `motion.div` with `.glass` or `.glass-strong` (`strong` prop), `padding`. |
 | `ui/Toast.tsx` (105) | `ToastProvider`, `useToast()` returns `{ push(message, kind?, id?) }`. Kinds: success, error, info. Passing an existing id updates that toast. |
-| `ui/ToolCard.tsx` (88) | Landing card for one `ToolMeta`. Shows usage count when stats are enabled. |
+| `ui/ToolCard.tsx` | Card for one `ToolMeta`: icon, title, short, "Instead of …" (`replaces`), usage count, favorite star (stretched link + separate button). `compact` variant. |
 | `ui/ThemeToggle.tsx` | Auto / Light / Dark segmented switch. Circle reveal from the clicked button via View Transitions (skipped for reduced motion). |
 | `ui/Segmented.tsx` | Generic radio-group pill with sliding indicator and arrow-key navigation. |
 
@@ -147,7 +155,7 @@ Tests (9 files): `components/ErrorBoundary.test.tsx`, `pages/NotFound.test.tsx`,
 | `toolglass_recent_tools` | local | `hooks/useRecentTools.ts:3` |
 | `toolglass_stats` | local | `hooks/useToolStats.ts:3` |
 | `toolglass_telemetry_enabled` | local | `hooks/useToolStats.ts:4` |
-| `toolglass_active_category` | local | `pages/Landing.tsx:58` |
+| `toolglass_favorites` | local | `hooks/useFavorites.ts` |
 | `toolglass_saved_requests` | local | `tools/curl-to-fetch/curlSecurity.ts:56`, also literal in `CurlTool.tsx` |
 | `toolglass_request_history` | local | `tools/curl-to-fetch/curlSecurity.ts:57`, also literal in `CurlTool.tsx` |
 | `tg_ts_history` | local | `tools/timestamp/TimestampTool.tsx:277` |
@@ -171,6 +179,8 @@ Only `fetch` calls in the app: `tools/curl-to-fetch/CurlTool.tsx:558` and `:754`
 
 - `npm run dev` and `vite preview` fall back to `index.html` for any path. GitHub Pages does not: it needs the `tools/<slug>.html` and `404.html` files the build writes. Check the built `dist/` when changing routes.
 - `ToolLayout` Backspace goes to `/` unless focus is in an input, textarea, select, or contenteditable, or a modifier key is held.
+- framer-motion 13 hands plain `useTransform(scrollYProgress, ...)` opacity maps to the browser's native scroll timeline, which maps pinned sections wrongly (elements fade back out). Use `useRange` in `Home.tsx` (function-form `useTransform`) for scroll-linked values.
+- Transmissive three.js materials only refract opaque objects; use `alphaTest` instead of `transparent` for anything that should show through the glass.
 - ESLint ignores only `dist` and `node_modules`, and its TS rules apply to `**/*.{ts,tsx}`.
 
 ## Section maps for large files

@@ -17,7 +17,7 @@ function seoPages(): Plugin {
       const pages = allPages();
       for (const page of pages) {
         // GitHub Pages serves /tools/json from tools/json.html without a redirect
-        const file = page.path === '/' ? 'index.html' : `${page.path.slice(1)}.html`;
+        const file = page.path.endsWith('/') ? `${page.path.slice(1)}index.html` : `${page.path.slice(1)}.html`;
         mkdirSync(dirname(join(dist, file)), { recursive: true });
         writeFileSync(join(dist, file), applyMeta(shell, page));
       }

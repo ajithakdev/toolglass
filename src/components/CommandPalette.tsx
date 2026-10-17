@@ -1,6 +1,7 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { searchTools } from '../lib/search';
 import { tools } from '../tools/registry';
 
 /* ─── Palette-scoped CSS injected once ───────────────────────────────── */
@@ -106,10 +107,7 @@ export function CommandPalette({ open, onClose }: CommandPaletteProps) {
   const prevFocusRef = useRef<HTMLElement | null>(null);
   const itemRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
-  const filtered = tools.filter((t) => {
-    const q = query.toLowerCase();
-    return t.title.toLowerCase().includes(q) || t.short.toLowerCase().includes(q);
-  });
+  const filtered = searchTools(tools, query);
 
   /* Reset on open */
   useEffect(() => {

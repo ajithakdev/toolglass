@@ -7,8 +7,8 @@ export const EASE_OUT = [0.23, 1, 0.32, 1] as const;
 export const spring: Transition = { type: 'spring', stiffness: 520, damping: 36, mass: 0.7 };
 
 export const fadeUp: Variants = {
-  hidden: { opacity: 0, y: 12 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.42, ease: EASE_OUT } },
+  hidden: { opacity: 0, y: 10 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.28, ease: EASE_OUT } },
 };
 
 export const fade: Variants = {

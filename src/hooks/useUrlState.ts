@@ -1,5 +1,32 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, type SetURLSearchParams } from 'react-router-dom';
+
+// All hooks on a page share one pending-write queue and one debounce timer, so
+// settings changed together (e.g. a Reset) land in a single URL update instead
+// of later writes overwriting earlier ones.
+const pending = new Map<string, { str: string; onWritten: () => void }>();
+let flushTimer: ReturnType<typeof setTimeout> | null = null;
+let latestSetter: SetURLSearchParams | null = null;
+
+function queueWrite(key: string, str: string, onWritten: () => void, setter: SetURLSearchParams) {
+  pending.set(key, { str, onWritten });
+  latestSetter = setter;
+  if (flushTimer) clearTimeout(flushTimer);
+  flushTimer = setTimeout(() => {
+    flushTimer = null;
+    const writes = [...pending];
+    pending.clear();
+    writes.forEach(([, w]) => w.onWritten());
+    latestSetter?.(
+      (prev) => {
+        const updated = new URLSearchParams(prev);
+        writes.forEach(([k, w]) => updated.set(k, w.str));
+        return updated;
+      },
+      { replace: true },
+    );
+  }, 200);
+}
 
 /**
  * Syncs a piece of state to/from a URL search parameter.
@@ -23,45 +50,33 @@ export function useUrlState<T>(
 
   const [value, setLocal] = useState<T>(() => (raw !== null ? parse(raw) : defaultVal));
   const [seenRaw, setSeenRaw] = useState(raw);
-  // Last string this hook wrote, so our own URL write doesn't reset the value
+  // String this hook just wrote; cleared once that write shows up in the URL,
+  // so a later navigation back to the same string still re-syncs
   const writtenRef = useRef<string | null>(null);
 
   // Re-sync when the param changes from outside (back/forward, pasted link)
   if (raw !== seenRaw) {
     setSeenRaw(raw);
-    if (raw !== writtenRef.current) setLocal(raw !== null ? parse(raw) : defaultVal);
+    const ownWrite = raw !== null && raw === writtenRef.current;
+    writtenRef.current = null;
+    if (!ownWrite) setLocal(raw !== null ? parse(raw) : defaultVal);
   }
-
-  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const setValue = useCallback(
     (next: T) => {
       setLocal(next);
-      // Debounce URL writes so fast typing doesn't flood history
-      if (timerRef.current) clearTimeout(timerRef.current);
-      timerRef.current = setTimeout(() => {
-        const str = stringify(next);
-        writtenRef.current = str;
-        setSearchParams(
-          (prev) => {
-            const updated = new URLSearchParams(prev);
-            updated.set(key, str);
-            return updated;
-          },
-          { replace: true },
-        );
-      }, 200);
+      const str = stringify(next);
+      queueWrite(key, str, () => (writtenRef.current = str), setSearchParams);
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [key, stringify],
+    [key, stringify, setSearchParams],
   );
 
-  // Clean up on unmount
+  // Drop this hook's unsent write on unmount
   useEffect(() => {
     return () => {
-      if (timerRef.current) clearTimeout(timerRef.current);
+      pending.delete(key);
     };
-  }, []);
+  }, [key]);
 
   return [value, setValue];
 }

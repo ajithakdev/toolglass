@@ -15,9 +15,13 @@ export function useClipboard(resetMs = 1500) {
           ta.style.position = 'fixed';
           ta.style.opacity = '0';
           document.body.appendChild(ta);
-          ta.select();
-          document.execCommand('copy');
-          document.body.removeChild(ta);
+          try {
+            ta.select();
+            // execCommand reports a refused copy by returning false, not throwing
+            if (!document.execCommand('copy')) return false;
+          } finally {
+            document.body.removeChild(ta);
+          }
         }
         setCopied(true);
         window.clearTimeout(timer.current);

@@ -126,8 +126,8 @@ export default function ChmodTool() {
                     borderRadius: 10,
                     fontSize: 12,
                     fontWeight: 500,
-                    background: active ? 'rgba(139, 92, 246, 0.18)' : 'var(--surface-button-off)',
-                    border: `1px solid ${active ? 'rgba(139, 92, 246, 0.4)' : 'var(--line)'}`,
+                    background: active ? 'var(--accent-soft)' : 'var(--surface-button-off)',
+                    border: `1px solid ${active ? 'var(--accent-ring)' : 'var(--line)'}`,
                     color: 'var(--ink)',
                     cursor: 'pointer',
                     transition: 'all 0.15s ease',
@@ -251,7 +251,7 @@ export default function ChmodTool() {
                             type="checkbox"
                             checked={state[role].read}
                             onChange={(e) => setPerm(role, 'read', e.target.checked)}
-                            style={{ accentColor: '#8b5cf6', width: 16, height: 16 }}
+                            style={{ accentColor: 'var(--accent)', width: 16, height: 16 }}
                           />
                           <span style={{ fontSize: 13 }}>Read</span>
                         </label>
@@ -262,7 +262,7 @@ export default function ChmodTool() {
                             type="checkbox"
                             checked={state[role].write}
                             onChange={(e) => setPerm(role, 'write', e.target.checked)}
-                            style={{ accentColor: '#8b5cf6', width: 16, height: 16 }}
+                            style={{ accentColor: 'var(--accent)', width: 16, height: 16 }}
                           />
                           <span style={{ fontSize: 13 }}>Write</span>
                         </label>
@@ -273,7 +273,7 @@ export default function ChmodTool() {
                             type="checkbox"
                             checked={state[role].execute}
                             onChange={(e) => setPerm(role, 'execute', e.target.checked)}
-                            style={{ accentColor: '#8b5cf6', width: 16, height: 16 }}
+                            style={{ accentColor: 'var(--accent)', width: 16, height: 16 }}
                           />
                           <span style={{ fontSize: 13 }}>Execute</span>
                         </label>
@@ -305,7 +305,7 @@ export default function ChmodTool() {
                 type="checkbox"
                 checked={state.special.suid}
                 onChange={(e) => setSpecial('suid', e.target.checked)}
-                style={{ accentColor: '#8b5cf6', marginTop: 3 }}
+                style={{ accentColor: 'var(--accent)', marginTop: 3 }}
               />
               <div>
                 <div style={{ fontSize: 13, fontWeight: 500 }}>Setuid (SUID · 4000)</div>
@@ -318,7 +318,7 @@ export default function ChmodTool() {
                 type="checkbox"
                 checked={state.special.sgid}
                 onChange={(e) => setSpecial('sgid', e.target.checked)}
-                style={{ accentColor: '#8b5cf6', marginTop: 3 }}
+                style={{ accentColor: 'var(--accent)', marginTop: 3 }}
               />
               <div>
                 <div style={{ fontSize: 13, fontWeight: 500 }}>Setgid (SGID · 2000)</div>
@@ -331,7 +331,7 @@ export default function ChmodTool() {
                 type="checkbox"
                 checked={state.special.sticky}
                 onChange={(e) => setSpecial('sticky', e.target.checked)}
-                style={{ accentColor: '#8b5cf6', marginTop: 3 }}
+                style={{ accentColor: 'var(--accent)', marginTop: 3 }}
               />
               <div>
                 <div style={{ fontSize: 13, fontWeight: 500 }}>Sticky Bit (1000)</div>
@@ -376,8 +376,8 @@ export default function ChmodTool() {
                   fontSize: 12,
                   fontWeight: 500,
                   cursor: 'pointer',
-                  background: !isDirectory ? 'rgba(139, 92, 246, 0.18)' : 'var(--surface-button-off)',
-                  border: `1px solid ${!isDirectory ? 'rgba(139, 92, 246, 0.4)' : 'var(--line)'}`,
+                  background: !isDirectory ? 'var(--accent-soft)' : 'var(--surface-button-off)',
+                  border: `1px solid ${!isDirectory ? 'var(--accent-ring)' : 'var(--line)'}`,
                   color: 'var(--ink)',
                 }}
               >
@@ -392,8 +392,8 @@ export default function ChmodTool() {
                   fontSize: 12,
                   fontWeight: 500,
                   cursor: 'pointer',
-                  background: isDirectory ? 'rgba(139, 92, 246, 0.18)' : 'var(--surface-button-off)',
-                  border: `1px solid ${isDirectory ? 'rgba(139, 92, 246, 0.4)' : 'var(--line)'}`,
+                  background: isDirectory ? 'var(--accent-soft)' : 'var(--surface-button-off)',
+                  border: `1px solid ${isDirectory ? 'var(--accent-ring)' : 'var(--line)'}`,
                   color: 'var(--ink)',
                 }}
               >

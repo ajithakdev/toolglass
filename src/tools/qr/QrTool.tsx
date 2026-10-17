@@ -17,7 +17,7 @@ export default function QrTool() {
       width: 256,
       margin: 2,
       color: {
-        dark: '#1b1140',
+        dark: '#0e141b',
         light: '#ffffff'
       }
     }).catch(console.error);
@@ -29,7 +29,7 @@ export default function QrTool() {
         type: 'svg',
         errorCorrectionLevel,
         margin: 2,
-        color: { dark: '#1b1140', light: '#ffffff' }
+        color: { dark: '#0e141b', light: '#ffffff' }
       });
       const blob = new Blob([svg], { type: 'image/svg+xml' });
       const url = URL.createObjectURL(blob);

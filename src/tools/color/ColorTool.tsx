@@ -14,7 +14,7 @@ const PRESET_COLORS = [
 ];
 
 export default function ColorTool() {
-  const [input, setInput] = useState('#8b5cf6');
+  const [input, setInput] = useState('#2545dc');
   const parsed = useMemo(() => {
     if (!input.trim()) return null;
     try {
@@ -212,7 +212,7 @@ function CopyRow({ label, value }: { label: string; value: string }) {
     >
       <div style={{ width: 40, fontSize: 12, fontWeight: 600, color: 'var(--ink-soft)' }}>{label}</div>
       <div style={{ flex: 1, fontFamily: 'var(--font-mono)', fontSize: 14 }}>{value}</div>
-      <div style={{ fontSize: 12, color: copied ? '#10b981' : 'var(--ink-mute)', transition: 'color 0.2s', fontWeight: 500 }}>
+      <div style={{ fontSize: 12, color: copied ? 'var(--status-success)' : 'var(--ink-mute)', transition: 'color 0.2s', fontWeight: 500 }}>
         {copied ? 'Copied!' : 'Copy'}
       </div>
     </div>

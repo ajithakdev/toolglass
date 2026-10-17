@@ -83,9 +83,9 @@ export function ToastProvider({ children }: { children: ReactNode }) {
               }}
             >
               <span style={{ display: 'flex', flexShrink: 0 }}>
-                {t.kind === 'success' && <CheckCircle size={16} color="#10b981" />}
-                {t.kind === 'error' && <AlertCircle size={16} color="#ef4444" />}
-                {t.kind === 'info' && <InfoIcon size={16} color="#8b5cf6" />}
+                {t.kind === 'success' && <CheckCircle size={16} color="var(--status-success)" />}
+                {t.kind === 'error' && <AlertCircle size={16} color="var(--status-error)" />}
+                {t.kind === 'info' && <InfoIcon size={16} color="var(--accent)" />}
               </span>
               <span style={{ fontSize: 13, fontWeight: 600, color: 'var(--ink)', lineHeight: 1.4 }}>
                 {t.message}

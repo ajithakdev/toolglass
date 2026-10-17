@@ -66,6 +66,7 @@ export function estimateStrength(pwd: string, opts: PwdOptions): Strength {
   if (bits >= 72) score = 3;
   if (bits >= 100) score = 4;
   const labels = ['Very weak', 'Weak', 'Fair', 'Strong', 'Excellent'];
-  const colors = ['#ef4444', '#f97316', '#eab308', '#10b981', '#8b5cf6'];
+  // Theme tokens, so the meter reads in light and dark
+  const colors = ['var(--status-error)', 'var(--status-error)', 'var(--status-warn)', 'var(--status-success)', 'var(--accent)'];
   return { score, label: labels[score]!, bits: Math.round(bits), color: colors[score]! };
 }

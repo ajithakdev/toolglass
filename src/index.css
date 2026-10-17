@@ -108,6 +108,7 @@
   --glass-bg-strong: var(--surface-2);
   --glass-shadow: var(--e2);
   /* Both stops keep white text at 5.6:1 or better */
+  --grad-ink: #ffffff;
   --grad: linear-gradient(135deg, var(--accent), #2563c9);
   --grad-soft: linear-gradient(135deg, var(--accent-soft), rgba(124, 201, 222, 0.14));
   --bg-1: var(--canvas);
@@ -909,4 +910,72 @@ select:focus-visible {
   .about-intro {
     position: static;
   }
+}
+
+/* ── Tool page ────────────────────────────────────────────────── */
+.crumb {
+  color: var(--ink-mute);
+  transition: color var(--dur-2) var(--ease-out);
+}
+.crumb:hover {
+  color: var(--ink);
+}
+
+.skeleton {
+  border-radius: 8px;
+  background: linear-gradient(90deg, var(--surface-1) 25%, var(--surface-2) 50%, var(--surface-1) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s ease-in-out infinite;
+}
+@keyframes shimmer {
+  from { background-position: 100% 0; }
+  to { background-position: -100% 0; }
+}
+
+/* ── API Tester ───────────────────────────────────────────────── */
+/* Key/value rows: one line on desktop, stacked on phones (#24) */
+.kv-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 132px minmax(0, 1fr) auto;
+  grid-template-areas: 'name type value del';
+  gap: 8px;
+  align-items: center;
+}
+.kv-row.no-type {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto auto;
+  grid-template-areas: 'name value tag del';
+}
+@media (max-width: 640px) {
+  .kv-row {
+    grid-template-columns: minmax(0, 1fr) 120px auto;
+    grid-template-areas: 'name name del' 'type value value';
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+  .kv-row.no-type {
+    grid-template-columns: minmax(0, 1fr) auto auto;
+    grid-template-areas: 'name tag del' 'value value value';
+  }
+}
+.icon-btn {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border-radius: var(--radius-sm);
+  color: var(--ink-mute);
+  transition: color var(--dur-2) var(--ease-out), background-color var(--dur-2) var(--ease-out);
+}
+.icon-btn:hover {
+  color: var(--ink);
+  background: var(--surface-2);
+}
+.icon-btn.danger:hover {
+  color: var(--status-error);
+}
+.wrap-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
 }

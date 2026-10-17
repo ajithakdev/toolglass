@@ -23,17 +23,17 @@ export default function JsonTool() {
   return (
     <ToolLayout>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
-        <Field label="JSON Input" hint={err ? `⚠ ${err}` : undefined}>
+        <Field label="JSON Input" hint={err ? <span style={{ color: 'var(--status-error)' }}>{err}</span> : undefined}>
           <TextArea
             value={input}
             onChange={(e) => setInput(e.target.value)}
             rows={8}
-            style={err ? { borderColor: '#ef4444' } : undefined}
+            style={err ? { borderColor: 'var(--status-error)' } : undefined}
           />
         </Field>
         <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
           <Button variant="primary" onClick={() => run('pretty')}>
-            ✦ Beautify
+            Beautify
           </Button>
           <Button variant="soft" onClick={() => run('minify')}>
             Minify

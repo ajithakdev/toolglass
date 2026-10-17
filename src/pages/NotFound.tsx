@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Sparkles, ArrowLeft, Search, Compass, AlertCircle } from 'lucide-react';
+import { Sparkles, ArrowLeft, Search, Compass, AlertCircle, X } from 'lucide-react';
 import { tools, type ToolMeta } from '../tools/registry';
 import { ToolCard } from '../components/ui/ToolCard';
 
@@ -114,7 +114,7 @@ export function NotFound({ attemptedSlug, isToolNotFound }: NotFoundProps) {
             width: 320,
             height: 220,
             borderRadius: '50%',
-            background: 'radial-gradient(circle, rgba(139, 92, 246, 0.25) 0%, rgba(236, 72, 153, 0.15) 50%, transparent 80%)',
+            background: 'radial-gradient(circle, var(--accent-soft) 0%, transparent 80%)',
             pointerEvents: 'none',
             filter: 'blur(40px)',
           }}
@@ -134,7 +134,7 @@ export function NotFound({ attemptedSlug, isToolNotFound }: NotFoundProps) {
             fontWeight: 700,
             color: 'var(--accent)',
             marginBottom: 20,
-            boxShadow: '0 2px 8px rgba(139, 92, 246, 0.12)',
+            boxShadow: 'var(--e1)',
           }}
         >
           <Sparkles size={14} />
@@ -234,7 +234,7 @@ export function NotFound({ attemptedSlug, isToolNotFound }: NotFoundProps) {
                   padding: 2,
                 }}
               >
-                ✕
+                <X size={14} />
               </button>
             )}
           </div>
@@ -259,11 +259,11 @@ export function NotFound({ attemptedSlug, isToolNotFound }: NotFoundProps) {
               padding: '12px 22px',
               borderRadius: 12,
               background: 'var(--accent)',
-              color: '#ffffff',
+              color: 'var(--accent-ink)',
               fontSize: 14,
               fontWeight: 600,
               textDecoration: 'none',
-              boxShadow: '0 4px 16px rgba(139, 92, 246, 0.35)',
+              boxShadow: 'var(--e1)',
               transition: 'transform 0.15s ease, opacity 0.15s ease',
             }}
           >

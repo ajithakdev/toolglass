@@ -48,7 +48,7 @@ export default function RegexTool() {
         <mark
           key={`match-${i}`}
           style={{
-            background: 'rgba(167, 139, 250, 0.4)',
+            background: 'var(--accent-ring)',
             color: 'var(--ink)',
             borderRadius: 4,
             padding: '0 2px'

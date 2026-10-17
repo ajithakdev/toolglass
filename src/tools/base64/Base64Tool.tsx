@@ -44,7 +44,7 @@ export default function Base64Tool() {
         </Field>
         <div style={{ display: 'flex', gap: 10 }}>
           <Button variant="primary" onClick={run}>
-            ✦ Run
+            Run
           </Button>
           <Button
             variant="soft"

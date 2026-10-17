@@ -424,7 +424,7 @@ export default function TimestampTool() {
           style={{
             position: 'absolute',
             inset: -20,
-            background: 'radial-gradient(circle at 20% 30%, rgba(139, 92, 246, 0.12) 0%, transparent 60%), radial-gradient(circle at 80% 70%, rgba(236, 72, 153, 0.12) 0%, transparent 60%)',
+            background: 'radial-gradient(circle at 20% 30%, var(--accent-soft) 0%, transparent 60%)',
             pointerEvents: 'none',
             zIndex: 0,
             borderRadius: 'var(--radius)',
@@ -465,8 +465,8 @@ export default function TimestampTool() {
                   fontWeight: 700,
                   transition: 'all 0.2s ease',
                   background: activeMode === m ? 'var(--grad)' : 'transparent',
-                  color: activeMode === m ? '#fff' : 'var(--ink)',
-                  boxShadow: activeMode === m ? '0 2px 8px rgba(139, 92, 246, 0.3)' : 'none',
+                  color: activeMode === m ? 'var(--grad-ink)' : 'var(--ink)',
+                  boxShadow: activeMode === m ? 'var(--e1)' : 'none',
                   opacity: activeMode === m ? 1 : 0.82,
                 }}
               >
@@ -482,7 +482,7 @@ export default function TimestampTool() {
             onClick={() => setHistoryOpen(!historyOpen)}
             style={{ display: 'flex', alignItems: 'center', gap: 6 }}
           >
-            📜 {historyOpen ? 'Hide History Drawer' : `Show History (${historyList.length})`}
+            {historyOpen ? 'Hide History Drawer' : `Show History (${historyList.length})`}
           </Button>
         </div>
 
@@ -517,7 +517,7 @@ export default function TimestampTool() {
                       variant="primary"
                       onClick={() => setConvertInput(String(Math.floor(Date.now() / 1000)))}
                     >
-                      ✦ Now
+                      Now
                     </Button>
                   </div>
                 </Field>
@@ -525,7 +525,7 @@ export default function TimestampTool() {
                 {parsedDate ? (
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
                     {/* Raw Group */}
-                    <div className="glass-strong" style={{ padding: 14, borderRadius: 'var(--radius-sm)', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
+                    <div className="glass-strong" style={{ padding: 14, borderRadius: 'var(--radius-sm)', border: '1px solid var(--glass-border)' }}>
                       <div style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', color: 'var(--ink-mute)', marginBottom: 8, letterSpacing: '0.05em' }}>Raw Unix Timestamps</div>
                       <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
                         <ValueRow label="Seconds" value={String(Math.floor(parsedDate.getTime() / 1000))} date={parsedDate} onCopy={handleCopy} onCode={openCodeFlyout} />
@@ -534,7 +534,7 @@ export default function TimestampTool() {
                     </div>
 
                     {/* Standard Group */}
-                    <div className="glass-strong" style={{ padding: 14, borderRadius: 'var(--radius-sm)', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
+                    <div className="glass-strong" style={{ padding: 14, borderRadius: 'var(--radius-sm)', border: '1px solid var(--glass-border)' }}>
                       <div style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', color: 'var(--ink-mute)', marginBottom: 8, letterSpacing: '0.05em' }}>Standard UTC Formats</div>
                       <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
                         <ValueRow label="ISO 8601" value={parsedDate.toISOString()} date={parsedDate} onCopy={handleCopy} onCode={openCodeFlyout} />
@@ -543,7 +543,7 @@ export default function TimestampTool() {
                     </div>
 
                     {/* Localized Group */}
-                    <div className="glass-strong" style={{ padding: 14, borderRadius: 'var(--radius-sm)', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
+                    <div className="glass-strong" style={{ padding: 14, borderRadius: 'var(--radius-sm)', border: '1px solid var(--glass-border)' }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8, gap: 12 }}>
                         <div style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', color: 'var(--ink-mute)', letterSpacing: '0.05em' }}>Localized Dates</div>
                         {/* Custom-styled Dropzone Selection for timezone */}
@@ -572,7 +572,7 @@ export default function TimestampTool() {
                               padding: '3px 8px',
                               borderRadius: 6,
                               background: selectedTz === tz ? 'var(--grad)' : 'var(--surface-pill)',
-                              color: selectedTz === tz ? '#fff' : 'var(--ink-soft)',
+                              color: selectedTz === tz ? 'var(--grad-ink)' : 'var(--ink-soft)',
                               fontWeight: 600,
                               border: '1px solid var(--divider)',
                               transition: 'all 0.15s ease',
@@ -594,7 +594,7 @@ export default function TimestampTool() {
                   </div>
                 ) : (
                   <div className="glass" style={{ padding: 24, textAlign: 'center', color: 'var(--ink-mute)' }}>
-                    ⚠️ {parseStatus}
+                    {parseStatus}
                   </div>
                 )}
               </div>
@@ -617,7 +617,7 @@ export default function TimestampTool() {
                         size="sm"
                         onClick={() => setBatchInput(batchInput ? `${batchInput}\n${Math.floor(Date.now() / 1000)}` : `${Math.floor(Date.now() / 1000)}`)}
                       >
-                        ✦ Insert Current Timestamp
+                        Insert current time
                       </Button>
                       <Button variant="soft" size="sm" onClick={() => setBatchInput('')}>
                         Clear
@@ -728,7 +728,7 @@ export default function TimestampTool() {
                           <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                             <div style={{ display: 'flex', gap: 6 }}>
                               <TextInput value={diffDate1} onChange={(e) => setDiffDate1(e.target.value)} />
-                              <Button size="sm" variant="soft" onClick={() => setDiffDate1(String(Math.floor(Date.now() / 1000)))}>✦ Now</Button>
+                              <Button size="sm" variant="soft" onClick={() => setDiffDate1(String(Math.floor(Date.now() / 1000)))}>Now</Button>
                             </div>
                             {d1 && (
                               <div style={{ fontSize: 11, color: 'var(--ink-soft)', paddingLeft: 4 }}>
@@ -743,7 +743,7 @@ export default function TimestampTool() {
                           <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                             <div style={{ display: 'flex', gap: 6 }}>
                               <TextInput value={diffDate2} onChange={(e) => setDiffDate2(e.target.value)} />
-                              <Button size="sm" variant="soft" onClick={() => setDiffDate2(String(Math.floor(Date.now() / 1000)))}>✦ Now</Button>
+                              <Button size="sm" variant="soft" onClick={() => setDiffDate2(String(Math.floor(Date.now() / 1000)))}>Now</Button>
                             </div>
                             {d2 && (
                               <div style={{ fontSize: 11, color: 'var(--ink-soft)', paddingLeft: 4 }}>
@@ -781,7 +781,7 @@ export default function TimestampTool() {
                         <Field label="Base Date" hint="Start date (seconds, ms, ISO or 'now')">
                           <div style={{ display: 'flex', gap: 6 }}>
                             <TextInput value={diffBase} onChange={(e) => setDiffBase(e.target.value)} />
-                            <Button size="sm" variant="soft" onClick={() => setDiffBase(String(Math.floor(Date.now() / 1000)))}>✦ Now</Button>
+                            <Button size="sm" variant="soft" onClick={() => setDiffBase(String(Math.floor(Date.now() / 1000)))}>Now</Button>
                           </div>
                         </Field>
                       </div>
@@ -791,12 +791,12 @@ export default function TimestampTool() {
                             value={diffOffset}
                             onChange={(e) => setDiffOffset(e.target.value)}
                             style={{
-                              borderColor: isValidOffset ? 'var(--line)' : 'rgba(239, 68, 68, 0.6)',
-                              boxShadow: isValidOffset ? 'none' : '0 0 0 2px rgba(239, 68, 68, 0.2)',
+                              borderColor: isValidOffset ? 'var(--line)' : 'var(--status-error)',
+                              boxShadow: isValidOffset ? 'none' : '0 0 0 2px color-mix(in srgb, var(--status-error) 20%, transparent)',
                             }}
                           />
                           {!isValidOffset && (
-                            <div style={{ color: '#ef4444', fontSize: 11, marginTop: 4, fontWeight: 500 }}>
+                            <div style={{ color: 'var(--status-error)', fontSize: 11, marginTop: 4, fontWeight: 500 }}>
                               Invalid offset format. Use e.g. +2h, -30m, +1y 2mo 15d
                             </div>
                           )}
@@ -876,7 +876,7 @@ export default function TimestampTool() {
                     Schedule Description
                   </div>
                   <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--ink)', marginBottom: 16 }}>
-                    ✦ {cronDesc}
+                    {cronDesc}
                   </div>
 
                   <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--ink-mute)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 8 }}>
@@ -926,7 +926,7 @@ export default function TimestampTool() {
                   borderRadius: 'var(--radius-sm)',
                   display: 'flex',
                   flexDirection: 'column',
-                  border: '1px solid rgba(255, 255, 255, 0.08)',
+                  border: '1px solid var(--glass-border)',
                 }}
               >
                 <div style={{ padding: '14px 16px', borderBottom: '1px solid var(--divider)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -972,7 +972,7 @@ export default function TimestampTool() {
                               padding: '2px 5px',
                               borderRadius: 4,
                               background: 'var(--grad)',
-                              color: '#fff',
+                              color: 'var(--grad-ink)',
                             }}
                           >
                             {item.mode}
@@ -1020,8 +1020,8 @@ export default function TimestampTool() {
                 style={{
                   padding: 18,
                   borderRadius: 'var(--radius)',
-                  boxShadow: '0 20px 50px rgba(0,0,0,0.4)',
-                  border: '1px solid rgba(255, 255, 255, 0.18)',
+                  boxShadow: 'var(--edge), var(--e3)',
+                  border: '1px solid var(--glass-border)',
                   background: 'var(--surface-palette)',
                   backdropFilter: 'blur(30px)',
                 }}
@@ -1045,7 +1045,7 @@ export default function TimestampTool() {
                       style={{
                         padding: 10,
                         borderRadius: 8,
-                        background: 'rgba(255, 255, 255, 0.04)',
+                        background: 'var(--surface-1)',
                         border: '1px solid var(--divider)',
                         cursor: 'pointer',
                         display: 'flex',
@@ -1055,17 +1055,17 @@ export default function TimestampTool() {
                       }}
                       onMouseEnter={(e) => {
                         e.currentTarget.style.borderColor = 'var(--accent)';
-                        e.currentTarget.style.background = 'rgba(255, 255, 255, 0.08)';
+                        e.currentTarget.style.background = 'var(--surface-2)';
                       }}
                       onMouseLeave={(e) => {
                         e.currentTarget.style.borderColor = 'var(--divider)';
-                        e.currentTarget.style.background = 'rgba(255, 255, 255, 0.04)';
+                        e.currentTarget.style.background = 'var(--surface-1)';
                       }}
                     >
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                         <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--ink)' }}>{option.label}</span>
                         <span style={{ fontSize: 10, fontWeight: 600, color: copiedSnippetIndex === idx ? 'var(--accent)' : 'var(--ink-soft)' }}>
-                          {copiedSnippetIndex === idx ? '✓ Copied!' : 'Click to copy'}
+                          {copiedSnippetIndex === idx ? 'Copied' : 'Click to copy'}
                         </span>
                       </div>
                       <span className="mono" style={{ fontSize: 11, color: 'var(--ink-soft)', whiteSpace: 'pre-wrap', wordBreak: 'break-all' }}>
@@ -1111,7 +1111,7 @@ function ValueRow({
         transition: 'all 0.15s ease',
         background: 'transparent',
       }}
-      onMouseEnter={(e) => (e.currentTarget.style.background = 'rgba(255, 255, 255, 0.08)')}
+      onMouseEnter={(e) => (e.currentTarget.style.background = 'var(--surface-2)')}
       onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
     >
       <span style={{ fontSize: 12, fontWeight: 600, color: 'var(--ink-soft)', minWidth: 120 }}>

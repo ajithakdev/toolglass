@@ -52,7 +52,7 @@ export default function JwtTool() {
         </Field>
         <div style={{ display: 'flex', gap: 10 }}>
           <Button onClick={sign} variant="primary">
-            ✦ Sign Token
+            Sign token
           </Button>
           <Button onClick={reset} variant="soft">
             Reset

@@ -1,129 +1,117 @@
 import { motion } from 'framer-motion';
-import { type ReactNode, useEffect } from 'react';
+import { Check, ChevronRight, Link2, ShieldCheck, Star } from 'lucide-react';
+import { useEffect, type ReactNode } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { GlassCard } from './ui/GlassCard';
+import { useClipboard } from '../hooks/useClipboard';
+import { useFavorites } from '../hooks/useFavorites';
 import { useToolStats } from '../hooks/useToolStats';
+import { EASE_OUT, stagger } from '../lib/motion';
+import { CATEGORIES } from '../tools/catalog';
+import { toolBySlug, tools } from '../tools/registry';
+import { GlassCard } from './ui/GlassCard';
+import { ToolCard } from './ui/ToolCard';
 
-import { toolBySlug } from '../tools/registry';
+function IconButton({ label, pressed, onClick, children }: { label: string; pressed?: boolean; onClick: () => void; children: ReactNode }) {
+  return (
+    <button type="button" className="nav-btn" aria-label={label} title={label} aria-pressed={pressed} onClick={onClick} style={{ color: pressed ? 'var(--accent)' : undefined }}>
+      {children}
+    </button>
+  );
+}
 
-export function ToolLayout({
-  children,
-}: {
-  children: ReactNode;
-}) {
+/** Shell around every tool: breadcrumb, title and actions, the tool body, then related tools. */
+export function ToolLayout({ children }: { children: ReactNode }) {
   const navigate = useNavigate();
-  const { slug } = useParams();
-  const tool = toolBySlug(slug || '');
-  const { count, enabled } = useToolStats(slug || '');
+  const { slug = '' } = useParams();
+  const tool = toolBySlug(slug);
+  const { count, enabled } = useToolStats(slug);
+  const { isFavorite, toggleFavorite } = useFavorites();
+  const { copy, copied } = useClipboard(1800);
 
+  // Backspace outside a text field goes back to the tools hub
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Backspace' && !e.ctrlKey && !e.metaKey && !e.altKey && !e.shiftKey) {
-        const el = document.activeElement as HTMLElement | null;
-        const tag = el?.tagName;
-        if (tag !== 'INPUT' && tag !== 'TEXTAREA' && tag !== 'SELECT' && !el?.isContentEditable) {
-          e.preventDefault();
-          navigate('/');
-        }
-      }
+      if (e.key !== 'Backspace' || e.ctrlKey || e.metaKey || e.altKey || e.shiftKey) return;
+      const el = document.activeElement as HTMLElement | null;
+      const tag = el?.tagName;
+      if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || el?.isContentEditable) return;
+      e.preventDefault();
+      navigate('/tools');
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [navigate]);
 
   if (!tool) return null;
+  const category = CATEGORIES.find((c) => c.id === tool.category);
+  const related = tools.filter((t) => t.category === tool.category && t.slug !== tool.slug).slice(0, 4);
+  const fav = isFavorite(tool.slug);
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 12 }}
+      initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3, ease: 'easeOut' }}
-      style={{ display: 'flex', flexDirection: 'column', gap: 24 }}
+      transition={{ duration: 0.28, ease: EASE_OUT }}
+      style={{ display: 'flex', flexDirection: 'column', gap: 'var(--s-5)', paddingBottom: 'var(--s-8)' }}
     >
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <Link
-          to="/"
-          style={{
-            fontSize: 13,
-            fontWeight: 500,
-            color: 'var(--ink-soft)',
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: 8,
-            padding: '6px 10px 6px 12px',
-            borderRadius: 10,
-            background: 'var(--surface-nav-item)',
-            border: '1px solid var(--divider)',
-            transition: 'all 0.2s ease',
-            textDecoration: 'none',
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.color = 'var(--ink)';
-            e.currentTarget.style.background = 'var(--surface-button-off)';
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.color = 'var(--ink-soft)';
-            e.currentTarget.style.background = 'var(--surface-nav-item)';
-          }}
-        >
-          Back
-          <kbd
-            style={{
-              fontSize: 10,
-              padding: '2px 5px',
-              borderRadius: 5,
-              background: 'var(--kbd-bg)',
-              fontFamily: 'var(--font-mono)',
-              border: '1px solid var(--kbd-border)',
-              color: 'var(--ink-mute)',
-            }}
-          >
-            backspace
-          </kbd>
-        </Link>
-      </div>
+      <nav aria-label="Breadcrumb" style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 'var(--t-sm)', color: 'var(--ink-mute)', paddingTop: 'var(--s-3)' }}>
+        <Link to="/tools" className="crumb">Tools</Link>
+        <ChevronRight size={14} aria-hidden />
+        {category && (
+          <>
+            <Link to={`/tools?cat=${category.id}`} className="crumb">{category.name}</Link>
+            <ChevronRight size={14} aria-hidden />
+          </>
+        )}
+        <span aria-current="page" style={{ color: 'var(--ink-soft)' }}>{tool.title}</span>
+      </nav>
 
-      <div style={{ display: 'flex', gap: 16, alignItems: 'flex-start' }}>
-        <div
-          style={{
-            fontSize: 32,
-            width: 60,
-            height: 60,
-            borderRadius: 16,
-            background: 'var(--grad-soft)',
-            display: 'grid',
-            placeItems: 'center',
-            flexShrink: 0,
-            boxShadow: 'var(--icon-highlight)',
-          }}
+      <header style={{ display: 'flex', gap: 'var(--s-4)', alignItems: 'flex-start', flexWrap: 'wrap' }}>
+        <span
+          aria-hidden
+          style={{ width: 56, height: 56, flexShrink: 0, borderRadius: 'var(--radius)', display: 'grid', placeItems: 'center', background: 'var(--surface-3)', boxShadow: 'var(--edge), var(--e1)' }}
         >
-          {tool.icon}
-        </div>
-        <div>
-          <h1
-            style={{
-              margin: 0,
-              fontSize: 28,
-              fontWeight: 700,
-              letterSpacing: '-0.02em',
-            }}
-          >
-            {tool.title}
-          </h1>
-          <p style={{ margin: '4px 0 0', color: 'var(--ink-soft)', fontSize: 14 }}>
-            {tool.description}
+          <span style={{ transform: 'scale(1.15)', display: 'grid' }}>{tool.icon}</span>
+        </span>
+        <div style={{ flex: 1, minWidth: 220, display: 'flex', flexDirection: 'column', gap: 6 }}>
+          <h1 style={{ margin: 0, fontSize: 'var(--t-2xl)', lineHeight: 1.08, letterSpacing: 'var(--track-tight)', fontWeight: 650 }}>{tool.title}</h1>
+          <p style={{ margin: 0, color: 'var(--ink-soft)', fontSize: 'var(--t-base)', maxWidth: 'var(--measure)' }}>{tool.description}</p>
+          <p style={{ margin: '2px 0 0', display: 'flex', alignItems: 'center', gap: 6, fontSize: 'var(--t-xs)', color: 'var(--ink-mute)' }}>
+            <ShieldCheck size={14} color="var(--status-success)" aria-hidden />
+            Runs on your device{tool.replaces ? `. Instead of ${tool.replaces}.` : '.'}
           </p>
         </div>
-      </div>
+        <div style={{ display: 'flex', gap: 'var(--s-2)' }}>
+          <IconButton label={fav ? 'Remove from favorites' : 'Add to favorites'} pressed={fav} onClick={() => toggleFavorite(tool.slug)}>
+            <Star size={16} strokeWidth={1.9} fill={fav ? 'currentColor' : 'none'} />
+            <span className="hide-sm">{fav ? 'Saved' : 'Favorite'}</span>
+          </IconButton>
+          <IconButton label="Copy link to this tool" onClick={() => copy(window.location.href)}>
+            {copied ? <Check size={16} strokeWidth={2.2} /> : <Link2 size={16} strokeWidth={1.9} />}
+            <span className="hide-sm">{copied ? 'Copied' : 'Share'}</span>
+          </IconButton>
+        </div>
+      </header>
 
-      <GlassCard strong padding={28}>
+      <GlassCard strong padding="clamp(16px, 3vw, 28px)" style={{ borderRadius: 'var(--radius-xl)' }}>
         {children}
       </GlassCard>
 
       {enabled && count > 0 && (
-        <div style={{ textAlign: 'center', fontSize: 12, color: 'var(--ink-mute)', marginTop: 8 }}>
-          You've used this tool {count} time{count === 1 ? '' : 's'} — all on your device.
-        </div>
+        <p className="num" style={{ margin: 0, textAlign: 'center', fontSize: 'var(--t-xs)', color: 'var(--ink-mute)' }}>
+          You've used this tool {count} {count === 1 ? 'time' : 'times'}, counted on this device only.
+        </p>
+      )}
+
+      {related.length > 0 && (
+        <section aria-labelledby="related-h" style={{ display: 'flex', flexDirection: 'column', gap: 'var(--s-3)', marginTop: 'var(--s-6)' }}>
+          <h2 id="related-h" className="section-label">More {category?.name.toLowerCase()} tools</h2>
+          <motion.div className="tool-grid" initial="hidden" animate="show" variants={stagger(0.05)}>
+            {related.map((t) => (
+              <ToolCard key={t.slug} tool={t} compact />
+            ))}
+          </motion.div>
+        </section>
       )}
     </motion.div>
   );

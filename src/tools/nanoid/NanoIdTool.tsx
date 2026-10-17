@@ -3,18 +3,8 @@ import { Button } from '../../components/ui/Button';
 import { Field, Slider, TextInput } from '../../components/ui/Field';
 import { Output } from '../../components/ui/Output';
 import { ToolLayout } from '../../components/ToolLayout';
-import { useClipboard } from '../../hooks/useClipboard';
 import { intParam, useUrlState } from '../../hooks/useUrlState';
 import { DEFAULT_ALPHABET, nanoid, uniqueChars } from './nanoid';
-
-function ShareButton() {
-  const { copy, copied } = useClipboard(2000);
-  return (
-    <Button onClick={() => copy(window.location.href)} variant="soft">
-      {copied ? '✨ Copied!' : '🔗 Share'}
-    </Button>
-  );
-}
 
 export default function NanoIdTool() {
   const [size, setSize] = useUrlState('size', 21, intParam(4, 64, 21), String);
@@ -60,7 +50,6 @@ export default function NanoIdTool() {
           >
             Reset
           </Button>
-          <ShareButton />
         </div>
         <Output value={ids.join('\n')} multiline placeholder="NanoIDs will appear here" />
       </div>

@@ -125,7 +125,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
             width: 260,
             height: 180,
             borderRadius: '50%',
-            background: 'radial-gradient(circle, rgba(239, 68, 68, 0.18) 0%, rgba(244, 114, 182, 0.1) 60%, transparent 80%)',
+            background: 'radial-gradient(circle, color-mix(in srgb, var(--status-error) 18%, transparent) 0%, transparent 80%)',
             pointerEvents: 'none',
             filter: 'blur(30px)',
           }}
@@ -137,13 +137,13 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
             width: 64,
             height: 64,
             borderRadius: 18,
-            background: 'linear-gradient(135deg, rgba(239, 68, 68, 0.15), rgba(244, 114, 182, 0.15))',
-            border: '1px solid rgba(239, 68, 68, 0.3)',
+            background: 'color-mix(in srgb, var(--status-error) 14%, transparent)',
+            border: '1px solid color-mix(in srgb, var(--status-error) 30%, transparent)',
             display: 'grid',
             placeItems: 'center',
             marginBottom: 20,
-            color: '#ef4444',
-            boxShadow: '0 8px 24px -4px rgba(239, 68, 68, 0.2)',
+            color: 'var(--status-error)',
+            boxShadow: 'var(--e2)',
           }}
         >
           <AlertTriangle size={30} strokeWidth={1.8} />
@@ -183,8 +183,8 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
               maxWidth: 580,
               padding: '12px 16px',
               borderRadius: 'var(--radius-sm)',
-              background: 'rgba(239, 68, 68, 0.07)',
-              border: '1px solid rgba(239, 68, 68, 0.2)',
+              background: 'color-mix(in srgb, var(--status-error) 7%, transparent)',
+              border: '1px solid color-mix(in srgb, var(--status-error) 20%, transparent)',
               color: 'var(--ink)',
               fontFamily: 'var(--font-mono)',
               fontSize: 13,
@@ -193,7 +193,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
               marginBottom: 24,
             }}
           >
-            <span style={{ color: '#ef4444', fontWeight: 600, marginRight: 8 }}>Error:</span>
+            <span style={{ color: 'var(--status-error)', fontWeight: 600, marginRight: 8 }}>Error:</span>
             {error.message || 'Unknown runtime exception'}
           </div>
         )}
@@ -237,12 +237,12 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
               padding: '10px 20px',
               borderRadius: 10,
               background: 'var(--accent)',
-              color: '#ffffff',
+              color: 'var(--accent-ink)',
               border: 'none',
               fontSize: 14,
               fontWeight: 600,
               cursor: 'pointer',
-              boxShadow: '0 4px 14px rgba(139, 92, 246, 0.35)',
+              boxShadow: 'var(--e1)',
               transition: 'transform 0.15s ease, opacity 0.15s ease',
             }}
             onMouseOver={(e) => { e.currentTarget.style.opacity = '0.92'; }}
@@ -290,7 +290,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
               cursor: 'pointer',
             }}
           >
-            {copied ? <Check size={14} color="#10b981" /> : <Copy size={14} />}
+            {copied ? <Check size={14} color="var(--status-success)" /> : <Copy size={14} />}
             {copied ? 'Copied' : 'Copy Debug Info'}
           </button>
         </div>

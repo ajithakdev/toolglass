@@ -56,9 +56,9 @@ export default function JwtDecodeTool() {
                     fontSize: 11, 
                     padding: '2px 6px', 
                     borderRadius: 4, 
-                    background: isExpired ? 'rgba(239, 68, 68, 0.15)' : 'rgba(34, 197, 94, 0.15)',
-                    color: isExpired ? '#ef4444' : '#10b981',
-                    border: isExpired ? '1px solid rgba(239, 68, 68, 0.3)' : '1px solid rgba(34, 197, 94, 0.3)'
+                    background: `color-mix(in srgb, ${isExpired ? 'var(--status-error)' : 'var(--status-success)'} 14%, transparent)`,
+                    color: isExpired ? 'var(--status-error)' : 'var(--status-success)',
+                    border: `1px solid color-mix(in srgb, ${isExpired ? 'var(--status-error)' : 'var(--status-success)'} 30%, transparent)`
                   }}>
                     {isExpired ? 'EXPIRED' : 'VALID'}
                   </span>

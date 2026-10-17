@@ -4,18 +4,8 @@ import { Button } from '../../components/ui/Button';
 import { Field, Slider, Toggle } from '../../components/ui/Field';
 import { Output } from '../../components/ui/Output';
 import { ToolLayout } from '../../components/ToolLayout';
-import { useClipboard } from '../../hooks/useClipboard';
 import { intParam, useUrlState } from '../../hooks/useUrlState';
 import { estimateStrength, generatePassword, type PwdOptions } from './password';
-
-function ShareButton() {
-  const { copy, copied } = useClipboard(2000);
-  return (
-    <Button onClick={() => copy(window.location.href)} variant="soft">
-      {copied ? '✨ Copied!' : '🔗 Share'}
-    </Button>
-  );
-}
 
 export default function PasswordTool() {
   // URL-serialized options (allowlist — no sensitive input values)
@@ -81,7 +71,7 @@ export default function PasswordTool() {
               transition={{ type: 'spring', stiffness: 220, damping: 26 }}
               style={{
                 height: '100%',
-                background: `linear-gradient(90deg, ${strength.color}, ${strength.color}cc)`,
+                background: strength.color,
               }}
             />
           </div>
@@ -116,7 +106,6 @@ export default function PasswordTool() {
           <Button onClick={reset} variant="soft">
             Reset
           </Button>
-          <ShareButton />
         </div>
       </div>
     </ToolLayout>

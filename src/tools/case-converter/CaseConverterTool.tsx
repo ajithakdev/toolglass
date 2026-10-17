@@ -112,8 +112,8 @@ export default function CaseConverterTool() {
                 borderRadius: 8,
                 fontSize: 12,
                 fontWeight: 600,
-                background: !isBatch ? 'rgba(139, 92, 246, 0.18)' : 'var(--surface-nav-item)',
-                border: `1px solid ${!isBatch ? 'rgba(139, 92, 246, 0.4)' : 'var(--line)'}`,
+                background: !isBatch ? 'var(--accent-soft)' : 'var(--surface-nav-item)',
+                border: `1px solid ${!isBatch ? 'var(--accent-ring)' : 'var(--line)'}`,
                 color: 'var(--ink)',
                 cursor: 'pointer',
               }}
@@ -128,8 +128,8 @@ export default function CaseConverterTool() {
                 borderRadius: 8,
                 fontSize: 12,
                 fontWeight: 600,
-                background: isBatch ? 'rgba(139, 92, 246, 0.18)' : 'var(--surface-nav-item)',
-                border: `1px solid ${isBatch ? 'rgba(139, 92, 246, 0.4)' : 'var(--line)'}`,
+                background: isBatch ? 'var(--accent-soft)' : 'var(--surface-nav-item)',
+                border: `1px solid ${isBatch ? 'var(--accent-ring)' : 'var(--line)'}`,
                 color: 'var(--ink)',
                 cursor: 'pointer',
               }}
@@ -250,8 +250,8 @@ export default function CaseConverterTool() {
                       borderRadius: 6,
                       fontSize: 12,
                       fontWeight: 500,
-                      background: batchTarget === t.label ? 'rgba(139, 92, 246, 0.2)' : 'var(--surface-button-off)',
-                      border: `1px solid ${batchTarget === t.label ? 'rgba(139, 92, 246, 0.4)' : 'var(--line)'}`,
+                      background: batchTarget === t.label ? 'var(--accent-soft)' : 'var(--surface-button-off)',
+                      border: `1px solid ${batchTarget === t.label ? 'var(--accent-ring)' : 'var(--line)'}`,
                       color: 'var(--ink)',
                       cursor: 'pointer',
                     }}

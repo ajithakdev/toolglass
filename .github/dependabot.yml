@@ -1,10 +1,30 @@
-# Dependabot configuration for toolglass
-# Routine scheduled version updates are disabled (open-pull-requests-limit: 0) to eliminate commit noise and unnecessary churn.
-# Dependabot automated security fixes are enabled at the repository level and will continue to automatically open PRs for CVEs and vulnerability alerts.
+# Dependabot: one grouped pull request per ecosystem, once a month.
+# Security fixes still open as soon as GitHub publishes an advisory (that
+# timing can't be scheduled), but they are grouped into one PR as well.
 version: 2
 updates:
   - package-ecosystem: npm
     directory: /
     schedule:
       interval: monthly
-    open-pull-requests-limit: 0
+    open-pull-requests-limit: 2
+    groups:
+      npm-monthly:
+        applies-to: version-updates
+        patterns: ['*']
+      npm-security:
+        applies-to: security-updates
+        patterns: ['*']
+    commit-message:
+      prefix: chore(deps)
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+    open-pull-requests-limit: 1
+    groups:
+      actions-monthly:
+        patterns: ['*']
+    commit-message:
+      prefix: ci(deps)

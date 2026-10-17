@@ -42,7 +42,7 @@ function SearchBox({ value, onChange }: { value: string; onChange: (v: string) =
   }, []);
 
   return (
-    <div className="glass-strong" style={{ display: 'flex', alignItems: 'center', gap: 'var(--s-3)', padding: '0 var(--s-4)', height: 56, borderRadius: 'var(--radius-lg)' }}>
+    <div className="glass-strong focus-pill" style={{ display: 'flex', alignItems: 'center', gap: 'var(--s-3)', padding: '0 var(--s-4)', height: 56, borderRadius: 'var(--radius-lg)' }}>
       <Search size={20} strokeWidth={1.8} color="var(--ink-mute)" aria-hidden />
       <input
         ref={ref}
@@ -51,7 +51,7 @@ function SearchBox({ value, onChange }: { value: string; onChange: (v: string) =
         onChange={(e) => onChange(e.target.value)}
         placeholder="Search: json, password, qr code, timestamp…"
         aria-label="Search tools"
-        className="hub-search"
+        className="hub-search bare-input"
         style={{ flex: 1, minWidth: 0, height: '100%', border: 0, background: 'transparent', fontSize: 'var(--t-md)', outline: 'none', color: 'var(--ink)' }}
       />
       {value ? (

@@ -51,18 +51,26 @@ export function About() {
       initial="hidden"
       animate="show"
       variants={stagger(0.07)}
-      className="prose"
-      style={{ maxWidth: 720, display: 'flex', flexDirection: 'column', gap: 'var(--s-7)', paddingBlock: 'var(--s-6) var(--s-8)' }}
+      className="prose about-grid"
     >
-      <motion.header variants={fadeUp} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--s-4)' }}>
-        <h1 style={{ margin: 0, fontSize: 'var(--t-3xl)', lineHeight: 1.02, letterSpacing: 'var(--track-tight)', fontWeight: 650 }}>
+      <motion.header variants={fadeUp} className="about-intro">
+        <h1 style={{ margin: 0, fontSize: 'clamp(34px, 4.2vw, 56px)', lineHeight: 1.02, letterSpacing: 'var(--track-tight)', fontWeight: 650 }}>
           Small tools, kept on your side of the screen.
         </h1>
         <p style={{ margin: 0, fontSize: 'var(--t-lg)', color: 'var(--ink-soft)' }}>
           Toolglass collects the small utilities people reach for every week, so you don't need an extension, an app, or a sign-up for each one.
         </p>
+        <nav aria-label="On this page" className="about-toc">
+          <a href="#privacy">How your data stays here</a>
+          <a href="#stored">What is saved</a>
+          <a href="#open-source">Open source</a>
+        </nav>
+        <Link to="/tools" className="cta" style={{ alignSelf: 'flex-start' }}>
+          Browse the tools
+        </Link>
       </motion.header>
 
+      <div className="about-body">
       <Section id="privacy" title="How your data stays on your device">
         <p style={{ margin: 0, color: 'var(--ink-soft)' }}>
           Every tool runs in your browser with standard Web APIs. There is no Toolglass server that sees your text, files, or passwords, because there is no
@@ -120,12 +128,7 @@ export function About() {
           .
         </p>
       </Section>
-
-      <motion.div variants={fadeUp}>
-        <Link to="/tools" className="cta" style={{ marginTop: 0 }}>
-          Browse the tools
-        </Link>
-      </motion.div>
+      </div>
     </motion.article>
   );
 }

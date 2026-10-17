@@ -1,5 +1,5 @@
 import { interpolate, motion, useReducedMotion, useScroll, useTransform, type MotionValue } from 'framer-motion';
-import { ArrowRight, Braces, FileText, Globe2, Image, KeyRound, Pipette, QrCode } from 'lucide-react';
+import { ArrowRight, Braces, FileText, Globe2, Heading, Image, KeyRound, NotebookPen, Pipette, QrCode, Ruler, Type, Video } from 'lucide-react';
 import { lazy, Suspense, useCallback, useMemo, useRef, useState, type ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import { HeroSearch } from '../components/home/HeroSearch';
@@ -28,6 +28,17 @@ const GlassScene = lazy(() => import('../components/home/GlassScene'));
 
 /* ── Act 1: hero ─────────────────────────────────────────────── */
 
+const POPULAR = [
+  ['password', 'Password'],
+  ['qr', 'QR code'],
+  ['json', 'JSON'],
+  ['timestamp', 'Timestamp'],
+  ['case-converter', 'Text case'],
+  ['color', 'Color'],
+]
+  .map(([slug, label]) => ({ ...toolBySlug(slug!)!, label: label! }))
+  .filter((t) => t.slug);
+
 function Hero() {
   const ref = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end start'] });
@@ -51,10 +62,15 @@ function Hero() {
         <motion.div variants={fadeUp} style={{ width: '100%' }}>
           <HeroSearch />
         </motion.div>
-        <motion.p variants={fadeUp} style={{ margin: 0, fontSize: 'var(--t-sm)', color: 'var(--ink-mute)' }}>
-          Try <Link className="link" to="/tools/password">password</Link>, <Link className="link" to="/tools/qr">QR code</Link>,{' '}
-          <Link className="link" to="/tools/json">JSON</Link>, or <Link className="link" to="/tools/timestamp">timestamps</Link>.
-        </motion.p>
+        <motion.div variants={fadeUp} style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 8 }}>
+          <span style={{ fontSize: 'var(--t-xs)', color: 'var(--ink-mute)', marginRight: 2 }}>Popular</span>
+          {POPULAR.map((t) => (
+            <Link key={t.slug} to={`/tools/${t.slug}`} className="try-chip">
+              <span className="try-chip-icon">{t.icon}</span>
+              {t.label}
+            </Link>
+          ))}
+        </motion.div>
       </motion.div>
       </motion.div>
 
@@ -83,13 +99,18 @@ function Hero() {
 /* ── Acts 2 and 3: the clutter, then one toolbar ─────────────── */
 
 const CLUTTER: { icon: ReactNode; what: string; catch: string; x: number; y: number }[] = [
-  { icon: <Image size={18} />, what: 'An image compressor', catch: 'Uploads your photo to its server', x: -34, y: -6 },
-  { icon: <Pipette size={18} />, what: 'A color picker extension', catch: 'Can read every site you visit', x: 32, y: -4 },
-  { icon: <FileText size={18} />, what: 'A PDF merge site', catch: 'Free until the second file', x: -38, y: 16 },
-  { icon: <Braces size={18} />, what: 'A JSON formatter', catch: 'Wants you to sign in first', x: 36, y: 18 },
-  { icon: <Globe2 size={18} />, what: 'A time zone converter', catch: 'An ad between every step', x: -22, y: 36 },
-  { icon: <QrCode size={18} />, what: 'A QR code maker', catch: 'Codes stop working without a plan', x: 24, y: 36 },
-  { icon: <KeyRound size={18} />, what: 'A password generator', catch: 'You hope it is not logging them', x: 0, y: 30 },
+  { icon: <Image size={18} />, what: 'An image compressor', catch: 'Uploads your photo to its server', x: -36, y: -6 },
+  { icon: <Pipette size={18} />, what: 'A color picker extension', catch: 'Can read every site you visit', x: -12, y: -4 },
+  { icon: <FileText size={18} />, what: 'A PDF merge site', catch: 'Free until the second file', x: 13, y: -7 },
+  { icon: <Braces size={18} />, what: 'A JSON formatter', catch: 'Wants you to sign in first', x: 37, y: -3 },
+  { icon: <Globe2 size={18} />, what: 'A time zone converter', catch: 'An ad between every step', x: -39, y: 13 },
+  { icon: <Type size={18} />, what: 'A word counter', catch: 'Sends your text to its server', x: -16, y: 16 },
+  { icon: <Ruler size={18} />, what: 'A unit converter', catch: 'Full-screen ads on mobile', x: 16, y: 12 },
+  { icon: <QrCode size={18} />, what: 'A QR code maker', catch: 'Codes stop working without a plan', x: 39, y: 15 },
+  { icon: <Video size={18} />, what: 'A screen recorder extension', catch: 'Watermarks unless you upgrade', x: -34, y: 32 },
+  { icon: <KeyRound size={18} />, what: 'A password generator', catch: 'You hope it is not logging them', x: -10, y: 35 },
+  { icon: <NotebookPen size={18} />, what: 'An online notepad', catch: 'Needs an account to save', x: 13, y: 31 },
+  { icon: <Heading size={18} />, what: 'A Markdown editor', catch: 'One more app to install', x: 36, y: 34 },
 ];
 
 const TOOLBAR = ['password', 'qr', 'json', 'timestamp', 'color', 'hash', 'markdown', 'case-converter']
@@ -97,10 +118,10 @@ const TOOLBAR = ['password', 'qr', 'json', 'timestamp', 'color', 'hash', 'markdo
   .filter((t): t is ToolMeta => !!t);
 
 function ClutterCard({ item, i, p, narrow }: { item: (typeof CLUTTER)[number]; i: number; p: MotionValue<number>; narrow: boolean }) {
-  const start = i * 0.035;
+  const start = i * 0.026;
   // Phones get a zigzag down the screen instead of the wide desktop scatter
   const px = narrow ? (i % 2 ? 7 : -7) : item.x;
-  const py = narrow ? -2 + i * 6.6 : item.y;
+  const py = narrow ? -4 + i * 4 : item.y;
   const opacity = useRange(p, [start, start + 0.08, 0.5, 0.64], [0, 1, 1, 0]);
   const scale = useRange(p, [start, start + 0.08, 0.5, 0.64], [0.92, 1, 1, 0.4]);
   // Pulled into the glass at the centre

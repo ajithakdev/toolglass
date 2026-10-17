@@ -26,7 +26,7 @@ export function HeroSearch() {
   return (
     <div style={{ position: 'relative', width: '100%', maxWidth: 520 }}>
       <div
-        className="glass-strong"
+        className="glass-strong focus-pill"
         style={{ display: 'flex', alignItems: 'center', gap: 'var(--s-3)', height: 58, padding: '0 6px 0 var(--s-4)', borderRadius: 999 }}
       >
         <Search size={19} strokeWidth={1.8} color="var(--ink-mute)" aria-hidden />
@@ -38,6 +38,7 @@ export function HeroSearch() {
           aria-autocomplete="list"
           aria-activedescendant={show && results[active] ? `${listId}-${active}` : undefined}
           aria-label="Search tools"
+          className="bare-input"
           placeholder="What do you need to do?"
           value={q}
           onChange={(e) => {

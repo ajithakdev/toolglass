@@ -174,7 +174,7 @@ export function CommandPalette({ open, onClose }: CommandPaletteProps) {
             style={{
               position: 'fixed',
               inset: 0,
-              background: 'rgba(10, 5, 28, 0.55)',
+              background: 'color-mix(in srgb, var(--canvas) 55%, rgba(0, 0, 0, 0.35))',
               backdropFilter: 'blur(8px)',
               WebkitBackdropFilter: 'blur(8px)',
               zIndex: 9000,
@@ -207,7 +207,7 @@ export function CommandPalette({ open, onClose }: CommandPaletteProps) {
                 WebkitBackdropFilter: 'blur(40px) saturate(200%)',
                 border: '1px solid var(--surface-palette-border)',
                 boxShadow:
-                  '0 32px 80px -8px rgba(40, 0, 100, 0.4), 0 8px 24px -4px rgba(80, 40, 140, 0.2), inset 0 1px 0 rgba(255,255,255,0.06)',
+                  'var(--edge), var(--e3)',
               }}
             >
 
@@ -304,8 +304,8 @@ export function CommandPalette({ open, onClose }: CommandPaletteProps) {
                       animate={{
                         background:
                           i === selected
-                            ? 'rgba(139, 92, 246, 0.12)'
-                            : 'rgba(139, 92, 246, 0)',
+                            ? 'var(--accent-soft)'
+                            : 'transparent',
                       }}
                       transition={{ duration: 0.1 }}
                       style={{
@@ -315,7 +315,7 @@ export function CommandPalette({ open, onClose }: CommandPaletteProps) {
                         gap: 14,
                         padding: '10px 12px',
                         borderRadius: 13,
-                        border: `1px solid ${i === selected ? 'rgba(139, 92, 246, 0.22)' : 'transparent'}`,
+                        border: `1px solid ${i === selected ? 'var(--accent-ring)' : 'transparent'}`,
                         cursor: 'pointer',
                         textAlign: 'left',
                         marginBottom: 2,
@@ -328,12 +328,13 @@ export function CommandPalette({ open, onClose }: CommandPaletteProps) {
                           width: 38,
                           height: 38,
                           borderRadius: 11,
-                          background: t.tint,
+                          background: 'var(--surface-3)',
+                          border: '1px solid var(--glass-border)',
                           display: 'grid',
                           placeItems: 'center',
                           fontSize: 19,
                           flexShrink: 0,
-                          boxShadow: '0 2px 8px rgba(0,0,0,0.12)',
+                          boxShadow: 'var(--edge), var(--e1)',
                         }}
                       >
                         {t.icon}
@@ -380,10 +381,10 @@ export function CommandPalette({ open, onClose }: CommandPaletteProps) {
                               fontSize: 12,
                               padding: '3px 8px',
                               borderRadius: 7,
-                              background: 'rgba(139, 92, 246, 0.15)',
+                              background: 'var(--accent-soft)',
                               color: 'var(--accent)',
                               fontFamily: 'var(--font-mono)',
-                              border: '1px solid rgba(139, 92, 246, 0.25)',
+                              border: '1px solid var(--accent-ring)',
                               flexShrink: 0,
                               userSelect: 'none',
                             }}

@@ -9,10 +9,10 @@ import { Clock, Filter, Grid2X2 } from 'lucide-react';
 const LISTED = [
   { name: 'Generators', slugs: ['uuid', 'nanoid', 'password', 'objectid', 'qr'] },
   { name: 'Encoders & Decoders', slugs: ['base64', 'url', 'jwt-decode'] },
-  { name: 'Converters & Formatters', slugs: ['json', 'color', 'json-to-ts'] },
+  { name: 'Converters & Formatters', slugs: ['json', 'color', 'json-to-ts', 'case-converter'] },
   { name: 'API & Networking', slugs: ['api-tester'] },
   { name: 'Security & Crypto', slugs: ['hash', 'jwt'] },
-  { name: 'Utilities', slugs: ['timestamp', 'regex', 'markdown'] },
+  { name: 'Utilities', slugs: ['timestamp', 'regex', 'markdown', 'chmod'] },
 ];
 
 // Catch-all so a registered tool missing from the lists above still shows up

@@ -142,7 +142,7 @@ function Shell({ children, onOpenPalette }: { children: React.ReactNode; onOpenP
                 color: 'var(--ink-mute)',
               }}
             >
-              Ctrl K
+              {/Mac|iPhone|iPad/.test(navigator.platform) ? '⌘K' : 'Ctrl K'}
             </kbd>
           </button>
           <InstallPwaButton />

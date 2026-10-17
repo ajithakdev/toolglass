@@ -4,19 +4,14 @@ import { Button } from '../../components/ui/Button';
 import { Field, Slider, Toggle } from '../../components/ui/Field';
 import { Output } from '../../components/ui/Output';
 import { ToolLayout } from '../../components/ToolLayout';
-import { useUrlState } from '../../hooks/useUrlState';
+import { useClipboard } from '../../hooks/useClipboard';
+import { intParam, useUrlState } from '../../hooks/useUrlState';
 import { estimateStrength, generatePassword, type PwdOptions } from './password';
 
 function ShareButton() {
-  const [copied, setCopied] = useState(false);
-  const handleShare = () => {
-    navigator.clipboard.writeText(window.location.href).then(() => {
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    });
-  };
+  const { copy, copied } = useClipboard(2000);
   return (
-    <Button onClick={handleShare} variant="soft">
+    <Button onClick={() => copy(window.location.href)} variant="soft">
       {copied ? '✨ Copied!' : '🔗 Share'}
     </Button>
   );
@@ -24,7 +19,7 @@ function ShareButton() {
 
 export default function PasswordTool() {
   // URL-serialized options (allowlist — no sensitive input values)
-  const [length, setLength] = useUrlState('len', 20, Number, String);
+  const [length, setLength] = useUrlState('len', 20, intParam(4, 64, 20), String);
   const [uppercase, setUppercase] = useUrlState('u', true, (v) => v === '1', (v) => (v ? '1' : '0'));
   const [lowercase, setLowercase] = useUrlState('l', true, (v) => v === '1', (v) => (v ? '1' : '0'));
   const [numbers, setNumbers] = useUrlState('n', true, (v) => v === '1', (v) => (v ? '1' : '0'));

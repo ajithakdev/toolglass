@@ -52,7 +52,7 @@ Zero/minimal external dependencies: Prefer native browser Web APIs (e.g. Web Cry
 Tools follow a modular registry pattern:
 
 1. Create `src/tools/<slug>/<Name>Tool.tsx` with a default-export component.
-2. Create unit and component tests alongside it (`src/tools/<slug>/<slug>.test.ts`, `<slug>Tool.test.tsx`).
+2. Put pure logic in `src/tools/<slug>/<slug>.ts` and unit-test it in `<slug>.test.ts`. Component tests (`<slug>Tool.test.tsx`) are welcome.
 3. Append an entry to `src/tools/registry.tsx`:
 
 ```tsx
@@ -68,7 +68,7 @@ Tools follow a modular registry pattern:
 ```
 
 4. Add the slug to the appropriate category in `CATEGORIES` within `src/pages/Landing.tsx`.
-5. The tool will auto-appear on the landing page and gets a route at `/#/tools/<slug>`.
+5. The tool gets a route at `/#/tools/<slug>`. A tool missing from `CATEGORIES` still appears on the landing page, under "Other".
 
 ## Code of Conduct
 

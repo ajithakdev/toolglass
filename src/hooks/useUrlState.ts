@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
 /**
@@ -10,7 +10,7 @@ import { useSearchParams } from 'react-router-dom';
  * @param stringify    Converts T → string for the URL
  *
  * Returns [value, setValue] just like useState.
- * The URL is updated (debounced 200ms) on every value change.
+ * The value updates immediately; the URL write is debounced 200ms.
  */
 export function useUrlState<T>(
   key: string,
@@ -19,26 +19,33 @@ export function useUrlState<T>(
   stringify: (val: T) => string,
 ): [T, (val: T) => void] {
   const [searchParams, setSearchParams] = useSearchParams();
-
-  // Derive current value from URL, falling back to default
   const raw = searchParams.get(key);
-  const value = raw !== null ? parse(raw) : defaultVal;
 
-  // Keep a stable ref so the debounced write has fresh value
-  const valueRef = useRef(value);
-  valueRef.current = value;
+  const [value, setLocal] = useState<T>(() => (raw !== null ? parse(raw) : defaultVal));
+  const [seenRaw, setSeenRaw] = useState(raw);
+  // Last string this hook wrote, so our own URL write doesn't reset the value
+  const writtenRef = useRef<string | null>(null);
+
+  // Re-sync when the param changes from outside (back/forward, pasted link)
+  if (raw !== seenRaw) {
+    setSeenRaw(raw);
+    if (raw !== writtenRef.current) setLocal(raw !== null ? parse(raw) : defaultVal);
+  }
 
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const setValue = useCallback(
     (next: T) => {
+      setLocal(next);
       // Debounce URL writes so fast typing doesn't flood history
       if (timerRef.current) clearTimeout(timerRef.current);
       timerRef.current = setTimeout(() => {
+        const str = stringify(next);
+        writtenRef.current = str;
         setSearchParams(
           (prev) => {
             const updated = new URLSearchParams(prev);
-            updated.set(key, stringify(next));
+            updated.set(key, str);
             return updated;
           },
           { replace: true },
@@ -58,3 +65,9 @@ export function useUrlState<T>(
 
   return [value, setValue];
 }
+
+/** Parser for integer URL params: rounds, clamps to [min, max], falls back on junk. */
+export const intParam = (min: number, max: number, fallback: number) => (raw: string) => {
+  const n = Math.round(Number(raw));
+  return Number.isFinite(n) ? Math.min(max, Math.max(min, n)) : fallback;
+};

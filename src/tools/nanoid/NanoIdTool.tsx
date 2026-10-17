@@ -3,47 +3,26 @@ import { Button } from '../../components/ui/Button';
 import { Field, Slider, TextInput } from '../../components/ui/Field';
 import { Output } from '../../components/ui/Output';
 import { ToolLayout } from '../../components/ToolLayout';
-import { useUrlState } from '../../hooks/useUrlState';
-
-const DEFAULT_ALPHABET =
-  'useandom-26T198340PX75pxJACKVERYMINDBUSHWOLF_GQZbfghjklqvwyzrict';
-
-function nanoid(size: number, alphabet: string): string {
-  const mask = (2 << (Math.log(alphabet.length - 1) / Math.LN2)) - 1;
-  const step = Math.ceil((1.6 * mask * size) / alphabet.length);
-  let id = '';
-  while (id.length < size) {
-    const bytes = new Uint8Array(step);
-    crypto.getRandomValues(bytes);
-    for (let i = 0; i < step && id.length < size; i++) {
-      const ch = alphabet[bytes[i]! & mask];
-      if (ch) id += ch;
-    }
-  }
-  return id;
-}
+import { useClipboard } from '../../hooks/useClipboard';
+import { intParam, useUrlState } from '../../hooks/useUrlState';
+import { DEFAULT_ALPHABET, nanoid, uniqueChars } from './nanoid';
 
 function ShareButton() {
-  const [copied, setCopied] = useState(false);
-  const handleShare = () => {
-    navigator.clipboard.writeText(window.location.href).then(() => {
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    });
-  };
+  const { copy, copied } = useClipboard(2000);
   return (
-    <Button onClick={handleShare} variant="soft">
+    <Button onClick={() => copy(window.location.href)} variant="soft">
       {copied ? '✨ Copied!' : '🔗 Share'}
     </Button>
   );
 }
 
 export default function NanoIdTool() {
-  const [size, setSize] = useUrlState('size', 21, Number, String);
-  const [count, setCount] = useUrlState('count', 5, Number, String);
+  const [size, setSize] = useUrlState('size', 21, intParam(4, 64, 21), String);
+  const [count, setCount] = useUrlState('count', 5, intParam(1, 50, 5), String);
   // alphabet is NOT in URL (could be long; not sensitive, just verbose)
   const [alphabet, setAlphabet] = useState(DEFAULT_ALPHABET);
   const [ids, setIds] = useState<string[]>([]);
+  const dupes = [...alphabet].length - uniqueChars(alphabet).length;
 
   const gen = () => {
     if (!alphabet) return setIds([]);
@@ -64,7 +43,7 @@ export default function NanoIdTool() {
         <Field label="Count" hint={`${count}`}>
           <Slider value={count} min={1} max={50} onChange={setCount} />
         </Field>
-        <Field label="Alphabet">
+        <Field label="Alphabet" hint={dupes > 0 ? `${dupes} duplicate character${dupes === 1 ? '' : 's'} ignored` : undefined}>
           <TextInput value={alphabet} onChange={(e) => setAlphabet(e.target.value)} />
         </Field>
         <div style={{ display: 'flex', gap: 10 }}>

@@ -307,7 +307,7 @@ export default function TimestampTool() {
   // Add history helper
   const addHistory = (label: string, mode: 'convert' | 'batch' | 'diff' | 'cron', details: string, data: Record<string, string>) => {
     const nextItem: HistoryItem = {
-      id: Math.random().toString(36).substring(2, 9),
+      id: crypto.randomUUID(),
       mode,
       timestamp: Date.now(),
       label,

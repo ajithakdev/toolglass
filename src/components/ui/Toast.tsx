@@ -13,6 +13,7 @@ interface ToastCtx {
 }
 
 const Ctx = createContext<ToastCtx | null>(null);
+let nextToastId = 0;
 
 import { CheckCircle, AlertCircle, Info as InfoIcon } from 'lucide-react';
 
@@ -20,7 +21,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<Toast[]>([]);
 
   const push = useCallback((message: string, kind: ToastKind = 'success', existingId?: number) => {
-    const id = existingId ?? (Date.now() + Math.random());
+    const id = existingId ?? ++nextToastId;
     setItems((prev) => {
       const exists = prev.some((t) => t.id === id);
       if (exists) {

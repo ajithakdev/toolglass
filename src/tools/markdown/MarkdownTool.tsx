@@ -9,13 +9,11 @@ import { Button } from '../../components/ui/Button';
 export default function MarkdownTool() {
   const [markdown, setMarkdown] = useState('# Hello World\n\nThis is a **Markdown** preview.\n\n- Write markdown on the left\n- See HTML on the right\n\n```javascript\nconsole.log("Enjoy!");\n```');
 
-  const { html, rawHtml } = useMemo(() => {
+  const html = useMemo(() => {
     try {
-      const raw = marked.parse(markdown) as string;
-      const sanitized = DOMPurify.sanitize(raw);
-      return { html: sanitized, rawHtml: raw };
+      return DOMPurify.sanitize(marked.parse(markdown) as string);
     } catch {
-      return { html: 'Error parsing markdown', rawHtml: '' };
+      return 'Error parsing markdown';
     }
   }, [markdown]);
 
@@ -85,7 +83,7 @@ export default function MarkdownTool() {
             <div style={{ display: 'flex', gap: 8 }}>
               <Button onClick={downloadHtml} variant="soft" size="sm">Download</Button>
               <Button onClick={handlePrint} variant="primary" size="sm">PDF / Print</Button>
-              <CopyButton value={rawHtml} label="Copy HTML" size="sm" />
+              <CopyButton value={html} label="Copy HTML" size="sm" />
             </div>
           </div>
           <div 

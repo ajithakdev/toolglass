@@ -168,6 +168,9 @@ function Footer() {
           <a href="https://github.com/ajithakdev/toolglass" target="_blank" rel="noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: 5 }}>
             <GithubMark /> GitHub
           </a>
+          <a href="https://ajithakdev.com" target="_blank" rel="noreferrer author">
+            by ajithakdev
+          </a>
         </div>
       </div>
     </footer>

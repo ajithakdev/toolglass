@@ -11,7 +11,7 @@ npm install
 npm run dev
 ```
 
-Requires **Node 20+**.
+Requires **Node 20+** (or Node 22/26 via nvm).
 
 | Script | Purpose |
 |---|---|
@@ -37,24 +37,25 @@ This project uses **strict TypeScript** (`strict: true` in `tsconfig.json`). All
 
 ## Testing
 
-Tests use **Vitest** with `jsdom` environment. Test files live alongside source as `*.test.ts` / `*.test.tsx`.
+Tests use **Vitest** with `jsdom` environment. Test files live alongside source as `*.test.ts` / `*.test.tsx` (e.g. `src/tools/<name>/<name>.test.ts`).
 
 ```bash
 npm test                        # run all tests once
-npm test -- tests/crypto        # run a specific test file or path
+npm test src/tools/password/    # run tests for a specific tool
 npm run test:coverage           # coverage report
 ```
 
-Crypto-related tools (password, hash, JWT, UUID, ObjectId, NanoID) have dedicated test suites — run those explicitly when touching crypto paths.
+Zero/minimal external dependencies: Prefer native browser Web APIs (e.g. Web Crypto, URL, Canvas, DOMParser, regex). Introducing new runtime dependencies requires prior maintainer discussion and strong justification (as done for established standards like `marked`, `dompurify`, and `qrcode`).
 
 ## Adding a new tool
 
-Tools follow a registry pattern — no routing config to touch.
+Tools follow a modular registry pattern:
 
 1. Create `src/tools/<slug>/<Name>Tool.tsx` with a default-export component.
-2. Append an entry to `src/tools/registry.ts`:
+2. Create unit and component tests alongside it (`src/tools/<slug>/<slug>.test.ts`, `<slug>Tool.test.tsx`).
+3. Append an entry to `src/tools/registry.tsx`:
 
-```ts
+```tsx
 {
   slug: 'my-tool',
   title: 'My Tool',
@@ -66,7 +67,12 @@ Tools follow a registry pattern — no routing config to touch.
 },
 ```
 
-The tool auto-appears on the landing page and gets a route at `/#/tools/<slug>`.
+4. Add the slug to the appropriate category in `CATEGORIES` within `src/pages/Landing.tsx`.
+5. The tool will auto-appear on the landing page and gets a route at `/#/tools/<slug>`.
+
+## Code of Conduct
+
+We are committed to providing a welcoming, inclusive, and harassment-free experience for all contributors. Please review and adhere to our [Code of Conduct](../CODE_OF_CONDUCT.md) in all project interactions.
 
 ## Branch and commit naming
 

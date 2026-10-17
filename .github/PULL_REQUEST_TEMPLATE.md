@@ -23,10 +23,11 @@ npm run dev
 # 3. Verify …
 ```
 
-If this PR touches crypto paths (password, hash, JWT, UUID, ObjectId, NanoID), run:
+To run the unit and component test suite:
 
 ```bash
-npm test -- tests/crypto
+npm test                      # Run all tests
+npm test src/tools/<slug>/    # Run tests for a specific tool
 ```
 
 ## Breaking changes

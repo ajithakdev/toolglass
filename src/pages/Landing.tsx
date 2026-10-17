@@ -12,7 +12,7 @@ const CATEGORIES = [
   { name: 'Converters & Formatters', slugs: ['json', 'color', 'json-to-ts', 'case-converter'] },
   { name: 'API & Networking', slugs: ['api-tester'] },
   { name: 'Security & Crypto', slugs: ['hash', 'jwt'] },
-  { name: 'Utilities', slugs: ['timestamp', 'regex', 'markdown'] }
+  { name: 'Utilities', slugs: ['timestamp', 'regex', 'markdown', 'chmod'] }
 ];
 
 function RecentPill({ tool }: { tool: { slug: string; icon: React.ReactNode; title: string } }) {

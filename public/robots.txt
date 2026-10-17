@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://ajithakdev.github.io/toolglass/sitemap.xml
+Sitemap: https://toolglass.ajithakdev.com/sitemap.xml

@@ -1,9 +1,34 @@
-import { defineConfig } from 'vite';
+import { defineConfig, type Plugin } from 'vite';
 import react from '@vitejs/plugin-react';
 import { VitePWA } from 'vite-plugin-pwa';
+import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { dirname, join } from 'node:path';
+import { allPages, applyMeta, sitemapXml } from './src/seo';
+
+// Writes one HTML file per page (so each tool has its own title and meta for
+// search engines and link previews), a 404.html SPA fallback, and sitemap.xml.
+function seoPages(): Plugin {
+  return {
+    name: 'toolglass-seo-pages',
+    apply: 'build',
+    closeBundle() {
+      const dist = 'dist';
+      const shell = readFileSync(join(dist, 'index.html'), 'utf8');
+      const pages = allPages();
+      for (const page of pages) {
+        // GitHub Pages serves /tools/json from tools/json.html without a redirect
+        const file = page.path === '/' ? 'index.html' : `${page.path.slice(1)}.html`;
+        mkdirSync(dirname(join(dist, file)), { recursive: true });
+        writeFileSync(join(dist, file), applyMeta(shell, page));
+      }
+      writeFileSync(join(dist, '404.html'), shell.replace('<head>', '<head>\n    <meta name="robots" content="noindex" />'));
+      writeFileSync(join(dist, 'sitemap.xml'), sitemapXml(pages));
+    },
+  };
+}
 
 export default defineConfig({
-  base: process.env.GITHUB_ACTIONS ? '/toolglass/' : '/',
+  base: '/',
   plugins: [
     react(),
     VitePWA({
@@ -35,7 +60,8 @@ export default defineConfig({
           }
         ]
       }
-    })
+    }),
+    seoPages(),
   ],
   build: { target: 'es2022', sourcemap: false },
   test: {

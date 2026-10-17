@@ -10,7 +10,7 @@ Numbers in parentheses are line counts. Use them to judge read cost.
 
 ```
 index.html
-  src/main.tsx (13)            StrictMode > HashRouter > App
+  src/main.tsx (17)            legacy /#/ redirect, StrictMode > BrowserRouter > App
     src/App.tsx (225)          ToastProvider > Shell (nav, main, footer) > ErrorBoundary > Routes
       /                        pages/Landing.tsx
       /tools/:slug             pages/ToolPage.tsx  -> toolBySlug(slug) -> lazy Component
@@ -18,10 +18,10 @@ index.html
     CommandPalette             sibling of Shell, opened by Ctrl/Cmd+K
 ```
 
-- Routing is `HashRouter`. URLs look like `/#/tools/<slug>`. Query params live inside the hash.
-- `src/tools/registry.tsx` is the single source of truth for tools. Landing, CommandPalette, ToolPage, and NotFound all read it.
+- Routing is `BrowserRouter` with clean URLs (`/tools/<slug>`). `main.tsx` rewrites old `/#/...` links. Hosting is GitHub Pages on `toolglass.ajithakdev.com` (`public/CNAME`); the build writes `tools/<slug>.html` per tool and a `404.html` SPA fallback.
+- Tool data lives in `src/tools/catalog.ts` (plain data: title, description, category, audience, keywords, replaces). `src/tools/registry.tsx` adds icon, tint, and lazy component per slug. Everything (pages, palette, build-time SEO pages, sitemap) reads these; there is no other slug list.
 - Every tool is a default-export component loaded with `React.lazy`. Each tool wraps its own body in `<ToolLayout>`, which reads the slug from the route and renders title, description, icon, back link, and usage count.
-- Theme: `data-theme="light|dark"` on `<html>`, set by `useTheme`. All colors are CSS variables in `src/index.css`.
+- Theme: modes Auto/Light/Dark. `data-theme="light|dark"` on `<html>`, set first by an inline script in `index.html` (no flash), then by the shared store in `useTheme`. All colors are CSS variables in `src/index.css`.
 
 ## Files
 
@@ -30,7 +30,7 @@ index.html
 | File | Notes |
 |---|---|
 | `package.json` | Scripts: dev, build, preview, lint, test, test:coverage. `"type": "module"`. Deploys only through CI. |
-| `vite.config.ts` (45) | `base` is `/toolglass/` only when `GITHUB_ACTIONS` is set, else `/`. PWA plugin (autoUpdate). Vitest config: jsdom, globals, `src/**/*.test.{ts,tsx}`. |
+| `vite.config.ts` | `base: '/'`. PWA plugin (autoUpdate, precaches woff2). `seoPages` plugin writes per-page HTML, `404.html`, and `sitemap.xml` from `src/seo.ts` after build. Vitest config: jsdom, globals, `src/**/*.test.{ts,tsx}`. |
 | `tsconfig.json` | strict, noUnusedLocals, noUnusedParameters, `include: ["src"]`. |
 | `eslint.config.js` (26) | Flat config. Several `react-hooks/*` rules turned off (set-state-in-effect, purity, refs, error-boundaries, set-state-in-render). |
 | `index.html` (39) | Meta, OG tags, JSON-LD. Fonts are self-hosted (see `index.css`). |
@@ -43,7 +43,8 @@ index.html
 | File | Exports | Notes |
 |---|---|---|
 | `App.tsx` (225) | `default App` | `InstallPwaButton` L14-54, `Shell` L56-193 (skip link, nav, footer with "Local Usage Stats" checkbox), `App` L195-225 (Ctrl/Cmd+K handler, routes). |
-| `main.tsx` (13) | none | Mount point. |
+| `main.tsx` (17) | none | Mount point. Redirects legacy hash URLs. |
+| `seo.ts` | `SITE_URL`, `HOME`, `toolPage`, `allPages`, `applyMeta`, `sitemapXml` | Pure page-meta helpers used by the build plugin and the App title effect. Has a test. |
 | `index.css` (281) | none | `:root` light tokens L1-47, dark tokens L49-88, view transitions L108-117, `.bg-orb`, `.glass`, `.glass-strong`, `.mono`, `.gradient-text`, `.sr-only`, focus rings, reduced-motion block L223. |
 | `lib/cn.ts` (3) | `cn(...parts)` | Joins truthy class names. |
 | `view-transitions.d.ts` (10) | none | Types for `document.startViewTransition`. |
@@ -70,21 +71,21 @@ index.html
 | `ui/GlassCard.tsx` (21) | `motion.div` with `.glass` or `.glass-strong` (`strong` prop), `padding`. |
 | `ui/Toast.tsx` (105) | `ToastProvider`, `useToast()` returns `{ push(message, kind?, id?) }`. Kinds: success, error, info. Passing an existing id updates that toast. |
 | `ui/ToolCard.tsx` (88) | Landing card for one `ToolMeta`. Shows usage count when stats are enabled. |
-| `ui/ThemeToggle.tsx` (82) | Uses View Transitions API when available. |
+| `ui/ThemeToggle.tsx` | Cycles Auto → Light → Dark. Circle reveal via View Transitions when the visible theme changes. |
 
 ### src/hooks
 
 | File | Signature | Notes |
 |---|---|---|
 | `useClipboard.ts` (34) | `useClipboard(resetMs = 1500)` returns `{ copy, copied }` | Falls back to `execCommand('copy')`. |
-| `useTheme.ts` (44) | returns `{ theme, toggle }` | Sets `data-theme`, `color-scheme`, and the `theme-color` meta. Stores the theme only when the user toggles; until then it follows the OS. |
+| `useTheme.ts` | `useTheme()` returns `{ mode, theme, setMode }`; `setThemeMode(mode)` | Module-level store (`useSyncExternalStore`). Auto is not stored and follows the OS live. Syncs across tabs. Has a test. |
 | `useRecentTools.ts` (30) | returns `{ recents, addRecent }` | Keeps last 3 slugs. |
 | `useToolStats.ts` (74) | `useToolStats(slug?)` returns `{ count, allStats, increment, enabled, toggleTelemetry }` | When disabled, counts are hidden and `increment` does nothing; stored counts are kept. Syncs across components with a `toolglass-telemetry` window event. |
 | `useUrlState.ts` (73) | `useUrlState(key, default, parse, stringify)` returns `[value, setValue]`; `intParam(min, max, fallback)` | Local state updates at once; the URL write is debounced 200 ms with `replace: true`. Re-syncs on external URL changes. Use `intParam` as `parse` for numeric params so crafted links are clamped. Has a test. |
 
 ### src/tools
 
-Registry: `registry.tsx` (189). `ToolMeta` L22-30: `slug`, `title`, `short`, `description`, `icon`, `tint`, `Component`. `tools` array L32-186. `toolBySlug` L188.
+Catalog: `catalog.ts` exports `CategoryId`, `Audience`, `CATEGORIES`, `AUDIENCES`, `ToolInfo`, `catalog`. Registry: `registry.tsx` exports `ToolMeta` (ToolInfo + `icon`, `tint`, `Component`), `tools`, `toolBySlug`. `registry.test.ts` checks slugs, metadata, and that every catalog entry has visuals.
 
 17 tools. Slug is the route and the registry key. Folder name differs from slug for one tool (`api-tester` lives in `curl-to-fetch/`).
 
@@ -116,9 +117,9 @@ Tests (9 files): `components/ErrorBoundary.test.tsx`, `pages/NotFound.test.tsx`,
 
 1. Create `src/tools/<slug>/<Name>Tool.tsx`, default export, body wrapped in `<ToolLayout>`. Copy `base64/Base64Tool.tsx`.
 2. Put pure logic in `src/tools/<slug>/<slug>.ts` and test it in `<slug>.test.ts`.
-3. Append an entry to `tools` in `src/tools/registry.tsx` (icon from `lucide-react`, `size={22} strokeWidth={1.5} color="var(--ink)"`).
-4. Add the slug to a category in `LISTED`, `src/pages/Landing.tsx` L8-15. A tool left out lands in the "Other" group.
-5. Also update by hand: `public/sitemap.xml`, the tool table in `README.md`, and the tool rows in this file.
+3. Add an entry to `catalog` in `src/tools/catalog.ts` (category, audience, keywords, and `replaces` if it saves people an app, extension, or site).
+4. Add the same slug to `visuals` in `src/tools/registry.tsx` (icon from `lucide-react`, `size={22} strokeWidth={1.5} color="var(--ink)"`).
+5. The page HTML, sitemap entry, and landing placement follow from the catalog. Update the tool table in `README.md` and the tool rows in this file by hand.
 
 ## Conventions
 
@@ -132,7 +133,7 @@ Tests (9 files): `components/ErrorBoundary.test.tsx`, `pages/NotFound.test.tsx`,
 
 | Key | Store | Owner |
 |---|---|---|
-| `toolglass-theme` | local | `hooks/useTheme.ts:7` |
+| `toolglass-theme` | local | `hooks/useTheme.ts` (absent = Auto) |
 | `toolglass_recent_tools` | local | `hooks/useRecentTools.ts:3` |
 | `toolglass_stats` | local | `hooks/useToolStats.ts:3` |
 | `toolglass_telemetry_enabled` | local | `hooks/useToolStats.ts:4` |
@@ -158,7 +159,7 @@ Only `fetch` calls in the app: `tools/curl-to-fetch/CurlTool.tsx:558` and `:754`
 
 ## Gotchas
 
-- `vite.config.ts` sets `base: '/toolglass/'` only when `GITHUB_ACTIONS` is set. A local `npm run build` is for local preview, not for publishing.
+- `npm run dev` and `vite preview` fall back to `index.html` for any path. GitHub Pages does not: it needs the `tools/<slug>.html` and `404.html` files the build writes. Check the built `dist/` when changing routes.
 - `ToolLayout` Backspace goes to `/` unless focus is in an input, textarea, select, or contenteditable, or a modifier key is held.
 - ESLint ignores only `dist` and `node_modules`, and its TS rules apply to `**/*.{ts,tsx}`.
 

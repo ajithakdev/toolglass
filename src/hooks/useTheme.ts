@@ -1,44 +1,69 @@
-import { useEffect, useState } from 'react';
+import { useSyncExternalStore } from 'react';
 
-type Theme = 'light' | 'dark';
+export type ThemeMode = 'auto' | 'light' | 'dark';
+export type Theme = 'light' | 'dark';
 
-function getInitial(): Theme {
-  // Check localStorage first
-  const stored = localStorage.getItem('toolglass-theme') as Theme | null;
-  if (stored === 'light' || stored === 'dark') return stored;
-  // Fall back to OS preference
-  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+// Keep in sync with the inline script in index.html that sets the theme before first paint
+const KEY = 'toolglass-theme';
+const darkQuery = () => window.matchMedia?.('(prefers-color-scheme: dark)');
+
+function readMode(): ThemeMode {
+  try {
+    const v = localStorage.getItem(KEY);
+    return v === 'light' || v === 'dark' ? v : 'auto';
+  } catch {
+    return 'auto';
+  }
 }
 
+const resolve = (m: ThemeMode): Theme => (m === 'auto' ? (darkQuery()?.matches ? 'dark' : 'light') : m);
+
+// One store shared by every component, so the toggle and the app never disagree
+let state: { mode: ThemeMode; theme: Theme } = { mode: readMode(), theme: resolve(readMode()) };
+const listeners = new Set<() => void>();
+
+function apply() {
+  const root = document.documentElement;
+  root.setAttribute('data-theme', state.theme);
+  root.style.colorScheme = state.theme;
+  document
+    .querySelector('meta[name="theme-color"]')
+    ?.setAttribute('content', state.theme === 'dark' ? '#0f0a20' : '#f3e7ff');
+  listeners.forEach((l) => l());
+}
+
+function update(mode: ThemeMode) {
+  state = { mode, theme: resolve(mode) };
+  apply();
+}
+
+export function setThemeMode(mode: ThemeMode) {
+  try {
+    if (mode === 'auto') localStorage.removeItem(KEY);
+    else localStorage.setItem(KEY, mode);
+  } catch {
+    // storage blocked: the choice lasts for this page view
+  }
+  update(mode);
+}
+
+// Auto mode follows the OS live
+darkQuery()?.addEventListener('change', () => {
+  if (state.mode === 'auto') update('auto');
+});
+// Another tab changed the setting
+window.addEventListener('storage', (e) => {
+  if (e.key === KEY) update(readMode());
+});
+
+if (typeof document !== 'undefined') apply();
+
+const subscribe = (l: () => void) => {
+  listeners.add(l);
+  return () => listeners.delete(l);
+};
+
 export function useTheme() {
-  const [theme, setTheme] = useState<Theme>(getInitial);
-
-  // Apply theme to <html> element, native controls, and browser chrome
-  useEffect(() => {
-    document.documentElement.setAttribute('data-theme', theme);
-    document.documentElement.style.colorScheme = theme;
-    document
-      .querySelector('meta[name="theme-color"]')
-      ?.setAttribute('content', theme === 'dark' ? '#0f0a20' : '#f3e7ff');
-  }, [theme]);
-
-  // Follow OS changes until the user picks a theme with the toggle
-  useEffect(() => {
-    const mq = window.matchMedia('(prefers-color-scheme: dark)');
-    const listener = (e: MediaQueryListEvent) => {
-      if (!localStorage.getItem('toolglass-theme')) {
-        setTheme(e.matches ? 'dark' : 'light');
-      }
-    };
-    mq.addEventListener('change', listener);
-    return () => mq.removeEventListener('change', listener);
-  }, []);
-
-  const toggle = () => {
-    const next = theme === 'dark' ? 'light' : 'dark';
-    localStorage.setItem('toolglass-theme', next);
-    setTheme(next);
-  };
-
-  return { theme, toggle };
+  const { mode, theme } = useSyncExternalStore(subscribe, () => state);
+  return { mode, theme, setMode: setThemeMode };
 }

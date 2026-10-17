@@ -10,7 +10,7 @@
 [![Vite](https://img.shields.io/badge/Vite-8-646cff.svg)](https://vitejs.dev)
 [![CI/CD](https://github.com/ajithakdev/toolglass/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/ajithakdev/toolglass/actions/workflows/ci-cd.yml)
 
-🔗 **Try it live:** [ajithakdev.github.io/toolglass](https://ajithakdev.github.io/toolglass/)
+🔗 **Try it live:** [toolglass.ajithakdev.com](https://toolglass.ajithakdev.com/)
 
 </div>
 
@@ -26,12 +26,12 @@ Toolglass is a zero-telemetry, offline-first suite of developer tools running en
 
 | Category | Tools |
 |---|---|
-| **Generators** | • [Password Generator](https://ajithakdev.github.io/toolglass/#/tools/password) (CSPRNG, rejection-sampled, entropy meter)<br>• [UUID v4](https://ajithakdev.github.io/toolglass/#/tools/uuid) (RFC 4122 bulk generation)<br>• [NanoID](https://ajithakdev.github.io/toolglass/#/tools/nanoid) (URL-safe compact IDs)<br>• [Mongo ObjectId](https://ajithakdev.github.io/toolglass/#/tools/objectid) (24-char BSON IDs with embedded timestamp)<br>• [QR Code](https://ajithakdev.github.io/toolglass/#/tools/qr) (Instant canvas/SVG generation & PNG download) |
-| **Encoders & Decoders** | • [Base64](https://ajithakdev.github.io/toolglass/#/tools/base64) (Unicode-safe encode/decode)<br>• [URL Encoder](https://ajithakdev.github.io/toolglass/#/tools/url) (`encodeURIComponent` with full parameter parsing)<br>• [JWT Decoder](https://ajithakdev.github.io/toolglass/#/tools/jwt-decode) (Header/payload breakdown & expiration badges) |
-| **Converters & Formatters** | • [JSON Formatter](https://ajithakdev.github.io/toolglass/#/tools/json) (Beautify, minify, syntax validation with line errors)<br>• [Color Converter](https://ajithakdev.github.io/toolglass/#/tools/color) (Hex ⇄ RGB ⇄ HSL with live alpha slider)<br>• [JSON to TypeScript](https://ajithakdev.github.io/toolglass/#/tools/json-to-ts) (Generates interfaces or types automatically) |
-| **Security & Crypto** | • [Hash Generator](https://ajithakdev.github.io/toolglass/#/tools/hash) (SHA-1, SHA-256, SHA-384, SHA-512 via Web Crypto)<br>• [JWT Signer](https://ajithakdev.github.io/toolglass/#/tools/jwt) (Local HMAC-SHA256 signature generation) |
-| **API & Networking** | • [API Tester](https://ajithakdev.github.io/toolglass/#/tools/api-tester) (In-browser HTTP client with cURL import and sanitized headers) |
-| **Utilities** | • [Timestamp Converter](https://ajithakdev.github.io/toolglass/#/tools/timestamp) (Unix epoch ⇄ ISO 8601 ⇄ relative time & batch mode)<br>• [Regex Tester](https://ajithakdev.github.io/toolglass/#/tools/regex) (Real-time regex engine with visual match highlights)<br>• [Markdown Preview](https://ajithakdev.github.io/toolglass/#/tools/markdown) (Live GitHub-flavored preview with DOMPurify sanitization) |
+| **Generators** | • [Password Generator](https://toolglass.ajithakdev.com/tools/password) (CSPRNG, rejection-sampled, entropy meter)<br>• [UUID v4](https://toolglass.ajithakdev.com/tools/uuid) (RFC 4122 bulk generation)<br>• [NanoID](https://toolglass.ajithakdev.com/tools/nanoid) (URL-safe compact IDs)<br>• [Mongo ObjectId](https://toolglass.ajithakdev.com/tools/objectid) (24-char BSON IDs with embedded timestamp)<br>• [QR Code](https://toolglass.ajithakdev.com/tools/qr) (Instant canvas/SVG generation & PNG download) |
+| **Encoders & Decoders** | • [Base64](https://toolglass.ajithakdev.com/tools/base64) (Unicode-safe encode/decode)<br>• [URL Encoder](https://toolglass.ajithakdev.com/tools/url) (`encodeURIComponent` with full parameter parsing)<br>• [JWT Decoder](https://toolglass.ajithakdev.com/tools/jwt-decode) (Header/payload breakdown & expiration badges) |
+| **Converters & Formatters** | • [JSON Formatter](https://toolglass.ajithakdev.com/tools/json) (Beautify, minify, syntax validation with line errors)<br>• [Color Converter](https://toolglass.ajithakdev.com/tools/color) (Hex ⇄ RGB ⇄ HSL with live alpha slider)<br>• [JSON to TypeScript](https://toolglass.ajithakdev.com/tools/json-to-ts) (Generates interfaces or types automatically) |
+| **Security & Crypto** | • [Hash Generator](https://toolglass.ajithakdev.com/tools/hash) (SHA-1, SHA-256, SHA-384, SHA-512 via Web Crypto)<br>• [JWT Signer](https://toolglass.ajithakdev.com/tools/jwt) (Local HMAC-SHA256 signature generation) |
+| **API & Networking** | • [API Tester](https://toolglass.ajithakdev.com/tools/api-tester) (In-browser HTTP client with cURL import and sanitized headers) |
+| **Utilities** | • [Timestamp Converter](https://toolglass.ajithakdev.com/tools/timestamp) (Unix epoch ⇄ ISO 8601 ⇄ relative time & batch mode)<br>• [Regex Tester](https://toolglass.ajithakdev.com/tools/regex) (Real-time regex engine with visual match highlights)<br>• [Markdown Preview](https://toolglass.ajithakdev.com/tools/markdown) (Live GitHub-flavored preview with DOMPurify sanitization) |
 
 ---
 

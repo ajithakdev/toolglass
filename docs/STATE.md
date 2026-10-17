@@ -1,14 +1,19 @@
 # Toolglass working state
 
-Last updated: 2026-10-17, on branch `fix/known-issues` (from `main` at `e176815`).
+Last updated: 2026-10-17, on branch `redesign/foundation`.
 
 Update this file at the end of each work session. Keep it short. Delete entries once they are done and merged.
 
 ## In progress
 
-- Branch `fix/known-issues`: fixes most findings from the 2026-10-10 list. Needs a PR and a browser check of typing in the URL and Timestamp tools, the theme toggle, and fonts.
+Redesign, per `docs/PLAN.md`. Branches stack: `fix/known-issues` (PR #109) → `redesign/foundation` (Phase 0) → later phases.
+
+- Phase 0 done on `redesign/foundation`: catalog metadata, clean URLs with prerendered tool pages and sitemap, CNAME for `toolglass.ajithakdev.com`, three-mode theme.
+- Next: Phase 1, design system (`redesign/design-system`).
 
 ## Last session
+
+- 2026-10-17 (Phase 0): `catalog.ts` + slimmed `registry.tsx`, `seo.ts` and the build plugin, `BrowserRouter` with legacy hash redirect, CNAME, Auto/Light/Dark theme store. 59 tests pass. Checked in headless Chromium: hash redirect, tool titles, clamped URL params.
 
 - 2026-10-17: Fixed `useUrlState` dropped keystrokes (with a test), clamped NanoID and password URL params, NanoID alphabet sampling, Backspace shortcut, theme persistence and `color-scheme`, self-hosted fonts, usage-stats toggle now stops counting, sanitized Markdown copy, clipboard error handling, `Math.random` ids, "Other" landing category, CI `npm ci` and job permissions, removed `deploy` script, dead scripts, and unused deps. Lint, build, and 51 tests pass.
 - 2026-10-10: Added `AGENTS.md`, `CLAUDE.md`, `docs/CODEMAP.md`, `docs/STATE.md`. Added `docs/KNOWN-ISSUES.md`. No source changes. Baseline on Node 24.21.0: lint clean, build passes, 41 tests pass.

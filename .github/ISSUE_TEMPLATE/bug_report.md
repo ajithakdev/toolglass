@@ -10,7 +10,7 @@ A clear, one-sentence description of the bug.
 
 ## Steps to reproduce
 
-1. Go to `/#/tools/<tool-slug>`
+1. Go to `/tools/<tool-slug>`
 2. Enter the following input: …
 3. Click "Generate"
 4. See error

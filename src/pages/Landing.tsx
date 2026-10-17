@@ -1,23 +1,16 @@
 import { motion, Variants } from 'framer-motion';
 import { cloneElement, useState } from 'react';
 import { tools, toolBySlug } from '../tools/registry';
+import { CATEGORIES as CATALOG_CATEGORIES } from '../tools/catalog';
 import { useRecentTools } from '../hooks/useRecentTools';
 import { ToolCard } from '../components/ui/ToolCard';
 import { Link } from 'react-router-dom';
 import { Clock, Filter, Grid2X2 } from 'lucide-react';
 
-const LISTED = [
-  { name: 'Generators', slugs: ['uuid', 'nanoid', 'password', 'objectid', 'qr'] },
-  { name: 'Encoders & Decoders', slugs: ['base64', 'url', 'jwt-decode'] },
-  { name: 'Converters & Formatters', slugs: ['json', 'color', 'json-to-ts'] },
-  { name: 'API & Networking', slugs: ['api-tester'] },
-  { name: 'Security & Crypto', slugs: ['hash', 'jwt'] },
-  { name: 'Utilities', slugs: ['timestamp', 'regex', 'markdown'] },
-];
-
-// Catch-all so a registered tool missing from the lists above still shows up
-const unlisted = tools.map((t) => t.slug).filter((slug) => !LISTED.some((c) => c.slugs.includes(slug)));
-const CATEGORIES = unlisted.length ? [...LISTED, { name: 'Other', slugs: unlisted }] : LISTED;
+const CATEGORIES = CATALOG_CATEGORIES.map((c) => ({
+  name: c.name,
+  slugs: tools.filter((t) => t.category === c.id).map((t) => t.slug),
+})).filter((c) => c.slugs.length > 0);
 
 function RecentPill({ tool }: { tool: { slug: string; icon: React.ReactNode; title: string } }) {
   return (

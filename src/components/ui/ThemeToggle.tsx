@@ -1,14 +1,23 @@
-import { useTheme } from '../../hooks/useTheme';
+import { Monitor, Moon, Sun } from 'lucide-react';
 import { useRef } from 'react';
+import { useTheme, type ThemeMode } from '../../hooks/useTheme';
+
+const NEXT: Record<ThemeMode, ThemeMode> = { auto: 'light', light: 'dark', dark: 'auto' };
+const LABEL: Record<ThemeMode, string> = { auto: 'Auto', light: 'Light', dark: 'Dark' };
+const ICON = { auto: Monitor, light: Sun, dark: Moon };
 
 export function ThemeToggle() {
-  const { theme, toggle } = useTheme();
-  const isDark = theme === 'dark';
+  const { mode, theme, setMode } = useTheme();
   const btnRef = useRef<HTMLButtonElement>(null);
+  const next = NEXT[mode];
+  const toggle = () => setMode(next);
+  const Icon = ICON[mode];
 
   const handleClick = () => {
     const btn = btnRef.current;
-    if (!btn) { toggle(); return; }
+    // Only animate when the visible theme actually changes
+    const willChange = (next === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : next) !== theme;
+    if (!btn || !willChange) { toggle(); return; }
 
     // Get button center coordinates for the circle origin
     const rect = btn.getBoundingClientRect();
@@ -53,8 +62,8 @@ export function ThemeToggle() {
       ref={btnRef}
       id="theme-toggle"
       onClick={handleClick}
-      aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
-      title={isDark ? 'Light mode' : 'Dark mode'}
+      aria-label={`Theme: ${LABEL[mode]}. Switch to ${LABEL[next]}`}
+      title={`Theme: ${LABEL[mode]}`}
       style={{
         width: 36,
         height: 36,
@@ -76,7 +85,7 @@ export function ThemeToggle() {
         (e.currentTarget as HTMLButtonElement).style.transform = 'rotate(0deg)';
       }}
     >
-      {isDark ? '☀️' : '🌙'}
+      <Icon size={17} strokeWidth={1.8} color="var(--ink)" />
     </button>
   );
 }

@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
-import { Link, Route, Routes } from 'react-router-dom';
+import { Link, Route, Routes, useLocation } from 'react-router-dom';
 import { CommandPalette } from './components/CommandPalette';
 import { ThemeToggle } from './components/ui/ThemeToggle';
 import { Landing } from './pages/Landing';
 import { ToolPage } from './pages/ToolPage';
 import { ToastProvider } from './components/ui/Toast';
-import { useTheme } from './hooks/useTheme';
+import { toolBySlug } from './tools/registry';
+import { HOME, toolPage } from './seo';
 import { useToolStats } from './hooks/useToolStats';
 import { Search, Download, ExternalLink, Sparkles } from 'lucide-react';
 import { ErrorBoundary } from './components/ErrorBoundary';
@@ -194,8 +195,13 @@ function Shell({ children, onOpenPalette }: { children: React.ReactNode; onOpenP
 
 export default function App() {
   const [paletteOpen, setPaletteOpen] = useState(false);
-  // Initialize theme on app mount (reads localStorage / OS pref)
-  useTheme();
+  const location = useLocation();
+
+  // Keep the tab title in step with client-side navigation (prerendered pages set it on load)
+  useEffect(() => {
+    const tool = location.pathname.startsWith('/tools/') ? toolBySlug(location.pathname.slice(7)) : undefined;
+    document.title = (tool ? toolPage(tool) : HOME).title;
+  }, [location.pathname]);
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {

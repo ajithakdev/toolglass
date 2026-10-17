@@ -5,30 +5,38 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta name="color-scheme" content="light dark" />
     <meta name="theme-color" content="#f3e7ff" />
-    <meta name="description" content="Toolglass — frosted developer utilities. 17 tools including password, JWT, UUID, NanoID, hash, Base64, timestamp, JSON, regex, API tester, QR, and Markdown. Fast, 100% client-side." />
-    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
-    <title>Toolglass — Frosted Developer Utilities</title>
-    <meta property="og:title" content="Toolglass" />
-    <meta property="og:description" content="Frosted developer utilities. Generate, encode, format — entirely in your browser." />
-    <meta property="og:image" content="https://ajithakdev.github.io/toolglass/og-image.png" />
-    <meta property="og:url" content="https://ajithakdev.github.io/toolglass/" />
+    <script>
+      // Set the theme before first paint (same logic as src/hooks/useTheme.ts)
+      try {
+        var m = localStorage.getItem('toolglass-theme');
+        var d = m === 'dark' || (m !== 'light' && matchMedia('(prefers-color-scheme: dark)').matches);
+        document.documentElement.setAttribute('data-theme', d ? 'dark' : 'light');
+      } catch (e) {}
+    </script>
+    <title>Toolglass — free, private tools for everything you do in a browser</title>
+    <meta name="description" content="Free tools that run entirely in your browser: passwords, QR codes, JSON, timestamps, and more. No sign-up, no uploads, no ads." />
+    <link rel="canonical" href="https://toolglass.ajithakdev.com/" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta property="og:site_name" content="Toolglass" />
+    <meta property="og:title" content="Toolglass — free, private tools for everything you do in a browser" />
+    <meta property="og:description" content="Free tools that run entirely in your browser: passwords, QR codes, JSON, timestamps, and more. No sign-up, no uploads, no ads." />
+    <meta property="og:image" content="https://toolglass.ajithakdev.com/og-image.png" />
+    <meta property="og:url" content="https://toolglass.ajithakdev.com/" />
     <meta property="og:type" content="website" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Toolglass" />
-    <meta name="twitter:description" content="Frosted developer utilities. Generate, encode, format — entirely in your browser." />
-    <meta name="twitter:image" content="https://ajithakdev.github.io/toolglass/og-image.png" />
+    <meta name="twitter:title" content="Toolglass — free, private tools for everything you do in a browser" />
+    <meta name="twitter:description" content="Free tools that run entirely in your browser: passwords, QR codes, JSON, timestamps, and more. No sign-up, no uploads, no ads." />
+    <meta name="twitter:image" content="https://toolglass.ajithakdev.com/og-image.png" />
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
         "@type": "WebApplication",
         "name": "Toolglass",
-        "description": "Frosted developer utilities. Generate, encode, format — entirely in your browser.",
-        "url": "https://ajithakdev.github.io/toolglass/",
-        "applicationCategory": "DeveloperApplication",
-        "offers": {
-          "@type": "Offer",
-          "price": "0"
-        }
+        "description": "Free tools that run entirely in your browser. No sign-up, no uploads, no ads.",
+        "url": "https://toolglass.ajithakdev.com/",
+        "applicationCategory": "UtilitiesApplication",
+        "operatingSystem": "Any",
+        "offers": { "@type": "Offer", "price": "0" }
       }
     </script>
   </head>

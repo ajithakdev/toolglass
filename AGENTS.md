@@ -46,3 +46,6 @@ CI runs lint, build, test in that order on Node 22. All three must pass.
 - New tool: follow "Adding a tool" in `docs/CODEMAP.md`.
 - Never persist credentials to `localStorage`. See `src/tools/curl-to-fetch/curlSecurity.ts`.
 - Commits: Conventional Commits, `type(scope): subject`.
+- Tool data goes in `src/tools/catalog.ts`; icons and components in `src/tools/registry.tsx`. Never add a second slug list.
+- Routes are clean paths (`/tools/<slug>`), not hash URLs. Site URL lives in `src/seo.ts`.
+- Plan for the redesign: `docs/PLAN.md`.

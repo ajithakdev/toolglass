@@ -53,22 +53,32 @@ Tools follow a modular registry pattern:
 
 1. Create `src/tools/<slug>/<Name>Tool.tsx` with a default-export component.
 2. Put pure logic in `src/tools/<slug>/<slug>.ts` and unit-test it in `<slug>.test.ts`. Component tests (`<slug>Tool.test.tsx`) are welcome.
-3. Append an entry to `src/tools/registry.tsx`:
+3. Add an entry to `catalog` in `src/tools/catalog.ts`:
 
-```tsx
+```ts
 {
   slug: 'my-tool',
   title: 'My Tool',
   short: 'Short description',
-  description: 'Longer description for the landing card.',
+  description: 'One or two sentences for the card and the page meta.',
+  category: 'text',              // see CATEGORIES in catalog.ts
+  audience: ['everyone'],        // who it is for
+  keywords: ['word', 'count'],   // extra search terms
+  replaces: 'paid word-count apps', // optional: what it saves people from
+},
+```
+
+4. Add the icon and component for the same slug to `visuals` in `src/tools/registry.tsx`:
+
+```tsx
+'my-tool': {
   icon: <MyIcon size={22} strokeWidth={1.5} color="var(--ink)" />,
   tint: 'linear-gradient(135deg, #hex, #hex)',
   Component: lazy(() => import('./my-tool/MyTool')),
 },
 ```
 
-4. Add the slug to the appropriate category in `CATEGORIES` within `src/pages/Landing.tsx`.
-5. The tool gets a route at `/#/tools/<slug>`. A tool missing from `CATEGORIES` still appears on the landing page, under "Other".
+5. The tool gets a page at `/tools/<slug>`, its own prerendered HTML, and a sitemap entry, all from the catalog entry.
 
 ## Code of Conduct
 

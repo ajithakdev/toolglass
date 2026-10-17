@@ -85,7 +85,8 @@ src/
 │   ├── ToolPage.tsx     # Dynamic lazy loader with ErrorBoundary & Suspense
 │   └── NotFound.tsx     # Custom 404 page
 ├── tools/               # Self-contained tool modules
-│   ├── registry.tsx     # Single source of truth for tool metadata & routing
+│   ├── catalog.ts       # Tool metadata: titles, categories, keywords
+│   ├── registry.tsx     # Icons and lazy-loaded components per tool
 │   └── <tool-name>/
 │       ├── <Tool>Tool.tsx      # Main React UI component
 │       ├── <tool>.ts           # Pure business logic / calculations
@@ -99,7 +100,7 @@ src/
 
 We love contributions! Toolglass was built to make contributing new utilities frictionless:
 
-- Adding a new tool usually requires just **one self-contained folder** under `src/tools/` and a registration line in `src/tools/registry.tsx`.
+- Adding a new tool usually takes **one self-contained folder** under `src/tools/`, an entry in `src/tools/catalog.ts`, and its icon and component in `src/tools/registry.tsx`.
 - We maintain a **zero external runtime dependencies** rule for individual tools — rely on native browser APIs.
 - Check out our **[Contributing Guide](.github/CONTRIBUTING.md)** for detailed step-by-step instructions.
 - All contributors are expected to follow our **[Code of Conduct](CODE_OF_CONDUCT.md)**.

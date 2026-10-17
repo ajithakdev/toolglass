@@ -1,6 +1,6 @@
 # Toolglass code map
 
-Mapped at commit: `18d4d8d` (2026-10-10), updated for branch `fix/known-issues` (2026-10-17). 81 tracked files, about 9,500 lines of source.
+Mapped at commit: `b7f874e` (2026-10-18), branch `redesign/foundation`. Includes `catalog.ts`, `seo.ts`, and the chmod and case-converter tools.
 
 Check for drift before trusting this file: `git diff --stat 18d4d8d..HEAD -- src`
 
@@ -44,7 +44,7 @@ index.html
 |---|---|---|
 | `App.tsx` (225) | `default App` | `InstallPwaButton` L14-54, `Shell` L56-193 (skip link, nav, footer with "Local Usage Stats" checkbox), `App` L195-225 (Ctrl/Cmd+K handler, routes). |
 | `main.tsx` (17) | none | Mount point. Redirects legacy hash URLs. |
-| `seo.ts` | `SITE_URL`, `HOME`, `toolPage`, `allPages`, `applyMeta`, `sitemapXml` | Pure page-meta helpers used by the build plugin and the App title effect. Has a test. |
+| `seo.ts` | `SITE_URL`, `HOME`, `toolPage`, `allPages`, `applyMeta`, `applyMetaToDocument`, `sitemapXml` | Page-meta helpers. `applyMeta` rewrites HTML at build time; `applyMetaToDocument` updates title, description, social tags, and canonical on client-side navigation (App effect). Has a test. |
 | `index.css` (281) | none | `:root` light tokens L1-47, dark tokens L49-88, view transitions L108-117, `.bg-orb`, `.glass`, `.glass-strong`, `.mono`, `.gradient-text`, `.sr-only`, focus rings, reduced-motion block L223. |
 | `lib/cn.ts` (3) | `cn(...parts)` | Joins truthy class names. |
 | `view-transitions.d.ts` (10) | none | Types for `document.startViewTransition`. |

@@ -42,6 +42,18 @@ export function applyMeta(html: string, m: PageMeta): string {
   ].reduce((h, f) => f(h), html);
 }
 
+/** Same tags as applyMeta, updated on the live document after client-side navigation. */
+export function applyMetaToDocument(m: PageMeta, doc: Document = document) {
+  const url = SITE_URL + m.path;
+  doc.title = m.title;
+  const set = (selector: string, attr: string, value: string) =>
+    doc.querySelectorAll(selector).forEach((el) => el.setAttribute(attr, value));
+  set('meta[name="description"], meta[property="og:description"], meta[name="twitter:description"]', 'content', m.description);
+  set('meta[property="og:title"], meta[name="twitter:title"]', 'content', m.title);
+  set('meta[property="og:url"]', 'content', url);
+  set('link[rel="canonical"]', 'href', url);
+}
+
 export function sitemapXml(pages: PageMeta[]): string {
   const urls = pages.map((p) => `  <url><loc>${SITE_URL}${p.path}</loc></url>`).join('\n');
   return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls}\n</urlset>\n`;

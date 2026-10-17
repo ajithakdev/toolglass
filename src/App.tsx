@@ -6,7 +6,7 @@ import { Landing } from './pages/Landing';
 import { ToolPage } from './pages/ToolPage';
 import { ToastProvider } from './components/ui/Toast';
 import { toolBySlug } from './tools/registry';
-import { HOME, toolPage } from './seo';
+import { applyMetaToDocument, HOME, toolPage } from './seo';
 import { useToolStats } from './hooks/useToolStats';
 import { Search, Download, ExternalLink, Sparkles } from 'lucide-react';
 import { ErrorBoundary } from './components/ErrorBoundary';
@@ -197,10 +197,10 @@ export default function App() {
   const [paletteOpen, setPaletteOpen] = useState(false);
   const location = useLocation();
 
-  // Keep the tab title in step with client-side navigation (prerendered pages set it on load)
+  // Keep title and meta tags in step with client-side navigation (prerendered pages set them on load)
   useEffect(() => {
     const tool = location.pathname.startsWith('/tools/') ? toolBySlug(location.pathname.slice(7)) : undefined;
-    document.title = (tool ? toolPage(tool) : HOME).title;
+    applyMetaToDocument(tool ? toolPage(tool) : HOME);
   }, [location.pathname]);
 
   useEffect(() => {

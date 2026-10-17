@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { applyMeta, allPages, sitemapXml, SITE_URL } from './seo';
+import { applyMeta, applyMetaToDocument, allPages, sitemapXml, SITE_URL } from './seo';
 
 const SHELL = `<title>Old</title>
 <meta name="description" content="old" />
@@ -17,6 +17,15 @@ describe('seo', () => {
     expect(out).toContain('<title>JSON &amp; &quot;more&quot;</title>');
     expect(out).toContain('content="Costs $1 &lt;b&gt;"');
     expect(out).toContain(`href="${SITE_URL}/tools/json"`);
+  });
+
+  it('updates the live document after client-side navigation', () => {
+    document.head.innerHTML = SHELL;
+    applyMetaToDocument({ path: '/tools/json', title: 'JSON', description: 'Format JSON' });
+    expect(document.title).toBe('JSON');
+    expect(document.querySelector('link[rel="canonical"]')!.getAttribute('href')).toBe(`${SITE_URL}/tools/json`);
+    expect(document.querySelector('meta[property="og:url"]')!.getAttribute('content')).toBe(`${SITE_URL}/tools/json`);
+    expect(document.querySelector('meta[name="twitter:description"]')!.getAttribute('content')).toBe('Format JSON');
   });
 
   it('lists the home page and every tool in the sitemap', () => {

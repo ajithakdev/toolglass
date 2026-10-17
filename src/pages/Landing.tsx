@@ -52,7 +52,9 @@ export function Landing() {
   const { recents } = useRecentTools();
   const recentTools = recents.map(toolBySlug).filter(Boolean);
   const [activeCategory, setActiveCategory] = useState<string>(() => {
-    return localStorage.getItem('toolglass_active_category') || 'all';
+    // Category names changed with the catalog; an old saved name would hide every tool
+    const saved = localStorage.getItem('toolglass_active_category');
+    return saved && CATEGORIES.some((c) => c.name === saved) ? saved : 'all';
   });
 
   const handleSetCategory = (catName: string) => {

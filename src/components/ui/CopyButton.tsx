@@ -1,4 +1,5 @@
 import { AnimatePresence, motion } from 'framer-motion';
+import { Check } from 'lucide-react';
 import { useParams } from 'react-router-dom';
 import { useClipboard } from '../../hooks/useClipboard';
 import { useToolStats } from '../../hooks/useToolStats';
@@ -36,7 +37,9 @@ export function CopyButton({ value, label = 'Copy', size = 'md', disabled }: Pro
             exit={{ opacity: 0, y: 4 }}
             transition={{ duration: 0.15 }}
           >
-            ✓ Copied!
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+              <Check size={14} strokeWidth={2.4} /> Copied
+            </span>
           </motion.span>
         ) : (
           <motion.span

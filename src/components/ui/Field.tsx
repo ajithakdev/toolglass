@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect, type CSSProperties, type ReactNode } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
+import { Check, ChevronDown } from 'lucide-react';
 
 export function Field({
   label,
@@ -22,13 +23,25 @@ export function Field({
           marginBottom: 8,
         }}
       >
-        <span style={{ fontSize: 13, fontWeight: 600, color: 'var(--ink)' }}>{label}</span>
-        {hint && <span style={{ fontSize: 12, color: 'var(--ink-mute)' }}>{hint}</span>}
+        <span style={{ fontSize: 'var(--t-sm)', fontWeight: 600, color: 'var(--ink)' }}>{label}</span>
+        {hint && <span className="num" style={{ fontSize: 'var(--t-xs)', color: 'var(--ink-mute)' }}>{hint}</span>}
       </div>
       {children}
     </label>
   );
 }
+
+const inputBase: CSSProperties = {
+  padding: '11px 14px',
+  borderRadius: 'var(--radius-sm)',
+  border: '1px solid var(--border)',
+  background: 'var(--surface-input)',
+  boxShadow: 'var(--edge)',
+  fontSize: 14,
+  outline: 'none',
+  color: 'var(--ink)',
+  transition: 'border-color var(--dur-2) var(--ease-out), box-shadow var(--dur-2) var(--ease-out)',
+};
 
 export function TextInput(props: React.InputHTMLAttributes<HTMLInputElement>) {
   return (
@@ -36,14 +49,7 @@ export function TextInput(props: React.InputHTMLAttributes<HTMLInputElement>) {
       {...props}
       style={{
         width: '100%',
-        padding: '12px 14px',
-        borderRadius: 12,
-        border: '1px solid var(--line)',
-        background: 'var(--surface-input)',
-        backdropFilter: 'blur(10px)',
-        fontSize: 14,
-        outline: 'none',
-        color: 'var(--ink)',
+        ...inputBase,
         ...props.style,
       }}
     />
@@ -56,13 +62,9 @@ export function TextArea(props: React.TextareaHTMLAttributes<HTMLTextAreaElement
       {...props}
       style={{
         width: '100%',
-        padding: '12px 14px',
-        borderRadius: 12,
-        border: '1px solid var(--line)',
-        background: 'var(--surface-input)',
-        backdropFilter: 'blur(10px)',
+        ...inputBase,
         fontSize: 13,
-        outline: 'none',
+        lineHeight: 1.6,
         resize: 'vertical',
         minHeight: 120,
         fontFamily: 'var(--font-mono)',
@@ -80,14 +82,8 @@ export function Select(props: React.SelectHTMLAttributes<HTMLSelectElement>) {
         {...props}
         style={{
           width: '100%',
-          padding: '12px 32px 12px 14px',
-          borderRadius: 12,
-          border: '1px solid var(--line)',
-          background: 'var(--surface-input)',
-          backdropFilter: 'blur(10px)',
-          fontSize: 14,
-          outline: 'none',
-          color: 'var(--ink)',
+          ...inputBase,
+          paddingRight: 36,
           appearance: 'none',
           WebkitAppearance: 'none',
           ...props.style,
@@ -103,10 +99,10 @@ export function Select(props: React.SelectHTMLAttributes<HTMLSelectElement>) {
           transform: 'translateY(-50%)',
           pointerEvents: 'none',
           color: 'var(--ink-mute)',
-          fontSize: 12
+          display: 'grid',
         }}
       >
-        ▼
+        <ChevronDown size={16} />
       </div>
     </div>
   );
@@ -141,26 +137,25 @@ export function Dropdown({
     <div ref={containerRef} style={{ position: 'relative', width: '100%' }}>
       <button
         type="button"
+        aria-haspopup="listbox"
+        aria-expanded={open}
         onClick={() => setOpen(!open)}
+        onKeyDown={(e) => {
+          if (e.key === 'Escape') setOpen(false);
+        }}
         style={{
           width: '100%',
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
-          padding: '12px 14px',
-          borderRadius: 12,
-          border: `1px solid ${open ? 'rgba(139, 92, 246, 0.4)' : 'var(--line)'}`,
-          background: 'var(--surface-input)',
-          backdropFilter: 'blur(10px)',
-          fontSize: 14,
-          color: 'var(--ink)',
+          ...inputBase,
+          borderColor: open ? 'var(--accent)' : 'var(--border)',
           textAlign: 'left',
-          boxShadow: open ? '0 0 0 4px rgba(139, 92, 246, 0.1)' : 'none',
-          transition: 'all 0.2s',
+          boxShadow: open ? '0 0 0 4px var(--accent-soft)' : 'var(--edge)',
         }}
       >
         <span>{selected?.label}</span>
-        <span style={{ fontSize: 10, color: 'var(--ink-mute)', transform: open ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }}>▼</span>
+        <ChevronDown size={16} color="var(--ink-mute)" style={{ transform: open ? 'rotate(180deg)' : 'none', transition: 'transform var(--dur-2) var(--ease-out)' }} />
       </button>
 
       <AnimatePresence>
@@ -169,19 +164,20 @@ export function Dropdown({
             initial={{ opacity: 0, y: -4, scale: 0.98 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -4, scale: 0.98 }}
-            transition={{ duration: 0.15 }}
+            transition={{ duration: 0.16, ease: [0.23, 1, 0.32, 1] }}
+            role="listbox"
             style={{
               position: 'absolute',
               top: 'calc(100% + 8px)',
               left: 0,
               right: 0,
               zIndex: 500,
-              background: 'var(--surface-palette)',
-              backdropFilter: 'blur(40px) saturate(200%)',
-              border: '1px solid var(--surface-palette-border)',
-              borderRadius: 16,
+              background: 'var(--surface-3)',
+              backdropFilter: 'var(--blur)',
+              border: '1px solid var(--glass-border)',
+              borderRadius: 'var(--radius)',
               padding: 6,
-              boxShadow: '0 12px 40px -8px rgba(40, 0, 100, 0.3), 0 4px 12px -4px rgba(80, 40, 140, 0.1)',
+              boxShadow: 'var(--edge), var(--e3)',
               maxHeight: 260,
               overflowY: 'auto',
               overflowX: 'hidden',
@@ -191,6 +187,8 @@ export function Dropdown({
               <button
                 key={opt.value}
                 type="button"
+                role="option"
+                aria-selected={opt.value === value}
                 title={opt.label}
                 onClick={() => {
                   onChange(opt.value);
@@ -200,13 +198,13 @@ export function Dropdown({
                   width: '100%',
                   textAlign: 'left',
                   padding: '10px 12px',
-                  borderRadius: 10,
+                  borderRadius: 8,
                   fontSize: 14,
-                  background: opt.value === value ? 'rgba(139, 92, 246, 0.12)' : 'transparent',
+                  background: opt.value === value ? 'var(--accent-soft)' : 'transparent',
                   color: 'var(--ink)',
                   border: 'none',
                   cursor: 'pointer',
-                  transition: 'background 0.1s',
+                  transition: 'background-color var(--dur-1) var(--ease-out)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'space-between',
@@ -214,7 +212,7 @@ export function Dropdown({
                   overflow: 'hidden',
                 }}
                 onMouseEnter={(e) => {
-                  if (opt.value !== value) e.currentTarget.style.background = 'rgba(139, 92, 246, 0.05)';
+                  if (opt.value !== value) e.currentTarget.style.background = 'var(--surface-1)';
                 }}
                 onMouseLeave={(e) => {
                   if (opt.value !== value) e.currentTarget.style.background = 'transparent';
@@ -223,7 +221,7 @@ export function Dropdown({
                 <span style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', flex: 1 }}>
                   {opt.label}
                 </span>
-                {opt.value === value && <span style={{ color: 'var(--accent)', fontSize: 12, flexShrink: 0 }}>✓</span>}
+                {opt.value === value && <Check size={14} color="var(--accent)" style={{ flexShrink: 0 }} />}
               </button>
             ))}
           </motion.div>
@@ -253,14 +251,14 @@ export function Toggle({
         alignItems: 'center',
         gap: 10,
         padding: '10px 14px',
-        background: checked ? 'rgba(167, 139, 250, 0.18)' : 'var(--surface-button-off)',
-        border: `1px solid ${checked ? 'rgba(167, 139, 250, 0.4)' : 'var(--line)'}`,
-        borderRadius: 12,
-        fontSize: 13,
+        background: checked ? 'var(--accent-soft)' : 'var(--surface-1)',
+        border: `1px solid ${checked ? 'var(--accent-ring)' : 'var(--border)'}`,
+        borderRadius: 'var(--radius-sm)',
+        fontSize: 'var(--t-sm)',
         fontWeight: 500,
         color: 'var(--ink)',
-        transition: 'all 0.2s ease',
-        backdropFilter: 'blur(10px)',
+        textAlign: 'left',
+        transition: 'background-color var(--dur-2) var(--ease-out), border-color var(--dur-2) var(--ease-out)',
         width: '100%',
       }}
     >
@@ -270,11 +268,9 @@ export function Toggle({
           width: 34,
           height: 20,
           borderRadius: 999,
-          background: checked
-            ? 'linear-gradient(135deg, #a78bfa, #f0abfc)'
-            : 'var(--toggle-track-off)',
+          background: checked ? 'var(--accent)' : 'var(--toggle-track-off)',
           position: 'relative',
-          transition: 'all 0.2s ease',
+          transition: 'background-color var(--dur-2) var(--ease-out)',
           flexShrink: 0,
         }}
       >
@@ -282,12 +278,13 @@ export function Toggle({
           style={{
             position: 'absolute',
             top: 2,
-            left: checked ? 16 : 2,
+            left: 2,
+            transform: checked ? 'translateX(14px)' : 'none',
             width: 16,
             height: 16,
             background: '#fff',
             borderRadius: '50%',
-            transition: 'all 0.2s ease',
+            transition: 'transform var(--dur-2) var(--ease-out)',
             boxShadow: '0 1px 3px rgba(0,0,0,0.2)',
           }}
         />
@@ -320,7 +317,8 @@ export function Slider({
       onChange={(e) => onChange(Number(e.target.value))}
       style={{
         width: '100%',
-        accentColor: '#8b5cf6',
+        accentColor: 'var(--accent)',
+        cursor: 'pointer',
       }}
     />
   );

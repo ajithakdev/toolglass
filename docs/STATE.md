@@ -1,17 +1,19 @@
 # Toolglass working state
 
-Last updated: 2026-10-17, on branch `redesign/foundation`.
+Last updated: 2026-10-18, on branch `redesign/design-system`.
 
 Update this file at the end of each work session. Keep it short. Delete entries once they are done and merged.
 
 ## In progress
 
-Redesign, per `docs/PLAN.md`. Branches stack: `fix/known-issues` (PR #109) → `redesign/foundation` (Phase 0) → later phases.
+Redesign, per `docs/PLAN.md`. Phase 0 merged (#115). Site live at https://toolglass.ajithakdev.com.
 
-- Phase 0 done on `redesign/foundation`: catalog metadata, clean URLs with prerendered tool pages and sitemap, CNAME for `toolglass.ajithakdev.com`, three-mode theme.
-- Next: Phase 1, design system (`redesign/design-system`).
+- Phase 1 on `redesign/design-system`: tokens, Geist fonts, logo, rebuilt primitives, segmented theme switch, new shell with privacy meter.
+- Next: Phase 2 (home, tools hub, about). Phase 3 must clear hard-coded hex colors and emoji in tools (55 hex values at last count).
 
 ## Last session
+
+- 2026-10-18: Merged #93, #94, #106-#109, #112-#115 after Devin review fixes; closed #92. Ruleset on `main` now needs 0 approvals (PR + `verify` still required). Custom domain live with HTTPS. Phase 1 design system built.
 
 - 2026-10-17 (Phase 0): `catalog.ts` + slimmed `registry.tsx`, `seo.ts` and the build plugin, `BrowserRouter` with legacy hash redirect, CNAME, Auto/Light/Dark theme store. 59 tests pass. Checked in headless Chromium: hash redirect, tool titles, clamped URL params.
 

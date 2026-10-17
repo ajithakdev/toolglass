@@ -17,7 +17,9 @@ import {
   Code2,
   Globe2,
   QrCode,
-  FileText
+  FileText,
+  Terminal,
+  Type,
 } from 'lucide-react';
 
 export interface ToolMeta extends ToolInfo {
@@ -111,6 +113,16 @@ const visuals: Record<string, Pick<ToolMeta, 'icon' | 'tint' | 'Component'>> = {
     icon: <FileText size={22} strokeWidth={1.5} color="var(--ink)" />,
     tint: 'linear-gradient(135deg, #bfdbfe, #c4b5fd)',
     Component: lazy(() => import('./markdown/MarkdownTool')),
+  },
+  'chmod': {
+    icon: <Terminal size={22} strokeWidth={1.5} color="var(--ink)" />,
+    tint: 'linear-gradient(135deg, #a7f3d0, #fed7aa)',
+    Component: lazy(() => import('./chmod/ChmodTool')),
+  },
+  'case-converter': {
+    icon: <Type size={22} strokeWidth={1.5} color="var(--ink)" />,
+    tint: 'linear-gradient(135deg, #fed7aa, #f472b6)',
+    Component: lazy(() => import('./case-converter/CaseConverterTool')),
   },
 };
 

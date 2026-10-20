@@ -30,9 +30,15 @@ describe('hash', () => {
   // jsdom's Blob has no stream(); Node's matches the browser API
   it('hashes a file with every algorithm and reports progress', async () => {
     const seen: number[] = [];
-    const out = await hashFile(new NodeBlob(['abc']) as unknown as Blob, (f) => seen.push(f));
+    const out = await hashFile(new NodeBlob(['abc']) as unknown as Blob, { onProgress: (f) => seen.push(f) });
     expect(out['SHA-256']).toBe('ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad');
     expect(out['SHA3-256']).toBe(await hashText('abc', 'SHA3-256'));
     expect(seen.at(-1)).toBe(1);
+  });
+
+  it('stops when aborted', async () => {
+    const ctrl = new AbortController();
+    ctrl.abort();
+    await expect(hashFile(new NodeBlob(['abc']) as unknown as Blob, { signal: ctrl.signal })).rejects.toThrow();
   });
 });

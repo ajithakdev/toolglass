@@ -155,26 +155,42 @@ export async function hashBytes(data: Uint8Array<ArrayBuffer>, algo: Algo): Prom
 
 export const hashText = (text: string, algo: Algo) => hashBytes(new TextEncoder().encode(text), algo);
 
+/** Largest file File mode accepts; see the shortcut note on `hashFile`. */
+export const MAX_FILE_BYTES = 1024 ** 3;
+
 /**
  * Every algorithm for one file. Streams the file once: SHA-3 variants absorb chunk by chunk,
  * and the chunks fill one buffer for WebCrypto, which has no streaming digest.
- * shortcut: holds the whole file in memory for SHA-1/2; fine to a few GB, swap in a streaming SHA-2 if people need more.
+ * shortcut: holds the whole file in memory for SHA-1/2, so files are capped at MAX_FILE_BYTES;
+ * add a streaming JS SHA-1/2 to lift the cap if people need bigger files.
+ * Rejects with an AbortError once `signal` aborts, and stops reading the file.
  */
-export async function hashFile(file: Blob, onProgress?: (fraction: number) => void): Promise<Record<Algo, string>> {
+export async function hashFile(
+  file: Blob,
+  { onProgress, signal }: { onProgress?: (fraction: number) => void; signal?: AbortSignal } = {},
+): Promise<Record<Algo, string>> {
+  if (file.size > MAX_FILE_BYTES) throw new RangeError('File too large');
   const all = new Uint8Array(file.size);
   const sponges = ALGOS.map((a) => [a, sponge(a)] as const).filter((e) => e[1]);
   const reader = file.stream().getReader();
   let read = 0;
-  for (;;) {
-    const { done, value } = await reader.read();
-    if (done) break;
-    all.set(value, read);
-    read += value.length;
-    sponges.forEach(([, k]) => k!.update(value));
-    onProgress?.(file.size ? read / file.size : 1);
+  try {
+    for (;;) {
+      signal?.throwIfAborted();
+      const { done, value } = await reader.read();
+      if (done) break;
+      all.set(value, read);
+      read += value.length;
+      sponges.forEach(([, k]) => k!.update(value));
+      onProgress?.(file.size ? read / file.size : 1);
+    }
+  } finally {
+    if (signal?.aborted) await reader.cancel();
+    reader.releaseLock();
   }
   const out = {} as Record<Algo, string>;
   for (const a of ALGOS) {
+    signal?.throwIfAborted();
     const k = sponges.find(([s]) => s === a)?.[1];
     out[a] = k ? k.digest() : await hashBytes(all, a);
   }

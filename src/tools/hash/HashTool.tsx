@@ -5,7 +5,7 @@ import { CopyButton } from '../../components/ui/CopyButton';
 import { Segmented } from '../../components/ui/Segmented';
 import { ToolLayout } from '../../components/ToolLayout';
 import { Button } from '../../components/ui/Button';
-import { ALGOS, hashFile, hashText, type Algo } from './hash';
+import { ALGOS, MAX_FILE_BYTES, hashFile, hashText, type Algo } from './hash';
 
 function formatBytes(n: number) {
   const units = ['B', 'KB', 'MB', 'GB'];
@@ -62,16 +62,19 @@ function FileMode() {
 
   useEffect(() => {
     if (!file) return;
-    let alive = true;
     setHashes(null);
     setError('');
     setProgress(0);
-    hashFile(file, (f) => alive && setProgress(f))
-      .then((h) => alive && setHashes(h))
-      .catch(() => alive && setError('Could not read this file.'));
-    return () => {
-      alive = false;
-    };
+    if (file.size > MAX_FILE_BYTES) {
+      setError(`This file is ${formatBytes(file.size)}. File mode handles up to ${formatBytes(MAX_FILE_BYTES)}, because the browser has to hold it in memory.`);
+      return;
+    }
+    // Abort stops reading the old file when another is picked or the tool closes
+    const ctrl = new AbortController();
+    hashFile(file, { onProgress: (f) => !ctrl.signal.aborted && setProgress(f), signal: ctrl.signal })
+      .then((h) => !ctrl.signal.aborted && setHashes(h))
+      .catch(() => !ctrl.signal.aborted && setError('Could not read this file.'));
+    return () => ctrl.abort();
   }, [file]);
 
   return (
@@ -101,7 +104,16 @@ function FileMode() {
           color: 'var(--ink-soft)',
         }}
       >
-        <input type="file" className="sr-only" onChange={(e) => e.target.files?.[0] && setFile(e.target.files[0])} />
+        <input
+          type="file"
+          className="sr-only"
+          onChange={(e) => {
+            const picked = e.target.files?.[0];
+            // Clear so picking the same (maybe changed) file again still fires change
+            e.target.value = '';
+            if (picked) setFile(picked);
+          }}
+        />
         <strong style={{ color: 'var(--ink)' }}>{file ? file.name : 'Drop a file here, or click to choose one'}</strong>
         <span style={{ fontSize: 'var(--t-sm)' }}>
           {file ? formatBytes(file.size) : 'Any file type. It never leaves your device.'}
@@ -113,7 +125,7 @@ function FileMode() {
           <div style={{ height: 6, borderRadius: 3, background: 'var(--surface-3)', overflow: 'hidden' }}>
             <div style={{ height: '100%', width: `${progress * 100}%`, background: 'var(--accent)', transition: 'width 120ms linear' }} />
           </div>
-          <p style={{ margin: '6px 0 0', fontSize: 'var(--t-xs)', color: 'var(--ink-mute)' }}>Hashing… {Math.round(progress * 100)}%</p>
+          <p style={{ margin: '6px 0 0', fontSize: 'var(--t-xs)', color: 'var(--ink-mute)' }}>{progress < 1 ? `Hashing… ${Math.round(progress * 100)}%` : 'Finishing…'}</p>
         </div>
       )}
       {error && <p role="alert" style={{ margin: 0, color: 'var(--status-error)' }}>{error}</p>}
@@ -148,7 +160,13 @@ export default function HashTool() {
             { value: 'file', label: 'File' },
           ]}
         />
-        {mode === 'text' ? <TextMode /> : <FileMode />}
+        {/* Both stay mounted so switching modes keeps each one's input */}
+        <div hidden={mode !== 'text'} style={{ display: mode === 'text' ? 'contents' : 'none' }}>
+          <TextMode />
+        </div>
+        <div hidden={mode !== 'file'} style={{ display: mode === 'file' ? 'contents' : 'none' }}>
+          <FileMode />
+        </div>
       </div>
     </ToolLayout>
   );

@@ -1,6 +1,6 @@
 # Toolglass code map
 
-Mapped at commit: `cea8b80` plus branch `tools/wave-1` (2026-10-21, Phase 4 wave 1 of `docs/PLAN.md`).
+Mapped at commit: `6811fb6` plus branch `tools/wave-2` (2026-10-21, Phase 4 wave 2 of `docs/PLAN.md`).
 
 Check for drift before trusting this file: `git diff --stat c7cd085..HEAD -- src`
 
@@ -136,10 +136,22 @@ Catalog: `catalog.ts` exports `CategoryId`, `Audience`, `CATEGORIES`, `AUDIENCES
 | `timer` | `timer/TimerTool.tsx` | `timer.ts`: `formatDuration` | yes | Stopwatch, countdown, pomodoro. Elapsed time from `performance.now()`, beep via Web Audio. |
 | `image-compress` | `image-compress/ImageCompressTool.tsx` | `image.ts`: `fitSize`, `formatBytes`, `renameFor` | yes | Canvas re-encode, which also strips EXIF. Errors if the browser cannot encode the chosen format. |
 | `screen-recorder` | `screen-recorder/ScreenRecorderTool.tsx` | `recorder.ts`: `pickMime`, `extFor` | yes | `getDisplayMedia` + `MediaRecorder`. Desktop only. |
+| `csv-json` | `csv-json/CsvJsonTool.tsx` | `csv.ts`: `parseCsv` (RFC 4180), `sniffDelimiter`, `csvToObjects`, `objectsToCsv`, `toSqlInsert` | yes | |
+| `yaml-toml` | `yaml-toml/YamlTomlTool.tsx` | `convert.ts`, using `js-yaml` (JSON schema only) and `smol-toml` | yes | Only tool with format libraries; they stay in its lazy chunk. |
+| `sql-format` | `sql-format/SqlFormatTool.tsx` | `sqlFormat.ts`: `formatSql` (tokenizer plus layout rules, no dialects) | yes | |
+| `http-status` | `http-status/HttpStatusTool.tsx` | `codes.ts`: `STATUS_CODES`, `searchCodes` | yes | |
+| `number-base` | `number-base/NumberBaseTool.tsx` | `numberBase.ts`: `parseBig`, `toBase`, `toBits`, `fromBits` (BigInt) | yes | |
+| `html-entities` | `html-entities/HtmlEntitiesTool.tsx` | `entities.ts`: `encodeEntities`, `decodeEntities` (detached textarea, never runs markup) | yes | |
+| `list-transform` | `list-transform/ListTransformTool.tsx` | `list.ts`: `transformList` | yes | |
+| `keycode` | `keycode/KeycodeTool.tsx` | inline | no | Window keydown listener; Tab and Escape keep default behavior. |
+| `unicode` | `unicode/UnicodeTool.tsx` | `unicode.ts`: `inspect`, `clean` | yes | Keeps ZWJ and variation selectors inside emoji. |
+| `subnet` | `subnet/SubnetTool.tsx` | `subnet.ts`: `subnet`, `fmtV6` (RFC 5952) | yes | URL state: `ip`. |
+| `mime-types` | `mime-types/MimeTypesTool.tsx` | `mime.ts`: `MIME_TYPES`, `detect`, `search` | yes | Reads only the first 32 KB of a file. |
+| `json-to-zod` | `json-to-zod/JsonToZodTool.tsx` | `zod.ts`: `jsonToZod` | yes | |
 
 `curlSecurity.ts` exports: types `HeaderParam`, `SavedRequest`, `HistoryItem`, `SessionAuthData`; `isSensitiveHeader`, `sanitizeHeaders`, `hasAuthCredentials`, `sanitizeSavedRequest`, `sanitizeHistoryItem`, `saveSessionAuth`, `getSessionAuth`, `clearSessionAuth`, `scrubStorageAuth`.
 
-Tests: 33 files, each `*.test.ts(x)` next to the code it tests. Find them with `find src -name '*.test.*'`.
+Tests: 44 files, each `*.test.ts(x)` next to the code it tests. Find them with `find src -name '*.test.*'`.
 
 ## Adding a tool
 

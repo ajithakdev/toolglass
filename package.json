@@ -25,16 +25,19 @@
   "dependencies": {
     "dompurify": "^3.4.17",
     "framer-motion": "^14.3.0",
+    "js-yaml": "4.1.0",
     "lucide-react": "^1.59.0",
     "marked": "^18.1.1",
     "qrcode": "^1.5.4",
     "react": "^19.3.1",
     "react-dom": "^19.3.1",
     "react-router-dom": "^7.18.4",
+    "smol-toml": "1.9.0",
     "three": "^0.186.1"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "@types/js-yaml": "4.0.9",
     "@types/qrcode": "^1.5.6",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",

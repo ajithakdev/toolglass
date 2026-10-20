@@ -29,6 +29,18 @@ import {
   Timer,
   ImageDown,
   Video,
+  Sheet,
+  ArrowLeftRight,
+  Database,
+  Signal,
+  Calculator,
+  Ampersand,
+  ListFilter,
+  Keyboard,
+  ScanText,
+  Network,
+  FileType,
+  ShieldCheck,
 } from 'lucide-react';
 
 export interface ToolMeta extends ToolInfo {
@@ -148,6 +160,54 @@ const visuals: Record<string, Pick<ToolMeta, 'icon' | 'Component'>> = {
   'screen-recorder': {
     icon: <Video size={22} strokeWidth={1.5} color="var(--ink)" />,
     Component: lazy(() => import('./screen-recorder/ScreenRecorderTool')),
+  },
+  'csv-json': {
+    icon: <Sheet size={22} strokeWidth={1.5} color="var(--ink)" />,
+    Component: lazy(() => import('./csv-json/CsvJsonTool')),
+  },
+  'yaml-toml': {
+    icon: <ArrowLeftRight size={22} strokeWidth={1.5} color="var(--ink)" />,
+    Component: lazy(() => import('./yaml-toml/YamlTomlTool')),
+  },
+  'sql-format': {
+    icon: <Database size={22} strokeWidth={1.5} color="var(--ink)" />,
+    Component: lazy(() => import('./sql-format/SqlFormatTool')),
+  },
+  'http-status': {
+    icon: <Signal size={22} strokeWidth={1.5} color="var(--ink)" />,
+    Component: lazy(() => import('./http-status/HttpStatusTool')),
+  },
+  'number-base': {
+    icon: <Calculator size={22} strokeWidth={1.5} color="var(--ink)" />,
+    Component: lazy(() => import('./number-base/NumberBaseTool')),
+  },
+  'html-entities': {
+    icon: <Ampersand size={22} strokeWidth={1.5} color="var(--ink)" />,
+    Component: lazy(() => import('./html-entities/HtmlEntitiesTool')),
+  },
+  'list-transform': {
+    icon: <ListFilter size={22} strokeWidth={1.5} color="var(--ink)" />,
+    Component: lazy(() => import('./list-transform/ListTransformTool')),
+  },
+  'keycode': {
+    icon: <Keyboard size={22} strokeWidth={1.5} color="var(--ink)" />,
+    Component: lazy(() => import('./keycode/KeycodeTool')),
+  },
+  'unicode': {
+    icon: <ScanText size={22} strokeWidth={1.5} color="var(--ink)" />,
+    Component: lazy(() => import('./unicode/UnicodeTool')),
+  },
+  'subnet': {
+    icon: <Network size={22} strokeWidth={1.5} color="var(--ink)" />,
+    Component: lazy(() => import('./subnet/SubnetTool')),
+  },
+  'mime-types': {
+    icon: <FileType size={22} strokeWidth={1.5} color="var(--ink)" />,
+    Component: lazy(() => import('./mime-types/MimeTypesTool')),
+  },
+  'json-to-zod': {
+    icon: <ShieldCheck size={22} strokeWidth={1.5} color="var(--ink)" />,
+    Component: lazy(() => import('./json-to-zod/JsonToZodTool')),
   },
 };
 

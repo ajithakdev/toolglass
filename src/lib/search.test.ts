@@ -21,7 +21,7 @@ describe('searchTools', () => {
   });
 
   it('requires every word to match', () => {
-    expect(slugs('json typescript')).toEqual(['json-to-ts']);
+    expect(slugs('json typescript')).toEqual(['json-to-ts', 'json-to-zod']);
     expect(slugs('json zzzz')).toEqual([]);
   });
 

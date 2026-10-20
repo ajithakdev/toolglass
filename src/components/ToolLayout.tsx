@@ -5,6 +5,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useClipboard } from '../hooks/useClipboard';
 import { useFavorites } from '../hooks/useFavorites';
 import { useToolStats } from '../hooks/useToolStats';
+import { currentUrl } from '../hooks/useUrlState';
 import { EASE_OUT, stagger } from '../lib/motion';
 import { CATEGORIES } from '../tools/catalog';
 import { toolBySlug, tools } from '../tools/registry';
@@ -78,7 +79,9 @@ export function ToolLayout({ children }: { children: ReactNode }) {
           <p style={{ margin: 0, color: 'var(--ink-soft)', fontSize: 'var(--t-base)', maxWidth: 'var(--measure)' }}>{tool.description}</p>
           <p style={{ margin: '2px 0 0', display: 'flex', alignItems: 'center', gap: 6, fontSize: 'var(--t-xs)', color: 'var(--ink-mute)' }}>
             <ShieldCheck size={14} color="var(--status-success)" aria-hidden />
-            Runs on your device{tool.replaces ? `. Instead of ${tool.replaces}.` : '.'}
+            {/* The API Tester is the one tool that sends network requests */}
+            {tool.slug === 'api-tester' ? 'Runs in your browser. Requests go only to the URLs you send them to' : 'Runs on your device'}
+            {tool.replaces ? `. Instead of ${tool.replaces}.` : '.'}
           </p>
         </div>
         <div style={{ display: 'flex', gap: 'var(--s-2)' }}>
@@ -86,7 +89,7 @@ export function ToolLayout({ children }: { children: ReactNode }) {
             <Star size={16} strokeWidth={1.9} fill={fav ? 'currentColor' : 'none'} />
             <span className="hide-sm">{fav ? 'Saved' : 'Favorite'}</span>
           </IconButton>
-          <IconButton label="Copy link to this tool" onClick={() => copy(window.location.href)}>
+          <IconButton label="Copy link to this tool" onClick={() => copy(currentUrl())}>
             {copied ? <Check size={16} strokeWidth={2.2} /> : <Link2 size={16} strokeWidth={1.9} />}
             <span className="hide-sm">{copied ? 'Copied' : 'Share'}</span>
           </IconButton>

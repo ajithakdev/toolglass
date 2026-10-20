@@ -548,12 +548,17 @@ export function useApiTester() {
         const parsed = JSON.parse(event.target?.result as string);
         if (Array.isArray(parsed)) {
           const sanitized = parsed.map(sanitizeSavedRequest);
-          setSavedRequests((prev) => {
-            const updated = [...sanitized, ...prev];
-            localStorage.setItem('toolglass_saved_requests', JSON.stringify(updated.map(sanitizeSavedRequest)));
-            return updated;
-          });
-          toast.push('Workflows imported securely (credentials stripped)', 'success');
+          // Same 50-workflow cap as saving, so a huge file can't fill localStorage
+          const updated = [...sanitized, ...savedRequests].slice(0, 50);
+          setSavedRequests(updated);
+          localStorage.setItem('toolglass_saved_requests', JSON.stringify(updated.map(sanitizeSavedRequest)));
+          const dropped = sanitized.length + savedRequests.length - updated.length;
+          toast.push(
+            dropped > 0
+              ? `Imported (credentials stripped). ${dropped} workflow(s) skipped: limit is 50.`
+              : 'Workflows imported securely (credentials stripped)',
+            dropped > 0 ? 'info' : 'success',
+          );
         } else {
           toast.push('Invalid JSON file format', 'error');
         }

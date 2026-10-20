@@ -29,6 +29,13 @@ function queueWrite(key: string, str: string | null, onWritten: () => void, sett
   }, 200);
 }
 
+/** The current page URL with any not-yet-flushed writes applied, so Share never copies stale settings. */
+export function currentUrl(): string {
+  const url = new URL(window.location.href);
+  pending.forEach((w, k) => (w.str === null ? url.searchParams.delete(k) : url.searchParams.set(k, w.str)));
+  return url.toString();
+}
+
 /**
  * Syncs a piece of state to/from a URL search parameter.
  *

@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { act } from 'react';
 import { createRoot, type Root } from 'react-dom/client';
 import { MemoryRouter, useLocation, useNavigate } from 'react-router-dom';
-import { intParam, useUrlState } from './useUrlState';
+import { currentUrl, intParam, useUrlState } from './useUrlState';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 (globalThis as any).IS_REACT_ACT_ENVIRONMENT = true;
@@ -59,6 +59,19 @@ describe('useUrlState', () => {
     act(() => vi.advanceTimersByTime(200));
     expect(input.value).toBe('abc');
     expect(container.querySelector('output')!.textContent).toBe('?q=abc');
+  });
+
+  it('currentUrl includes writes still waiting on the debounce', () => {
+    act(() => {
+      root.render(
+        <MemoryRouter initialEntries={['/']}>
+          <Harness />
+        </MemoryRouter>,
+      );
+    });
+    act(() => type(container.querySelector('input')!, 'shared'));
+    expect(new URL(currentUrl()).searchParams.get('q')).toBe('shared');
+    act(() => vi.advanceTimersByTime(200));
   });
 
   it('reads the initial value from the URL', () => {

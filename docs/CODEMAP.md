@@ -1,6 +1,6 @@
 # Toolglass code map
 
-Mapped at commit: `5e804dc` plus branch `feat/phase3-finish` (2026-10-21, end of Phase 3 of `docs/PLAN.md`).
+Mapped at commit: `cea8b80` plus branch `tools/wave-1` (2026-10-21, Phase 4 wave 1 of `docs/PLAN.md`).
 
 Check for drift before trusting this file: `git diff --stat c7cd085..HEAD -- src`
 
@@ -127,10 +127,19 @@ Catalog: `catalog.ts` exports `CategoryId`, `Audience`, `CATEGORIES`, `AUDIENCES
 | `markdown` | `markdown/MarkdownTool.tsx` (104) | `marked` + `dompurify` | no | Output is sanitized before render and before "Copy HTML". |
 | `chmod` | `chmod/ChmodTool.tsx` | `chmod.ts` | yes | URL state: `v` (octal). Shell-escapes filenames in the copied command. From PR #93. |
 | `case-converter` | `case-converter/CaseConverterTool.tsx` | `caseConverter.ts` | yes | URL state: `t`. Unicode-aware word splitting. From PR #94. |
+| `word-counter` | `word-counter/WordCounterTool.tsx` | `wordCount.ts`: `textStats` (Intl.Segmenter) | yes | |
+| `text-diff` | `text-diff/TextDiffTool.tsx` | `diff.ts`: `diffLines` (LCS, capped at `MAX_CELLS`) | yes | Unified view. |
+| `notepad` | `notepad/NotepadTool.tsx` | reuses `textStats` | no | Autosaves to `toolglass_notepad`. |
+| `unit-converter` | `unit-converter/UnitConverterTool.tsx` | `units.ts`: `UNITS`, `convert`, `formatNumber` | yes | URL state: `cat`, `from`, `to`, `v`. |
+| `percentage` | `percentage/PercentageTool.tsx` | `percentage.ts` | yes | Four calculators on one page. |
+| `world-clock` | `world-clock/WorldClockTool.tsx` | reuses `timestamp.ts` `isoWithOffset` | no | Zones in `toolglass_world_clock` via `createListStore`. |
+| `timer` | `timer/TimerTool.tsx` | `timer.ts`: `formatDuration` | yes | Stopwatch, countdown, pomodoro. Elapsed time from `performance.now()`, beep via Web Audio. |
+| `image-compress` | `image-compress/ImageCompressTool.tsx` | `image.ts`: `fitSize`, `formatBytes`, `renameFor` | yes | Canvas re-encode, which also strips EXIF. Errors if the browser cannot encode the chosen format. |
+| `screen-recorder` | `screen-recorder/ScreenRecorderTool.tsx` | `recorder.ts`: `pickMime`, `extFor` | yes | `getDisplayMedia` + `MediaRecorder`. Desktop only. |
 
 `curlSecurity.ts` exports: types `HeaderParam`, `SavedRequest`, `HistoryItem`, `SessionAuthData`; `isSensitiveHeader`, `sanitizeHeaders`, `hasAuthCredentials`, `sanitizeSavedRequest`, `sanitizeHistoryItem`, `saveSessionAuth`, `getSessionAuth`, `clearSessionAuth`, `scrubStorageAuth`.
 
-Tests: 26 files, each `*.test.ts(x)` next to the code it tests. Find them with `find src -name '*.test.*'`.
+Tests: 33 files, each `*.test.ts(x)` next to the code it tests. Find them with `find src -name '*.test.*'`.
 
 ## Adding a tool
 
@@ -158,6 +167,8 @@ Tests: 26 files, each `*.test.ts(x)` next to the code it tests. Find them with `
 | `toolglass_stats` | local | `hooks/useToolStats.ts:3` |
 | `toolglass_telemetry_enabled` | local | `hooks/useToolStats.ts:4` |
 | `toolglass_favorites` | local | `hooks/useFavorites.ts` |
+| `toolglass_notepad` | local | `tools/notepad/NotepadTool.tsx` |
+| `toolglass_world_clock` | local | `tools/world-clock/WorldClockTool.tsx` |
 | `toolglass_saved_requests` | local | `tools/curl-to-fetch/curlSecurity.ts:56`, also literal in `useApiTester.ts` |
 | `toolglass_request_history` | local | `tools/curl-to-fetch/curlSecurity.ts:57`, also literal in `useApiTester.ts` |
 | `tg_ts_history` | local | `tools/timestamp/TimestampTool.tsx:277` |

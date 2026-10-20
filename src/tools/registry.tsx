@@ -20,6 +20,15 @@ import {
   FileText,
   Terminal,
   Type,
+  WholeWord,
+  GitCompare,
+  StickyNote,
+  Ruler,
+  Percent,
+  Earth,
+  Timer,
+  ImageDown,
+  Video,
 } from 'lucide-react';
 
 export interface ToolMeta extends ToolInfo {
@@ -103,6 +112,42 @@ const visuals: Record<string, Pick<ToolMeta, 'icon' | 'Component'>> = {
   'case-converter': {
     icon: <Type size={22} strokeWidth={1.5} color="var(--ink)" />,
     Component: lazy(() => import('./case-converter/CaseConverterTool')),
+  },
+  'word-counter': {
+    icon: <WholeWord size={22} strokeWidth={1.5} color="var(--ink)" />,
+    Component: lazy(() => import('./word-counter/WordCounterTool')),
+  },
+  'text-diff': {
+    icon: <GitCompare size={22} strokeWidth={1.5} color="var(--ink)" />,
+    Component: lazy(() => import('./text-diff/TextDiffTool')),
+  },
+  'notepad': {
+    icon: <StickyNote size={22} strokeWidth={1.5} color="var(--ink)" />,
+    Component: lazy(() => import('./notepad/NotepadTool')),
+  },
+  'unit-converter': {
+    icon: <Ruler size={22} strokeWidth={1.5} color="var(--ink)" />,
+    Component: lazy(() => import('./unit-converter/UnitConverterTool')),
+  },
+  'percentage': {
+    icon: <Percent size={22} strokeWidth={1.5} color="var(--ink)" />,
+    Component: lazy(() => import('./percentage/PercentageTool')),
+  },
+  'world-clock': {
+    icon: <Earth size={22} strokeWidth={1.5} color="var(--ink)" />,
+    Component: lazy(() => import('./world-clock/WorldClockTool')),
+  },
+  'timer': {
+    icon: <Timer size={22} strokeWidth={1.5} color="var(--ink)" />,
+    Component: lazy(() => import('./timer/TimerTool')),
+  },
+  'image-compress': {
+    icon: <ImageDown size={22} strokeWidth={1.5} color="var(--ink)" />,
+    Component: lazy(() => import('./image-compress/ImageCompressTool')),
+  },
+  'screen-recorder': {
+    icon: <Video size={22} strokeWidth={1.5} color="var(--ink)" />,
+    Component: lazy(() => import('./screen-recorder/ScreenRecorderTool')),
   },
 };
 

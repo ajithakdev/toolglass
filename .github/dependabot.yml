@@ -8,6 +8,10 @@ updates:
     schedule:
       interval: monthly
     open-pull-requests-limit: 2
+    ignore:
+      # typescript-eslint 8 doesn't accept TypeScript 7 yet; lift once it does
+      - dependency-name: typescript
+        update-types: ['version-update:semver-major']
     groups:
       npm-monthly:
         applies-to: version-updates

@@ -99,11 +99,11 @@ export const catalog: ToolInfo[] = [
   {
     slug: 'hash',
     title: 'Hash Generator',
-    short: 'SHA-1/256/384/512',
-    description: 'Compute cryptographic hashes of text via Web Crypto.',
+    short: 'SHA-1, SHA-2, SHA-3, Keccak',
+    description: 'Hash text or files with SHA-1, SHA-2, SHA-3, or Keccak-256. Check download checksums without a terminal.',
     category: 'security',
     audience: ['developers', 'everyone'],
-    keywords: ['hash', 'sha256', 'sha1', 'sha512', 'checksum', 'digest'],
+    keywords: ['hash', 'sha256', 'sha1', 'sha512', 'sha3', 'keccak', 'checksum', 'digest', 'file hash', 'sha256sum', 'verify download'],
     replaces: 'hash calculator sites',
   },
   {

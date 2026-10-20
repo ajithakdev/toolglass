@@ -1,8 +1,8 @@
 # Toolglass code map
 
-Mapped at commit: `149564f` (`main`, 2026-10-20, Phase 3 of `docs/PLAN.md`).
+Mapped at commit: `c7cd085` (`main`, 2026-10-20, Phase 3 of `docs/PLAN.md`).
 
-Check for drift before trusting this file: `git diff --stat 149564f..HEAD -- src`
+Check for drift before trusting this file: `git diff --stat c7cd085..HEAD -- src`
 
 Numbers in parentheses are line counts. Use them to judge read cost.
 
@@ -36,6 +36,7 @@ index.html
 | `tsconfig.json` | strict, noUnusedLocals, noUnusedParameters, `include: ["src"]`. |
 | `eslint.config.js` (26) | Flat config. Several `react-hooks/*` rules turned off (set-state-in-effect, purity, refs, error-boundaries, set-state-in-render). |
 | `index.html` | Meta, OG tags, JSON-LD, pre-paint theme script. Fonts are self-hosted Geist and Geist Mono (see `index.css`). |
+| `.github/ISSUE_TEMPLATE/` | Issue forms: `bug_report.yml`, `feature_request.yml`; `config.yml` turns off blank issues and links Discussions, SECURITY.md, and the site. Tool-request links in `ToolsHub.tsx` and `About.tsx` open `feature_request.yml` with `template=`. |
 | `.github/workflows/ci-cd.yml` | `verify` job: `npm ci`, lint, build, test, upload Pages artifact. `deploy` job: Pages, main only; it alone has `pages`/`id-token` write. |
 | `scripts/gen-keccak-permute.py` | Prints the unrolled Keccak `permute` for `src/tools/hash/hash.ts`. Only needed if that function is ever regenerated. |
 | `public/` | favicon.svg, icon-192.png, icon-512.png, og-image.png, robots.txt, sitemap.xml. |

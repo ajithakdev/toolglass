@@ -14,7 +14,7 @@ import { AUDIENCES, CATEGORIES, type Audience, type CategoryId } from '../tools/
 import { toolBySlug, tools, type ToolMeta } from '../tools/registry';
 
 const id = (v: string) => v;
-const ISSUE_URL = 'https://github.com/ajithakdev/toolglass/issues/new?labels=new%20tool&title=';
+const ISSUE_URL = 'https://github.com/ajithakdev/toolglass/issues/new?template=feature_request.yml&labels=enhancement,new%20tool&title=';
 
 // Only offer audiences and categories that have tools today
 const audienceOptions = [

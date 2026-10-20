@@ -1,6 +1,6 @@
 # Toolglass working state
 
-Last updated: 2026-10-20, on `main` (Phase 3).
+Last updated: 2026-10-21, on `feat/phase3-finish` (Phase 3).
 
 Update this file at the end of each work session. Keep it short. Delete entries once they are done and merged.
 
@@ -9,8 +9,9 @@ Update this file at the end of each work session. Keep it short. Delete entries 
 Redesign, per `docs/PLAN.md`. Phases 0 to 2 merged (#115, #117). Site live at https://toolglass.ajithakdev.com.
 
 - Phase 3 mostly done: tool shell and tokens (#118), UUID v7 (#119), SHA-3 and file hashing (#122), bulk passwords (#123).
-- Left in Phase 3, one small PR each: timestamp formats (#39), URL batch (#28), JSON schema (#27), JWT RS256/ES256 (#37).
-- Then Phase 4 wave 1 (new everyday tools).
+- Phase 3 finish PR (branch `feat/phase3-finish`): timestamp formats (#39), URL batch (#28), JSON schema (#27), JWT RS256/ES256 (#37). Awaiting owner's manual test.
+- Next: Phase 4 wave 1 (new everyday tools).
+- JSON schema uses a built-in subset validator; `ajv` would need maintainer approval as a new dependency.
 - v1.0.0 released 2026-10-20 (tag on `9419fbe`). Issue forms, Discussions, and repo topics are set up for student contributors.
 - Owner saw no home animations in their browser. The live site animates fine in headless Chromium; their screenshots match the reduced-motion and no-WebGL fallbacks (likely the Flatpak browser on Wayland). Waiting on their console check.
 - Follow-ups: file hashing caps at 1 GB because SHA-1/2 go through WebCrypto, which can't stream (needs a streaming JS SHA-1/2 to lift); TypeScript held at 6.x in `dependabot.yml` until typescript-eslint supports 7.

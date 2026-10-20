@@ -8,6 +8,7 @@ import { useToast } from '../../components/ui/Toast';
 import { useUrlState } from '../../hooks/useUrlState';
 import { useClipboard } from '../../hooks/useClipboard';
 import { useToolStats } from '../../hooks/useToolStats';
+import { isoWithOffset, rfc2822 } from './timestamp';
 
 // ── Timezone Lists ──
 const DEFAULT_TZS = ['UTC', 'America/New_York', 'Asia/Kolkata', 'Europe/London'];
@@ -65,8 +66,9 @@ function parseSmartDate(input: string): Date | null {
   return Number.isNaN(d.getTime()) ? null : d;
 }
 
-function formatLocal(date: Date, timeZone: string, type: 'all' | 'date' | 'time' | 'offset'): string {
+function formatLocal(date: Date, timeZone: string, type: 'all' | 'date' | 'time' | 'offset' | 'iso'): string {
   try {
+    if (type === 'iso') return isoWithOffset(date, timeZone);
     if (type === 'all') {
       return new Intl.DateTimeFormat('en-US', {
         timeZone,
@@ -539,6 +541,7 @@ export default function TimestampTool() {
                       <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
                         <ValueRow label="ISO 8601" value={parsedDate.toISOString()} date={parsedDate} onCopy={handleCopy} onCode={openCodeFlyout} />
                         <ValueRow label="UTC String" value={parsedDate.toUTCString()} date={parsedDate} onCopy={handleCopy} onCode={openCodeFlyout} />
+                        <ValueRow label="RFC 2822" value={rfc2822(parsedDate)} date={parsedDate} onCopy={handleCopy} onCode={openCodeFlyout} />
                       </div>
                     </div>
 
@@ -587,6 +590,7 @@ export default function TimestampTool() {
                         <ValueRow label="Date & Time" value={formatLocal(parsedDate, selectedTz, 'all')} date={parsedDate} onCopy={handleCopy} onCode={openCodeFlyout} />
                         <ValueRow label="Date Only" value={formatLocal(parsedDate, selectedTz, 'date')} date={parsedDate} onCopy={handleCopy} onCode={openCodeFlyout} />
                         <ValueRow label="Time Only" value={formatLocal(parsedDate, selectedTz, 'time')} date={parsedDate} onCopy={handleCopy} onCode={openCodeFlyout} />
+                        <ValueRow label="ISO 8601 (local)" value={formatLocal(parsedDate, selectedTz, 'iso')} date={parsedDate} onCopy={handleCopy} onCode={openCodeFlyout} />
                         <ValueRow label="Offset & Zone" value={formatLocal(parsedDate, selectedTz, 'offset')} date={parsedDate} onCopy={handleCopy} onCode={openCodeFlyout} />
                         <ValueRow label="Relative Time" value={getRelativeTime(parsedDate)} date={parsedDate} onCopy={handleCopy} onCode={openCodeFlyout} />
                       </div>

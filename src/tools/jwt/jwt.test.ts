@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { signHS256 } from './jwt';
+import { generateKeyPair, signHS256, signJwt } from './jwt';
 
 describe('JWT signHS256', () => {
   it('produces a token with exactly 3 dot-separated parts', async () => {
@@ -47,5 +47,43 @@ describe('JWT signHS256', () => {
       );
       expect(token).not.toMatch(/[+/=]/);
     }
+  });
+});
+
+describe('JWT signJwt (asymmetric)', () => {
+  const header = (alg: string) => JSON.stringify({ alg, typ: 'JWT' });
+  const payload = JSON.stringify({ sub: '123' });
+
+  function b64urlToBytes(s: string) {
+    const b64 = s.replace(/-/g, '+').replace(/_/g, '/');
+    const bin = atob(b64.padEnd(b64.length + ((4 - (b64.length % 4)) % 4), '='));
+    return new Uint8Array(Array.from(bin, (c) => c.charCodeAt(0)));
+  }
+
+  it.each([
+    ['RS256', { name: 'RSASSA-PKCS1-v1_5', hash: 'SHA-256' }, { name: 'RSASSA-PKCS1-v1_5' }, 256],
+    ['ES256', { name: 'ECDSA', namedCurve: 'P-256' }, { name: 'ECDSA', hash: 'SHA-256' }, 64],
+  ] as const)('%s token verifies with the generated public key', async (alg, importParams, verifyParams, sigLen) => {
+    const { privateKey, publicKey } = await generateKeyPair(alg);
+    expect(privateKey).toMatch(/^-----BEGIN PRIVATE KEY-----\n/);
+    expect(publicKey).toMatch(/^-----BEGIN PUBLIC KEY-----\n/);
+
+    const token = await signJwt(alg, payload, privateKey, header(alg));
+    const [h, p, s] = token.split('.');
+    const sig = b64urlToBytes(s!);
+    expect(sig.length).toBe(sigLen);
+
+    const der = b64urlToBytes(publicKey.replace(/-----[^-]+-----|\s/g, ''));
+    const pub = await crypto.subtle.importKey('spki', der, importParams, false, ['verify']);
+    const ok = await crypto.subtle.verify(verifyParams, pub, sig, new TextEncoder().encode(`${h}.${p}`));
+    expect(ok).toBe(true);
+  });
+
+  it('HS256 through signJwt matches signHS256', async () => {
+    expect(await signJwt('HS256', payload, 'k', header('HS256'))).toBe(await signHS256(payload, 'k', header('HS256')));
+  });
+
+  it('rejects a malformed PEM', async () => {
+    await expect(signJwt('RS256', payload, 'not a key', header('RS256'))).rejects.toThrow();
   });
 });

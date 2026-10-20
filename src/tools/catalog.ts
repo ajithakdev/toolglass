@@ -52,10 +52,10 @@ export const catalog: ToolInfo[] = [
     slug: 'password',
     title: 'Password Generator',
     short: 'Strong, secure passwords',
-    description: 'Generate cryptographically strong passwords with custom rules.',
+    description: 'Generate cryptographically strong passwords with custom rules, one at a time or up to 100 at once.',
     category: 'security',
     audience: ['everyone', 'developers'],
-    keywords: ['password', 'generator', 'strong', 'secure', 'random', 'passphrase'],
+    keywords: ['password', 'generator', 'strong', 'secure', 'random', 'passphrase', 'bulk', 'multiple passwords'],
     replaces: 'password-generator sites',
   },
   {

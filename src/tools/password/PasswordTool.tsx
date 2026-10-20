@@ -14,22 +14,33 @@ export default function PasswordTool() {
   const [lowercase, setLowercase] = useUrlState('l', true, (v) => v === '1', (v) => (v ? '1' : '0'));
   const [numbers, setNumbers] = useUrlState('n', true, (v) => v === '1', (v) => (v ? '1' : '0'));
   const [symbols, setSymbols] = useUrlState('s', true, (v) => v === '1', (v) => (v ? '1' : '0'));
+  const [count, setCount] = useUrlState('c', 1, intParam(1, 100, 1), String);
 
   const opts = useMemo<PwdOptions>(() => ({
     length, uppercase, lowercase, numbers, symbols
   }), [length, uppercase, lowercase, numbers, symbols]);
-  const [pwd, setPwd] = useState('');
+  const [pwds, setPwds] = useState<string[]>([]);
 
   const regen = () => {
-    setPwd(generatePassword(opts));
+    setPwds(Array.from({ length: count }, () => generatePassword(opts)));
   };
 
   useEffect(() => {
     regen();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [length, uppercase, lowercase, numbers, symbols]);
+  }, [length, uppercase, lowercase, numbers, symbols, count]);
 
-  const strength = useMemo(() => estimateStrength(pwd, opts), [pwd, opts]);
+  // Every password shares length and classes, so one estimate covers the batch
+  const strength = useMemo(() => estimateStrength(pwds[0] ?? '', opts), [pwds, opts]);
+
+  const download = () => {
+    const url = URL.createObjectURL(new Blob([pwds.join('\n') + '\n'], { type: 'text/plain' }));
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'passwords.txt';
+    a.click();
+    URL.revokeObjectURL(url);
+  };
 
   const reset = () => {
     setLength(20);
@@ -37,12 +48,13 @@ export default function PasswordTool() {
     setLowercase(true);
     setNumbers(true);
     setSymbols(true);
+    setCount(1);
   };
 
   return (
     <ToolLayout>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 22 }}>
-        <Output value={pwd} />
+        <Output value={pwds.join('\n')} multiline={count > 1} label={count > 1 ? 'Generated passwords' : 'Generated password'} />
 
         <div>
           <div
@@ -55,7 +67,7 @@ export default function PasswordTool() {
           >
             <span style={{ fontSize: 13, fontWeight: 600 }}>Strength</span>
             <span style={{ fontSize: 12, color: strength.color, fontWeight: 600 }}>
-              {strength.label} · {strength.bits} bits
+              {strength.label} · {strength.bits} bits{count > 1 ? ' each' : ''}
             </span>
           </div>
           <div
@@ -81,6 +93,10 @@ export default function PasswordTool() {
           <Slider value={length} min={4} max={64} onChange={setLength} />
         </Field>
 
+        <Field label="How many" hint={count === 1 ? '1 password' : `${count} passwords`}>
+          <Slider value={count} min={1} max={100} onChange={setCount} />
+        </Field>
+
         <fieldset style={{ border: 'none', padding: 0, margin: 0 }}>
           <legend style={{ fontSize: 13, fontWeight: 600, marginBottom: 10 }}>
             Character classes
@@ -103,6 +119,11 @@ export default function PasswordTool() {
           <Button onClick={regen} variant="primary">
             ↻ Regenerate
           </Button>
+          {count > 1 && (
+            <Button onClick={download} variant="soft">
+              Download .txt
+            </Button>
+          )}
           <Button onClick={reset} variant="soft">
             Reset
           </Button>

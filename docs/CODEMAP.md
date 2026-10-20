@@ -1,8 +1,8 @@
 # Toolglass code map
 
-Mapped at commit: `19829b3` (`main`, 2026-10-20, Phase 3 of `docs/PLAN.md`) plus the hash change (#122: `hash/hash.ts`, its test, `scripts/gen-keccak-permute.py`).
+Mapped at commit: `149564f` (`main`, 2026-10-20, Phase 3 of `docs/PLAN.md`).
 
-Check for drift before trusting this file: `git diff --stat 19829b3..HEAD -- src`
+Check for drift before trusting this file: `git diff --stat 149564f..HEAD -- src`
 
 Numbers in parentheses are line counts. Use them to judge read cost.
 
@@ -107,7 +107,7 @@ Catalog: `catalog.ts` exports `CategoryId`, `Audience`, `CATEGORIES`, `AUDIENCES
 
 | Slug | Component file | Logic file | Test | Notes |
 |---|---|---|---|---|
-| `password` | `password/PasswordTool.tsx` (129) | `password/password.ts` (71): `CHARSETS`, `PwdOptions`, `generatePassword`, `Strength`, `estimateStrength` | yes | URL state: `len`, `u`, `l`, `n`, `s`. |
+| `password` | `password/PasswordTool.tsx` (134) | `password/password.ts` (71): `CHARSETS`, `PwdOptions`, `generatePassword`, `Strength`, `estimateStrength` | yes | URL state: `len`, `u`, `l`, `n`, `s`, `c` (count, 1-100). Bulk mode adds Download .txt. |
 | `jwt` | `jwt/JwtTool.tsx` (65) | `jwt/jwt.ts` (33): `b64url`, `strToB64Url`, `signHS256` | yes | HS256 only, Web Crypto. |
 | `uuid` | `uuid/UuidTool.tsx` (77) | `uuid/uuid.ts` (61) | yes | v4 and v7 (monotonic within a ms), inspector. Version in URL as `?v=7`. |
 | `objectid` | `objectid/ObjectIdTool.tsx` (39) | `objectid/objectid.ts` (26): `MACHINE_ID`, `counter`, `objectId` | yes | |

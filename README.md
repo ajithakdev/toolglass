@@ -2,11 +2,11 @@
 
 # ✦ Toolglass
 
-**Frosted developer utilities — beautifully fast, 100% client-side.**
+**41 free tools that run entirely in your browser, for developers and everyone else.**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blueviolet.svg)](LICENSE)
 [![React](https://img.shields.io/badge/React-19-149eca.svg)](https://react.dev)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5-3178c6.svg)](https://www.typescriptlang.org)
+[![TypeScript](https://img.shields.io/badge/TypeScript-6-3178c6.svg)](https://www.typescriptlang.org)
 [![Vite](https://img.shields.io/badge/Vite-8-646cff.svg)](https://vitejs.dev)
 [![CI/CD](https://github.com/ajithakdev/toolglass/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/ajithakdev/toolglass/actions/workflows/ci-cd.yml)
 
@@ -16,9 +16,11 @@
 
 ---
 
-We built Toolglass because we were tired of opening ad-riddled websites just to decode a JWT, test a regex, or format a timestamp. Most online utility sites leak your sensitive data to backend servers or track your keystrokes.
+Toolglass started because we were tired of ad-heavy websites for small jobs like decoding a JWT, testing a regex, or compressing a photo. Many of those sites send what you paste to their servers.
 
-Toolglass is a zero-telemetry, offline-first suite of developer tools running entirely inside your browser. No backend. No cookies. No analytics. When you paste an API secret or inspect a token, it never touches the network.
+Every Toolglass tool runs in your browser. There is no backend, no cookies, and no analytics, so an API secret, a token, or a private photo never leaves your device. It installs as an app and keeps working offline after the first visit.
+
+There are tools for everyday jobs (word counter, unit converter, image compressor, screen recorder, world clock, timers) and for developers (JSON, YAML, CSV, SQL, JWT, hashing, regex, subnets, an API client, and more).
 
 ---
 
@@ -44,7 +46,7 @@ Toolglass is a zero-telemetry, offline-first suite of developer tools running en
 2. **Cryptographic Rigor:** Randomness is strictly backed by CSPRNG with rejection sampling to eliminate modulo bias. We never use `Math.random()`.
 3. **Instant Keyboard Navigation:** Hit `⌘K` or `Ctrl+K` anywhere to open the command palette and jump between tools without taking your hands off the keyboard.
 4. **Shareable State:** Key tool configurations sync to URL query params (debounced) so you can bookmark or share exact settings with teammates.
-5. **No Bloat:** Every tool is code-split via dynamic `React.lazy()` imports. The initial load is tiny (~130 KB gzipped) and tools load on demand.
+5. **No Bloat:** Every tool is code-split via dynamic `React.lazy()` imports. Tools load on demand, so opening one tool does not download the others.
 
 ---
 
@@ -104,7 +106,7 @@ src/
 We love contributions! Toolglass was built to make contributing new utilities frictionless:
 
 - Adding a new tool usually takes **one self-contained folder** under `src/tools/`, an entry in `src/tools/catalog.ts`, and its icon and component in `src/tools/registry.tsx`.
-- We maintain a **zero external runtime dependencies** rule for individual tools — rely on native browser APIs.
+- Prefer native browser APIs. A few tools load a small library on their own page only (QR codes, Markdown, YAML/TOML), and any new dependency needs maintainer approval.
 - Check out our **[Contributing Guide](.github/CONTRIBUTING.md)** for detailed step-by-step instructions.
 - All contributors are expected to follow our **[Code of Conduct](CODE_OF_CONDUCT.md)**.
 - See our **[Security Policy](SECURITY.md)** for responsible vulnerability disclosure.

@@ -1,0 +1,53 @@
+name: Bug report
+description: Something in a tool is broken or gives the wrong result.
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting. Toolglass runs entirely in your browser, so please don't paste real secrets, tokens, or passwords below.
+  - type: input
+    id: tool
+    attributes:
+      label: Which tool?
+      description: The page URL or the tool name.
+      placeholder: https://toolglass.ajithakdev.com/tools/json
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: The smallest input that triggers the bug helps most.
+      placeholder: |
+        1. Open the JSON tool
+        2. Paste `{"a": 1,}`
+        3. Click Format
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: What happened instead
+      description: Error messages or screenshots are welcome.
+    validations:
+      required: true
+  - type: input
+    id: browser
+    attributes:
+      label: Browser and OS
+      placeholder: Chrome 131 on Windows 11
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Console output
+      description: Optional. Open DevTools (F12), go to Console, and paste any red errors.
+      render: text

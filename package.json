@@ -1,7 +1,7 @@
 {
   "name": "toolglass",
   "private": true,
-  "version": "1.0.0",
+  "version": "1.1.0",
   "type": "module",
   "description": "Toolglass — frosted developer utilities. 17 fast, 100% client-side tools: password, JWT, UUID, NanoID, hash, Base64, timestamp, JSON, regex, API tester, QR, Markdown, and more.",
   "license": "MIT",

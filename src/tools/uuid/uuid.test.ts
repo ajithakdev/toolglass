@@ -22,6 +22,9 @@ describe('uuid', () => {
   it('inspects v4 and rejects junk', () => {
     expect(inspectUuid(uuidv4())).toEqual({ version: 4, variant: 'RFC 9562' });
     expect(inspectUuid('{6BA7B810-9DAD-11D1-80B4-00C04FD430C8}')).toEqual({ version: 1, variant: 'RFC 9562' });
+    expect(inspectUuid('6ba7b8109dad11d180b400c04fd430c8')).toEqual({ version: 1, variant: 'RFC 9562' });
+    expect(inspectUuid('6ba7b8109dad-11d180b4-00c04fd430c8')).toBeNull();
+    expect(inspectUuid('{6ba7b810-9dad-11d1-80b4-00c04fd430c8')).toBeNull();
     expect(inspectUuid('not-a-uuid')).toBeNull();
     expect(inspectUuid('6ba7b810-9dad-11d1-80b4-00c04fd430c')).toBeNull();
   });

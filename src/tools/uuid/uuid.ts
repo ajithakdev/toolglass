@@ -49,8 +49,9 @@ export interface UuidInfo {
 
 /** Version, variant, and (for v7) the embedded time of a UUID string, or null if it isn't one. */
 export function inspectUuid(input: string): UuidInfo | null {
-  const h = input.trim().replace(/^urn:uuid:/i, '').replace(/[{}]/g, '').toLowerCase();
-  if (!/^[0-9a-f]{8}-?[0-9a-f]{4}-?[0-9a-f]{4}-?[0-9a-f]{4}-?[0-9a-f]{12}$/.test(h)) return null;
+  const h = input.trim().replace(/^urn:uuid:/i, '').replace(/^\{(.*)\}$/, '$1').toLowerCase();
+  // All four hyphens or none: half-hyphenated strings are not UUIDs
+  if (!/^(?:[0-9a-f]{32}|[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})$/.test(h)) return null;
   const s = h.replace(/-/g, '');
   const version = parseInt(s[12]!, 16);
   const v = parseInt(s[16]!, 16);

@@ -1,8 +1,8 @@
 # Toolglass code map
 
-Mapped at commit: `54025b2` (branch `redesign/tools-migrate`, 2026-10-20, Phase 3 of `docs/PLAN.md`).
+Mapped at commit: `29e9968` (`main`, 2026-10-20, Phase 3 of `docs/PLAN.md`) plus the UUID v7 change (#119: `uuid/uuid.ts` and its test).
 
-Check for drift before trusting this file: `git diff --stat 54025b2..HEAD -- src`
+Check for drift before trusting this file: `git diff --stat 29e9968..HEAD -- src`
 
 Numbers in parentheses are line counts. Use them to judge read cost.
 

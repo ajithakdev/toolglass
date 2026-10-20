@@ -1,8 +1,8 @@
 # Toolglass code map
 
-Mapped at commit: `54025b2` (branch `redesign/tools-migrate`, 2026-10-20, Phase 3 of `docs/PLAN.md`).
+Mapped at commit: `29e9968` (`main`, 2026-10-20, Phase 3 of `docs/PLAN.md`) plus the UUID v7 change (#119: `uuid/uuid.ts` and its test).
 
-Check for drift before trusting this file: `git diff --stat 54025b2..HEAD -- src`
+Check for drift before trusting this file: `git diff --stat 29e9968..HEAD -- src`
 
 Numbers in parentheses are line counts. Use them to judge read cost.
 
@@ -108,7 +108,7 @@ Catalog: `catalog.ts` exports `CategoryId`, `Audience`, `CATEGORIES`, `AUDIENCES
 |---|---|---|---|---|
 | `password` | `password/PasswordTool.tsx` (129) | `password/password.ts` (71): `CHARSETS`, `PwdOptions`, `generatePassword`, `Strength`, `estimateStrength` | yes | URL state: `len`, `u`, `l`, `n`, `s`. |
 | `jwt` | `jwt/JwtTool.tsx` (65) | `jwt/jwt.ts` (33): `b64url`, `strToB64Url`, `signHS256` | yes | HS256 only, Web Crypto. |
-| `uuid` | `uuid/UuidTool.tsx` (48) | inline | no | v4. |
+| `uuid` | `uuid/UuidTool.tsx` (77) | `uuid/uuid.ts` (61) | yes | v4 and v7 (monotonic within a ms), inspector. Version in URL as `?v=7`. |
 | `objectid` | `objectid/ObjectIdTool.tsx` (39) | `objectid/objectid.ts` (26): `MACHINE_ID`, `counter`, `objectId` | yes | |
 | `nanoid` | `nanoid/NanoIdTool.tsx` (69) | `nanoid.ts` | yes | URL state: `size`, `count` (clamped). Generator uses 32-bit values with rejection sampling and ignores duplicate alphabet characters. |
 | `hash` | `hash/HashTool.tsx` (57) | inline | no | SHA-1/256/384/512 via `crypto.subtle`. |
@@ -128,7 +128,7 @@ Catalog: `catalog.ts` exports `CategoryId`, `Audience`, `CATEGORIES`, `AUDIENCES
 
 `curlSecurity.ts` exports: types `HeaderParam`, `SavedRequest`, `HistoryItem`, `SessionAuthData`; `isSensitiveHeader`, `sanitizeHeaders`, `hasAuthCredentials`, `sanitizeSavedRequest`, `sanitizeHistoryItem`, `saveSessionAuth`, `getSessionAuth`, `clearSessionAuth`, `scrubStorageAuth`.
 
-Tests: 21 files, each `*.test.ts(x)` next to the code it tests. Find them with `find src -name '*.test.*'`.
+Tests: 22 files, each `*.test.ts(x)` next to the code it tests. Find them with `find src -name '*.test.*'`.
 
 ## Adding a tool
 

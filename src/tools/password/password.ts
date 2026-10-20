@@ -45,6 +45,20 @@ export function generatePassword(opts: PwdOptions): string {
   return chars.join('');
 }
 
+/**
+ * `count` distinct passwords. Small spaces (e.g. 4 digits) can run out of unique values,
+ * so retries are bounded and the result may be shorter than `count`.
+ */
+export function generatePasswords(opts: PwdOptions, count: number): string[] {
+  const seen = new Set<string>();
+  for (let tries = 0; seen.size < count && tries < count * 20; tries++) {
+    const p = generatePassword(opts);
+    if (!p) break;
+    seen.add(p);
+  }
+  return [...seen];
+}
+
 export interface Strength {
   score: 0 | 1 | 2 | 3 | 4;
   label: string;

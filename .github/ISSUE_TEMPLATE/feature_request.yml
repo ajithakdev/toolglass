@@ -1,0 +1,43 @@
+name: Feature or new tool
+description: Suggest a new tool or an improvement to an existing one.
+labels: [enhancement]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Tools run entirely in the browser: no server, and no new runtime dependency unless there's no other way. [CONTRIBUTING](https://github.com/ajithakdev/toolglass/blob/main/.github/CONTRIBUTING.md) explains how tools are added.
+  - type: dropdown
+    id: kind
+    attributes:
+      label: What kind of request?
+      options:
+        - New tool
+        - Improvement to an existing tool
+        - Site-wide (navigation, theme, accessibility, performance)
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What are you trying to do that Toolglass can't help with today?
+    validations:
+      required: true
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed solution
+      description: What should the tool do? Example input and output help a lot.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: What you use today
+      description: Optional. Other sites or CLI commands you use for this now.
+  - type: checkboxes
+    id: contribute
+    attributes:
+      label: Contributing
+      options:
+        - label: I'd like to build this myself (a maintainer will help you get started)

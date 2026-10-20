@@ -118,7 +118,7 @@ export function About() {
             GitHub
           </a>{' '}
           under the MIT license. Missing a tool you use?{' '}
-          <a href="https://github.com/ajithakdev/toolglass/issues/new?labels=new%20tool" target="_blank" rel="noreferrer">
+          <a href="https://github.com/ajithakdev/toolglass/issues/new?template=feature_request.yml&labels=enhancement,new%20tool" target="_blank" rel="noreferrer">
             Request it
           </a>
           , or{' '}

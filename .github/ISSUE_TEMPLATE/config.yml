@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Questions and ideas
+    url: https://github.com/ajithakdev/toolglass/discussions
+    about: Ask how something works, or float an idea before opening an issue.
+  - name: Security vulnerability
+    url: https://github.com/ajithakdev/toolglass/blob/main/SECURITY.md
+    about: Report security issues privately, not as a public issue.
+  - name: Try Toolglass
+    url: https://toolglass.ajithakdev.com
+    about: The live site.

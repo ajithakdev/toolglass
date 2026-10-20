@@ -70,12 +70,12 @@ export const catalog: ToolInfo[] = [
   },
   {
     slug: 'uuid',
-    title: 'UUID v4',
-    short: 'Random UUIDs',
-    description: 'Generate RFC 4122 v4 UUIDs in bulk.',
+    title: 'UUID',
+    short: 'v4 and v7 UUIDs',
+    description: 'Generate random v4 or time-sorted v7 UUIDs in bulk, and inspect any UUID.',
     category: 'developers',
     audience: ['developers'],
-    keywords: ['uuid', 'guid', 'v4', 'unique id', 'random id'],
+    keywords: ['uuid', 'guid', 'v4', 'v7', 'uuidv7', 'rfc 9562', 'unique id', 'random id', 'decode uuid'],
     replaces: 'uuid generator sites',
   },
   {

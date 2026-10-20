@@ -108,7 +108,7 @@ Catalog: `catalog.ts` exports `CategoryId`, `Audience`, `CATEGORIES`, `AUDIENCES
 |---|---|---|---|---|
 | `password` | `password/PasswordTool.tsx` (129) | `password/password.ts` (71): `CHARSETS`, `PwdOptions`, `generatePassword`, `Strength`, `estimateStrength` | yes | URL state: `len`, `u`, `l`, `n`, `s`. |
 | `jwt` | `jwt/JwtTool.tsx` (65) | `jwt/jwt.ts` (33): `b64url`, `strToB64Url`, `signHS256` | yes | HS256 only, Web Crypto. |
-| `uuid` | `uuid/UuidTool.tsx` (48) | inline | no | v4. |
+| `uuid` | `uuid/UuidTool.tsx` (77) | `uuid/uuid.ts` (61) | yes | v4 and v7 (monotonic within a ms), inspector. Version in URL as `?v=7`. |
 | `objectid` | `objectid/ObjectIdTool.tsx` (39) | `objectid/objectid.ts` (26): `MACHINE_ID`, `counter`, `objectId` | yes | |
 | `nanoid` | `nanoid/NanoIdTool.tsx` (69) | `nanoid.ts` | yes | URL state: `size`, `count` (clamped). Generator uses 32-bit values with rejection sampling and ignores duplicate alphabet characters. |
 | `hash` | `hash/HashTool.tsx` (57) | inline | no | SHA-1/256/384/512 via `crypto.subtle`. |
@@ -128,7 +128,7 @@ Catalog: `catalog.ts` exports `CategoryId`, `Audience`, `CATEGORIES`, `AUDIENCES
 
 `curlSecurity.ts` exports: types `HeaderParam`, `SavedRequest`, `HistoryItem`, `SessionAuthData`; `isSensitiveHeader`, `sanitizeHeaders`, `hasAuthCredentials`, `sanitizeSavedRequest`, `sanitizeHistoryItem`, `saveSessionAuth`, `getSessionAuth`, `clearSessionAuth`, `scrubStorageAuth`.
 
-Tests: 21 files, each `*.test.ts(x)` next to the code it tests. Find them with `find src -name '*.test.*'`.
+Tests: 22 files, each `*.test.ts(x)` next to the code it tests. Find them with `find src -name '*.test.*'`.
 
 ## Adding a tool
 

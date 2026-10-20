@@ -129,7 +129,7 @@ Catalog: `catalog.ts` exports `CategoryId`, `Audience`, `CATEGORIES`, `AUDIENCES
 
 `curlSecurity.ts` exports: types `HeaderParam`, `SavedRequest`, `HistoryItem`, `SessionAuthData`; `isSensitiveHeader`, `sanitizeHeaders`, `hasAuthCredentials`, `sanitizeSavedRequest`, `sanitizeHistoryItem`, `saveSessionAuth`, `getSessionAuth`, `clearSessionAuth`, `scrubStorageAuth`.
 
-Tests: 23 files, each `*.test.ts(x)` next to the code it tests. Find them with `find src -name '*.test.*'`.
+Tests: 24 files, each `*.test.ts(x)` next to the code it tests. Find them with `find src -name '*.test.*'`.
 
 ## Adding a tool
 

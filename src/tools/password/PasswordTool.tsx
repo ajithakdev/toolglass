@@ -1,11 +1,13 @@
 import { motion } from 'framer-motion';
 import { useEffect, useMemo, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import { Button } from '../../components/ui/Button';
 import { Field, Slider, Toggle } from '../../components/ui/Field';
 import { Output } from '../../components/ui/Output';
 import { ToolLayout } from '../../components/ToolLayout';
 import { intParam, useUrlState } from '../../hooks/useUrlState';
-import { estimateStrength, generatePassword, type PwdOptions } from './password';
+import { useToolStats } from '../../hooks/useToolStats';
+import { estimateStrength, generatePasswords, type PwdOptions } from './password';
 
 export default function PasswordTool() {
   // URL-serialized options (allowlist — no sensitive input values)
@@ -22,7 +24,7 @@ export default function PasswordTool() {
   const [pwds, setPwds] = useState<string[]>([]);
 
   const regen = () => {
-    setPwds(Array.from({ length: count }, () => generatePassword(opts)));
+    setPwds(generatePasswords(opts, count));
   };
 
   useEffect(() => {
@@ -33,6 +35,8 @@ export default function PasswordTool() {
   // Every password shares length and classes, so one estimate covers the batch
   const strength = useMemo(() => estimateStrength(pwds[0] ?? '', opts), [pwds, opts]);
 
+  const { slug = 'password' } = useParams();
+  const { increment } = useToolStats(slug);
   const download = () => {
     const url = URL.createObjectURL(new Blob([pwds.join('\n') + '\n'], { type: 'text/plain' }));
     const a = document.createElement('a');
@@ -40,6 +44,7 @@ export default function PasswordTool() {
     a.download = 'passwords.txt';
     a.click();
     URL.revokeObjectURL(url);
+    increment();
   };
 
   const reset = () => {
@@ -96,6 +101,11 @@ export default function PasswordTool() {
         <Field label="How many" hint={count === 1 ? '1 password' : `${count} passwords`}>
           <Slider value={count} min={1} max={100} onChange={setCount} />
         </Field>
+        {pwds.length > 0 && pwds.length < count && (
+          <p role="status" style={{ margin: 0, fontSize: 'var(--t-sm)', color: 'var(--status-warn)' }}>
+            Only {pwds.length} unique passwords fit these settings. Make them longer or add character classes.
+          </p>
+        )}
 
         <fieldset style={{ border: 'none', padding: 0, margin: 0 }}>
           <legend style={{ fontSize: 13, fontWeight: 600, marginBottom: 10 }}>
@@ -119,7 +129,7 @@ export default function PasswordTool() {
           <Button onClick={regen} variant="primary">
             ↻ Regenerate
           </Button>
-          {count > 1 && (
+          {count > 1 && pwds.length > 0 && (
             <Button onClick={download} variant="soft">
               Download .txt
             </Button>

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { CHARSETS, generatePassword, type PwdOptions } from './password';
+import { CHARSETS, generatePassword, generatePasswords, type PwdOptions } from './password';
 
 const fullOpts: PwdOptions = {
   length: 20,
@@ -67,5 +67,17 @@ describe('generatePassword', () => {
   it('returns empty string when no charsets enabled', () => {
     const opts: PwdOptions = { length: 20, uppercase: false, lowercase: false, numbers: false, symbols: false };
     expect(generatePassword(opts)).toBe('');
+  });
+});
+
+describe('generatePasswords', () => {
+  it('returns distinct passwords', () => {
+    const out = generatePasswords({ length: 4, uppercase: false, lowercase: false, numbers: true, symbols: false }, 100);
+    expect(out).toHaveLength(100);
+    expect(new Set(out).size).toBe(100);
+  });
+
+  it('is empty when no character class is on', () => {
+    expect(generatePasswords({ ...fullOpts, uppercase: false, lowercase: false, numbers: false, symbols: false }, 5)).toEqual([]);
   });
 });

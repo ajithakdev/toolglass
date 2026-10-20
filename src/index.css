@@ -397,7 +397,8 @@ select:focus-visible {
 
 .container {
   width: 100%;
-  max-width: 1200px;
+  /* Wide so side-by-side tools (diff, JSON, API tester) use big screens; prose keeps its own --measure */
+  max-width: 1600px;
   margin-inline: auto;
   padding-inline: var(--gutter);
 }

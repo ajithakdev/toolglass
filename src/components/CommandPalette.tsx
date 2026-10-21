@@ -64,14 +64,17 @@ function useFocusTrap(ref: React.RefObject<HTMLElement | null>, active: boolean)
   useEffect(() => {
     if (!active || !ref.current) return;
     const el = ref.current;
-    const focusable = el.querySelectorAll<HTMLElement>(
-      'a[href],button:not([disabled]),input,textarea,select,[tabindex]:not([tabindex="-1"])',
-    );
-    const first = focusable[0];
-    const last = focusable[focusable.length - 1];
+    // Queried on each Tab so the trap follows the filtered result list.
+    const edges = () => {
+      const focusable = el.querySelectorAll<HTMLElement>(
+        'a[href],button:not([disabled]),input,textarea,select,[tabindex]:not([tabindex="-1"])',
+      );
+      return [focusable[0], focusable[focusable.length - 1]] as const;
+    };
 
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key !== 'Tab') return;
+      const [first, last] = edges();
       if (e.shiftKey) {
         if (document.activeElement === first) {
           e.preventDefault();
@@ -86,7 +89,7 @@ function useFocusTrap(ref: React.RefObject<HTMLElement | null>, active: boolean)
     };
 
     el.addEventListener('keydown', handleKeyDown);
-    first?.focus();
+    edges()[0]?.focus();
     return () => el.removeEventListener('keydown', handleKeyDown);
   }, [active, ref]);
 }
@@ -227,6 +230,12 @@ export function CommandPalette({ open, onClose }: CommandPaletteProps) {
                   id="command-palette-input"
                   className="palette-input"
                   type="text"
+                  role="combobox"
+                  aria-expanded
+                  aria-controls="command-palette-results"
+                  aria-autocomplete="list"
+                  aria-label="Search tools"
+                  aria-activedescendant={filtered[selected] ? `palette-item-${filtered[selected].slug}` : undefined}
                   placeholder="Search tools…"
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
@@ -263,11 +272,16 @@ export function CommandPalette({ open, onClose }: CommandPaletteProps) {
                 </kbd>
               </div>
 
+              <div role="status" aria-live="polite" className="sr-only">
+                {filtered.length === 1 ? '1 tool found' : `${filtered.length} tools found`}
+              </div>
+
               {/* ── Results with scroll-fade mask ────────────────────── */}
               <div style={{ position: 'relative' }}>
                 {/* Scrollable list — no native scrollbar */}
                 <div
                   ref={listRef}
+                  id="command-palette-results"
                   role="listbox"
                   aria-label="Tool results"
                   className="palette-results"
@@ -296,6 +310,8 @@ export function CommandPalette({ open, onClose }: CommandPaletteProps) {
                   {filtered.map((t, i) => (
                     <motion.button
                       key={t.slug}
+                      id={`palette-item-${t.slug}`}
+                      tabIndex={-1}
                       ref={(el) => { itemRefs.current[i] = el; }}
                       role="option"
                       aria-selected={i === selected}

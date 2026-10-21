@@ -22,7 +22,9 @@ Already in place, so these are not the fix:
 - Devices with 4 or fewer cores or 4 GB or less memory render at pixel ratio 1.
 - No WebGL means the poster stays.
 
-What is left:
+**Fixed on 2026-10-21** (`perf/glass-scene-software-gl`): `buildWorld()` checks the WebGL renderer name on a probe canvas and keeps the poster on SwiftShader, llvmpipe or any software renderer. `failIfMajorPerformanceCaveat` was tried first and does not work, because Chromium's SwiftShader (through ANGLE on Vulkan) passes it. Local Lighthouse: performance 39 to 85, TBT 159 s to 260 ms, LCP 6.4 s to 3.4 s, Best practices 100.
+
+The original plan, kept for reference:
 
 1. **Treat software rendering as "no WebGL".** Pass `failIfMajorPerformanceCaveat: true` to `new WebGLRenderer(...)`. Chromium then refuses the context on SwiftShader, `buildWorld()` returns `null` from its existing `catch`, and the poster stays. This one option should take TBT close to zero in Lighthouse.
 2. **Optionally keep the poster on modest devices too** (the `modest` check already exists) instead of only lowering the pixel ratio.

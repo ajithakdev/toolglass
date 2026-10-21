@@ -95,6 +95,15 @@ interface World {
 let world: World | null | undefined; // undefined = not built yet, null = no WebGL
 
 function buildWorld(): World | null {
+  // Software WebGL (no GPU, as in PageSpeed's mobile test) draws the glass on the CPU and
+  // blocks the page for seconds: keep the poster. Chromium's SwiftShader passes
+  // failIfMajorPerformanceCaveat, so check the renderer name on a probe canvas instead.
+  const probe = document.createElement('canvas').getContext('webgl2');
+  if (!probe) return null;
+  const info = probe.getExtension('WEBGL_debug_renderer_info');
+  const gpu = String(probe.getParameter(info ? info.UNMASKED_RENDERER_WEBGL : probe.RENDERER));
+  probe.getExtension('WEBGL_lose_context')?.loseContext();
+  if (/swiftshader|llvmpipe|software/i.test(gpu)) return null;
   let renderer: WebGLRenderer;
   try {
     renderer = new WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'high-performance' });

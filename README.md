@@ -2,6 +2,8 @@
 
 # ✦ Toolglass
 
+Every link and how-to is in [RESOURCES-AND-GUIDE.md](RESOURCES-AND-GUIDE.md).
+
 **41 free tools that run entirely in your browser, for developers and everyone else.**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blueviolet.svg)](LICENSE)

@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion';
+import { m } from 'framer-motion';
 import { Download, Search } from 'lucide-react';
 import { useEffect, useState, type ReactNode } from 'react';
 import { Link, NavLink } from 'react-router-dom';
@@ -108,7 +108,7 @@ function Header({ onOpenPalette }: { onOpenPalette: () => void }) {
               {({ isActive }) => (
                 <>
                   {isActive && (
-                    <motion.span
+                    <m.span
                       layoutId="nav-active"
                       transition={spring}
                       aria-hidden

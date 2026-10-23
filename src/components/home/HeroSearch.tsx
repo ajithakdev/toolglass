@@ -1,4 +1,4 @@
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence, m } from 'framer-motion';
 import { ArrowRight, Search } from 'lucide-react';
 import { useId, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -89,7 +89,7 @@ export function HeroSearch() {
 
       <AnimatePresence>
         {show && (
-          <motion.ul
+          <m.ul
             id={listId}
             role="listbox"
             initial={{ opacity: 0, y: -6, scale: 0.98 }}
@@ -147,7 +147,7 @@ export function HeroSearch() {
                 </li>
               ))
             )}
-          </motion.ul>
+          </m.ul>
         )}
       </AnimatePresence>
     </div>

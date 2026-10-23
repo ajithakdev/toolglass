@@ -51,6 +51,7 @@ index.html
 | `seo.ts` | `SITE_URL`, `HOME`, `toolPage`, `allPages`, `applyMeta`, `applyMetaToDocument`, `sitemapXml` | Page-meta helpers. `applyMeta` rewrites HTML at build time; `applyMetaToDocument` updates title, description, social tags, and canonical on client-side navigation (App effect). Has a test. |
 | `index.css` | none | Design tokens (canvas, ink, one accent, status, 3 glass surfaces, 3 elevations, type scale, 4px space scale, radii, motion), dark overrides, legacy aliases for old token names, base styles, ambient light (`body::before`) and grain (`body::after`), focus, scrollbars, `.glass`, `.container`, `.lift`, shell classes (`.nav-link`, `.nav-btn`, `.hide-sm`, `.skip-link`). |
 | `lib/cn.ts` (3) | `cn(...parts)` | Joins truthy class names. |
+| `lib/motionFeatures.ts` | default `domMax` | framer-motion features, loaded async by `LazyMotion` in `App.tsx`. |
 | `lib/motion.ts` | `EASE_OUT`, `spring`, `fadeUp`, `fade`, `stagger()` | Shared framer-motion presets. |
 | `lib/platform.ts` | `IS_MAC`, `shortcut(key)` | Shortcut labels per OS. |
 | `lib/search.ts` | `searchTools(tools, query)` | Word-AND ranking over title, keywords, replaces, description; accent-insensitive. Used by hub, hero search, and command palette. Has a test. |
@@ -84,7 +85,7 @@ index.html
 | `ui/Field.tsx` (327) | `Field` L4, `TextInput` L33, `TextArea` L53, `Select` L76, `Dropdown` L115, `Toggle` L236, `Slider` L300. |
 | `ui/Output.tsx` (64) | Props `value`, `multiline`, `placeholder`, `trailing`, `label`. Result box with copy. |
 | `ui/CopyButton.tsx` (55) | Props `value`, `label`, `size`, `disabled`. Copies, toasts, and calls `increment()` for the current slug. |
-| `ui/GlassCard.tsx` (21) | `motion.div` with `.glass` or `.glass-strong` (`strong` prop), `padding`. |
+| `ui/GlassCard.tsx` (21) | `m.div` with `.glass` or `.glass-strong` (`strong` prop), `padding`. |
 | `ui/Toast.tsx` (105) | `ToastProvider`, `useToast()` returns `{ push(message, kind?, id?) }`. Kinds: success, error, info. Passing an existing id updates that toast. |
 | `ui/ToolCard.tsx` | Card for one `ToolMeta`: icon, title, short, "Instead of …" (`replaces`), usage count, favorite star (stretched link + separate button). `compact` variant. |
 | `ui/ThemeToggle.tsx` | Auto / Light / Dark segmented switch. Circle reveal from the clicked button via View Transitions (skipped for reduced motion). |
@@ -204,6 +205,7 @@ Only `fetch` calls in the app: `tools/curl-to-fetch/useApiTester.ts:447` and `:6
 
 - `npm run dev` and `vite preview` fall back to `index.html` for any path. GitHub Pages does not: it needs the `tools/<slug>.html` and `404.html` files the build writes. Check the built `dist/` when changing routes.
 - `ToolLayout` Backspace goes to `/tools` unless focus is in an input, textarea, select, or contenteditable, or a modifier key is held.
+- Use `m.*` from framer-motion, not `motion.*`: `App.tsx` wraps everything in `LazyMotion` so the animation code loads after first paint. A `motion.*` component still works but pulls the full library into its chunk (`Reorder` in `ToolsHub.tsx` does this on purpose).
 - framer-motion 13 hands plain `useTransform(scrollYProgress, ...)` opacity maps to the browser's native scroll timeline, which maps pinned sections wrongly (elements fade back out). Use `useRange` in `Home.tsx` (function-form `useTransform`) for scroll-linked values.
 - Transmissive three.js materials only refract opaque objects; use `alphaTest` instead of `transparent` for anything that should show through the glass.
 - ESLint ignores only `dist` and `node_modules`, and its TS rules apply to `**/*.{ts,tsx}`.

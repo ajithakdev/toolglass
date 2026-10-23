@@ -1,4 +1,4 @@
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence, m } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { searchTools } from '../lib/search';
@@ -167,7 +167,7 @@ export function CommandPalette({ open, onClose }: CommandPaletteProps) {
       <InjectStyles />
       <AnimatePresence>
         {open && (
-          <motion.div
+          <m.div
             key="palette-backdrop"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -187,7 +187,7 @@ export function CommandPalette({ open, onClose }: CommandPaletteProps) {
               paddingTop: '16vh',
             }}
           >
-            <motion.div
+            <m.div
               key="palette-box"
               ref={containerRef}
               initial={{ opacity: 0, scale: 0.95, y: -16 }}
@@ -292,7 +292,7 @@ export function CommandPalette({ open, onClose }: CommandPaletteProps) {
                   }}
                 >
                   {filtered.length === 0 && (
-                    <motion.div
+                    <m.div
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       style={{
@@ -304,11 +304,11 @@ export function CommandPalette({ open, onClose }: CommandPaletteProps) {
                     >
                       <div style={{ fontSize: 28, marginBottom: 8, opacity: 0.4 }}>⊘</div>
                       No tools match <strong style={{ color: 'var(--ink-soft)' }}>"{query}"</strong>
-                    </motion.div>
+                    </m.div>
                   )}
 
                   {filtered.map((t, i) => (
-                    <motion.button
+                    <m.button
                       key={t.slug}
                       id={`palette-item-${t.slug}`}
                       tabIndex={-1}
@@ -388,7 +388,7 @@ export function CommandPalette({ open, onClose }: CommandPaletteProps) {
                       {/* Enter hint on selected */}
                       <AnimatePresence>
                         {i === selected && (
-                          <motion.kbd
+                          <m.kbd
                             initial={{ opacity: 0, scale: 0.8 }}
                             animate={{ opacity: 1, scale: 1 }}
                             exit={{ opacity: 0, scale: 0.8 }}
@@ -406,10 +406,10 @@ export function CommandPalette({ open, onClose }: CommandPaletteProps) {
                             }}
                           >
                             ↵
-                          </motion.kbd>
+                          </m.kbd>
                         )}
                       </AnimatePresence>
-                    </motion.button>
+                    </m.button>
                   ))}
 
                   {/* Bottom padding so last item isn't hidden behind fade */}
@@ -469,8 +469,8 @@ export function CommandPalette({ open, onClose }: CommandPaletteProps) {
                   </span>
                 ))}
               </div>
-            </motion.div>
-          </motion.div>
+            </m.div>
+          </m.div>
         )}
       </AnimatePresence>
     </>

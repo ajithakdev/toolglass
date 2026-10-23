@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion';
+import { m } from 'framer-motion';
 import type { ButtonHTMLAttributes, CSSProperties, ReactNode } from 'react';
 import { cn } from '../../lib/cn';
 import { spring } from '../../lib/motion';
@@ -56,7 +56,7 @@ export function Button({
   ...rest
 }: Props) {
   return (
-    <motion.button
+    <m.button
       type={type}
       whileHover={disabled ? undefined : { y: -1 }}
       whileTap={disabled ? undefined : { scale: 0.97, y: 0 }}
@@ -79,9 +79,9 @@ export function Button({
         transition: 'background-color var(--dur-2) var(--ease-out), border-color var(--dur-2) var(--ease-out), color var(--dur-2) var(--ease-out)',
         ...style,
       }}
-      {...(rest as React.ComponentProps<typeof motion.button>)}
+      {...(rest as React.ComponentProps<typeof m.button>)}
     >
       {children}
-    </motion.button>
+    </m.button>
   );
 }

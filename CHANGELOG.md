@@ -5,6 +5,7 @@ All notable changes to Toolglass. The format follows [Keep a Changelog](https://
 ## [Unreleased]
 
 ### Fixed
+- Pages load less JavaScript up front (161 KB to 131 KB gzipped): the About and Tools pages load on demand, and the animation code loads after the first paint (#141).
 - Screen readers now follow the highlighted result in the command palette and hear how many tools match the search. Tab no longer gets stuck when the result list shrinks.
 - The home page no longer freezes on devices without a graphics chip, including Google's PageSpeed test. The 3D glass background only starts on a real GPU; otherwise the logo poster stays. Lighthouse mobile performance went from 39 to 85 on a local build.
 - Screen readers now name both inputs in the Color tool. The text box used to be read out as an unnamed edit field (#140, thanks @Dtzul04).

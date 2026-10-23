@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion';
+import { m } from 'framer-motion';
 import { Trash2 } from 'lucide-react';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
@@ -21,12 +21,12 @@ const STORED: { key: string; what: string }[] = [
 
 function Section({ id, title, children }: { id: string; title: string; children: React.ReactNode }) {
   return (
-    <motion.section variants={fadeUp} aria-labelledby={id} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--s-3)' }}>
+    <m.section variants={fadeUp} aria-labelledby={id} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--s-3)' }}>
       <h2 id={id} style={{ margin: 0, fontSize: 'var(--t-xl)', fontWeight: 620 }}>
         {title}
       </h2>
       {children}
-    </motion.section>
+    </m.section>
   );
 }
 
@@ -47,13 +47,13 @@ export function About() {
   };
 
   return (
-    <motion.article
+    <m.article
       initial="hidden"
       animate="show"
       variants={stagger(0.07)}
       className="prose about-grid"
     >
-      <motion.header variants={fadeUp} className="about-intro">
+      <m.header variants={fadeUp} className="about-intro">
         <h1 style={{ margin: 0, fontSize: 'clamp(34px, 4.2vw, 56px)', lineHeight: 1.02, letterSpacing: 'var(--track-tight)', fontWeight: 650 }}>
           Small tools, kept on your side of the screen.
         </h1>
@@ -68,7 +68,7 @@ export function About() {
         <Link to="/tools" className="cta" style={{ alignSelf: 'flex-start' }}>
           Browse the tools
         </Link>
-      </motion.header>
+      </m.header>
 
       <div className="about-body">
       <Section id="privacy" title="How your data stays on your device">
@@ -129,7 +129,7 @@ export function About() {
         </p>
       </Section>
       </div>
-    </motion.article>
+    </m.article>
   );
 }
 

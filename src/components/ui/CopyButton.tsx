@@ -1,4 +1,4 @@
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence, m } from 'framer-motion';
 import { Check } from 'lucide-react';
 import { useParams } from 'react-router-dom';
 import { useClipboard } from '../../hooks/useClipboard';
@@ -30,7 +30,7 @@ export function CopyButton({ value, label = 'Copy', size = 'md', disabled }: Pro
     <Button onClick={onClick} variant="soft" size={size} disabled={disabled || !value}>
       <AnimatePresence mode="wait" initial={false}>
         {copied ? (
-          <motion.span
+          <m.span
             key="ok"
             initial={{ opacity: 0, y: -4 }}
             animate={{ opacity: 1, y: 0 }}
@@ -40,9 +40,9 @@ export function CopyButton({ value, label = 'Copy', size = 'md', disabled }: Pro
             <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
               <Check size={14} strokeWidth={2.4} /> Copied
             </span>
-          </motion.span>
+          </m.span>
         ) : (
-          <motion.span
+          <m.span
             key="lbl"
             initial={{ opacity: 0, y: -4 }}
             animate={{ opacity: 1, y: 0 }}
@@ -50,7 +50,7 @@ export function CopyButton({ value, label = 'Copy', size = 'md', disabled }: Pro
             transition={{ duration: 0.15 }}
           >
             {label}
-          </motion.span>
+          </m.span>
         )}
       </AnimatePresence>
     </Button>

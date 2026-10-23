@@ -1,4 +1,4 @@
-import { AnimatePresence, motion, Reorder } from 'framer-motion';
+import { AnimatePresence, m, Reorder } from 'framer-motion';
 import { GripVertical, Search, X } from 'lucide-react';
 import { useEffect, useMemo, useRef } from 'react';
 import { Link } from 'react-router-dom';
@@ -171,7 +171,7 @@ export function ToolsHub() {
 
       <AnimatePresence mode="wait">
         {filtered.length === 0 ? (
-          <motion.div key="empty" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="glass" style={{ padding: 'var(--s-7) var(--s-5)', textAlign: 'center', display: 'flex', flexDirection: 'column', gap: 'var(--s-3)', alignItems: 'center' }}>
+          <m.div key="empty" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="glass" style={{ padding: 'var(--s-7) var(--s-5)', textAlign: 'center', display: 'flex', flexDirection: 'column', gap: 'var(--s-3)', alignItems: 'center' }}>
             <p style={{ margin: 0, fontSize: 'var(--t-lg)', fontWeight: 600 }}>No tool matches that yet.</p>
             <p style={{ margin: 0, color: 'var(--ink-soft)' }}>
               Tell us what you need and it may be next.{' '}
@@ -179,29 +179,29 @@ export function ToolsHub() {
                 Request a tool
               </a>
             </p>
-          </motion.div>
+          </m.div>
         ) : searching ? (
-          <motion.section key={`q-${query}`} aria-label="Search results" variants={stagger(0.03)} initial="hidden" animate="show" className="tool-grid">
+          <m.section key={`q-${query}`} aria-label="Search results" variants={stagger(0.03)} initial="hidden" animate="show" className="tool-grid">
             {filtered.map((t) => (
               <ToolCard key={t.slug} tool={t} />
             ))}
-          </motion.section>
+          </m.section>
         ) : (
-          <motion.div key={`g-${category}-${audience}`} initial="hidden" animate="show" variants={stagger(0.06)} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--s-7)' }}>
+          <m.div key={`g-${category}-${audience}`} initial="hidden" animate="show" variants={stagger(0.06)} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--s-7)' }}>
             {groups.map((g) => (
-              <motion.section key={g.id} variants={fadeUp} aria-labelledby={`cat-${g.id}`} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--s-4)' }}>
+              <m.section key={g.id} variants={fadeUp} aria-labelledby={`cat-${g.id}`} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--s-4)' }}>
                 <div style={{ display: 'flex', alignItems: 'baseline', gap: 'var(--s-3)', flexWrap: 'wrap' }}>
                   <h2 id={`cat-${g.id}`} style={{ margin: 0, fontSize: 'var(--t-xl)', fontWeight: 620 }}>{g.name}</h2>
                   <span style={{ color: 'var(--ink-mute)', fontSize: 'var(--t-sm)' }}>{g.blurb}</span>
                 </div>
-                <motion.div variants={stagger(0.04)} className="tool-grid">
+                <m.div variants={stagger(0.04)} className="tool-grid">
                   {g.items.map((t) => (
                     <ToolCard key={t.slug} tool={t} />
                   ))}
-                </motion.div>
-              </motion.section>
+                </m.div>
+              </m.section>
             ))}
-          </motion.div>
+          </m.div>
         )}
       </AnimatePresence>
     </div>

@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion';
+import { m } from 'framer-motion';
 import { useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Button } from '../../components/ui/Button';
@@ -83,7 +83,7 @@ export default function PasswordTool() {
               overflow: 'hidden',
             }}
           >
-            <motion.div
+            <m.div
               animate={{ width: `${((strength.score + 1) / 5) * 100}%` }}
               transition={{ type: 'spring', stiffness: 220, damping: 26 }}
               style={{

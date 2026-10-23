@@ -1,4 +1,4 @@
-import { motion, type HTMLMotionProps } from 'framer-motion';
+import { m, type HTMLMotionProps } from 'framer-motion';
 import type { ReactNode } from 'react';
 import { cn } from '../../lib/cn';
 
@@ -10,12 +10,12 @@ interface Props extends HTMLMotionProps<'div'> {
 
 export function GlassCard({ children, strong, padding = 24, className, style, ...rest }: Props) {
   return (
-    <motion.div
+    <m.div
       className={cn(strong ? 'glass-strong' : 'glass', className)}
       style={{ padding, ...style }}
       {...rest}
     >
       {children}
-    </motion.div>
+    </m.div>
   );
 }

@@ -1,4 +1,4 @@
-import { interpolate, motion, useReducedMotion, useScroll, useTransform, type MotionValue } from 'framer-motion';
+import { interpolate, m, useReducedMotion, useScroll, useTransform, type MotionValue } from 'framer-motion';
 import { ArrowRight, Braces, FileText, Globe2, Heading, Image, KeyRound, NotebookPen, Pipette, QrCode, Ruler, Type, Video } from 'lucide-react';
 import { lazy, Suspense, useCallback, useMemo, useRef, useState, type ReactNode } from 'react';
 import { Link } from 'react-router-dom';
@@ -51,18 +51,18 @@ function Hero() {
 
   return (
     <section ref={ref} className="hero container" aria-labelledby="hero-h">
-      <motion.div style={{ y: copyY, opacity: copyOpacity, position: 'relative', zIndex: 2 }}>
-      <motion.div className="hero-copy" initial="hidden" animate="show" variants={stagger(0.08, 0.1)}>
-        <motion.h1 id="hero-h" variants={fadeUp} className="hero-title">
+      <m.div style={{ y: copyY, opacity: copyOpacity, position: 'relative', zIndex: 2 }}>
+      <m.div className="hero-copy" initial="hidden" animate="show" variants={stagger(0.08, 0.1)}>
+        <m.h1 id="hero-h" variants={fadeUp} className="hero-title">
           Every small tool, <span style={{ color: 'var(--accent)' }}>in one tab.</span>
-        </motion.h1>
-        <motion.p variants={fadeUp} className="hero-sub">
+        </m.h1>
+        <m.p variants={fadeUp} className="hero-sub">
           Free, private tools that run in your browser. No sign-up, no uploads, no ads.
-        </motion.p>
-        <motion.div variants={fadeUp} style={{ width: '100%' }}>
+        </m.p>
+        <m.div variants={fadeUp} style={{ width: '100%' }}>
           <HeroSearch />
-        </motion.div>
-        <motion.div variants={fadeUp} style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 8 }}>
+        </m.div>
+        <m.div variants={fadeUp} style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 8 }}>
           <span style={{ fontSize: 'var(--t-xs)', color: 'var(--ink-mute)', marginRight: 2 }}>Popular</span>
           {POPULAR.map((t) => (
             <Link key={t.slug} to={`/tools/${t.slug}`} className="try-chip">
@@ -70,13 +70,13 @@ function Hero() {
               {t.label}
             </Link>
           ))}
-        </motion.div>
-      </motion.div>
-      </motion.div>
+        </m.div>
+      </m.div>
+      </m.div>
 
       <div className="hero-stage">
         {/* Poster: the logo as flat glass, shown until the 3D scene has drawn a frame */}
-        <motion.div
+        <m.div
           aria-hidden
           animate={{ opacity: ready ? 0 : 1 }}
           transition={{ duration: 0.6, ease: EASE_OUT }}
@@ -85,12 +85,12 @@ function Hero() {
           <div style={{ filter: 'drop-shadow(0 30px 60px rgba(22,34,51,0.25))' }}>
             <Logo size={240} />
           </div>
-        </motion.div>
-        <motion.div animate={{ opacity: ready ? 1 : 0 }} transition={{ duration: 0.8, ease: EASE_OUT }} style={{ position: 'absolute', inset: 0 }}>
+        </m.div>
+        <m.div animate={{ opacity: ready ? 1 : 0 }} transition={{ duration: 0.8, ease: EASE_OUT }} style={{ position: 'absolute', inset: 0 }}>
           <Suspense fallback={null}>
             <GlassScene progress={progress} onReady={onReady} />
           </Suspense>
-        </motion.div>
+        </m.div>
       </div>
     </section>
   );
@@ -129,13 +129,13 @@ function ClutterCard({ item, i, p, narrow }: { item: (typeof CLUTTER)[number]; i
   const y = useRange(p, [0.46, 0.64], [`${py}vh`, '0vh']);
   const rotate = useRange(p, [start, 0.5], [(i % 2 ? 1 : -1) * 4, (i % 2 ? 1 : -1) * 2]);
   return (
-    <motion.div className="clutter-card glass" style={{ opacity, scale, x, y, rotate }}>
+    <m.div className="clutter-card glass" style={{ opacity, scale, x, y, rotate }}>
       <span className="clutter-icon">{item.icon}</span>
       <span style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
         <span style={{ fontWeight: 600, fontSize: 14 }}>{item.what}</span>
         <span style={{ fontSize: 'var(--t-xs)', color: 'var(--status-error)' }}>{item.catch}</span>
       </span>
-    </motion.div>
+    </m.div>
   );
 }
 
@@ -155,35 +155,35 @@ function Collapse() {
   return (
     <section ref={ref} className="collapse" aria-label="Why one place">
       <div className="collapse-stage">
-        <motion.div className="collapse-head" style={{ opacity: beforeOpacity }}>
+        <m.div className="collapse-head" style={{ opacity: beforeOpacity }}>
           <h2 className="act-title">Small jobs, scattered across the web.</h2>
           <p className="act-sub">Each one is another tab, another install, or another sign-up.</p>
-        </motion.div>
+        </m.div>
 
         {CLUTTER.map((c, i) => (
           <ClutterCard key={c.what} item={c} i={i} p={p} narrow={narrow} />
         ))}
 
         {/* The glass that takes it all in */}
-        <motion.div aria-hidden style={{ position: 'absolute', scale: coreScale, opacity: coreOpacity }}>
+        <m.div aria-hidden style={{ position: 'absolute', scale: coreScale, opacity: coreOpacity }}>
           <div style={{ filter: 'drop-shadow(0 20px 50px rgba(37,69,220,0.35))' }}>
             <Logo size={150} />
           </div>
-        </motion.div>
+        </m.div>
 
-        <motion.div className="collapse-after" style={{ opacity: afterOpacity, y: afterY }}>
+        <m.div className="collapse-after" style={{ opacity: afterOpacity, y: afterY }}>
           <h2 className="act-title">Now they live in one place.</h2>
           <p className="act-sub">The same jobs, in one bookmark. Nothing gets uploaded.</p>
-        </motion.div>
+        </m.div>
 
-        <motion.nav aria-label="Popular tools" className="toolbar glass-strong" style={{ scale: barScale, opacity: barOpacity }}>
+        <m.nav aria-label="Popular tools" className="toolbar glass-strong" style={{ scale: barScale, opacity: barOpacity }}>
           {TOOLBAR.map((t) => (
             <Link key={t.slug} to={`/tools/${t.slug}`} className="toolbar-item" title={t.title}>
               <span className="toolbar-icon">{t.icon}</span>
               <span className="toolbar-label">{t.title.split(' ')[0]}</span>
             </Link>
           ))}
-        </motion.nav>
+        </m.nav>
       </div>
     </section>
   );
@@ -229,22 +229,22 @@ function ForEveryone() {
 
   return (
     <section className="container" aria-labelledby="who-h" style={{ paddingBlock: 'var(--section)', display: 'flex', flexDirection: 'column', gap: 'var(--s-6)' }}>
-      <motion.div initial="hidden" whileInView="show" viewport={{ once: true, margin: '-15%' }} variants={stagger(0.08)} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--s-4)', maxWidth: 680 }}>
-        <motion.h2 id="who-h" variants={fadeUp} className="act-title" style={{ textAlign: 'left' }}>
+      <m.div initial="hidden" whileInView="show" viewport={{ once: true, margin: '-15%' }} variants={stagger(0.08)} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--s-4)', maxWidth: 680 }}>
+        <m.h2 id="who-h" variants={fadeUp} className="act-title" style={{ textAlign: 'left' }}>
           Built for whoever has a browser open.
-        </motion.h2>
-        <motion.p variants={fadeUp} className="act-sub" style={{ textAlign: 'left', margin: 0 }}>
+        </m.h2>
+        <m.p variants={fadeUp} className="act-sub" style={{ textAlign: 'left', margin: 0 }}>
           Writers fixing text, designers checking colors, developers formatting JSON, anyone making a QR code for a menu.
-        </motion.p>
-        <motion.div variants={fadeUp} className="rail">
+        </m.p>
+        <m.div variants={fadeUp} className="rail">
           <Segmented label="Show tools for" value={aud} options={options} onChange={setAud} />
-        </motion.div>
-      </motion.div>
-      <motion.div key={aud} className="tool-grid" initial="hidden" animate="show" variants={stagger(0.05)}>
+        </m.div>
+      </m.div>
+      <m.div key={aud} className="tool-grid" initial="hidden" animate="show" variants={stagger(0.05)}>
         {picks.map((t) => (
           <ToolCard key={t.slug} tool={t} />
         ))}
-      </motion.div>
+      </m.div>
       <Link to={`/tools?for=${aud}`} className="link" style={{ alignSelf: 'flex-start', display: 'inline-flex', alignItems: 'center', gap: 6, fontWeight: 550 }}>
         See every tool for {options.find((o) => o.value === aud)?.label.toLowerCase()} <ArrowRight size={16} />
       </Link>
@@ -258,9 +258,9 @@ function Proof() {
   const count = useThirdPartyCount();
   return (
     <section className="container proof" aria-labelledby="proof-h">
-      <motion.div initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: '-20%' }} transition={{ duration: 0.3, ease: EASE_OUT }} className="proof-number">
+      <m.div initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: '-20%' }} transition={{ duration: 0.3, ease: EASE_OUT }} className="proof-number">
         <span className="num" aria-hidden>{count ?? '?'}</span>
-      </motion.div>
+      </m.div>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--s-4)' }}>
         <h2 id="proof-h" className="act-title" style={{ textAlign: 'left' }}>
           {count === null ? 'Your browser can\'t report requests to other servers.' : `${count === 1 ? 'Request' : 'Requests'} this page has sent to other servers.`}
@@ -288,7 +288,7 @@ function Proof() {
 function Ending() {
   return (
     <section className="container" style={{ paddingBottom: 'var(--section)' }}>
-      <motion.div
+      <m.div
         initial={{ opacity: 0, y: 24 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: '-15%' }}
@@ -303,7 +303,7 @@ function Ending() {
         <Link to="/tools" className="cta">
           Open the tools <ArrowRight size={18} />
         </Link>
-      </motion.div>
+      </m.div>
     </section>
   );
 }

@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion';
+import { m } from 'framer-motion';
 import { Star } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useFavorites } from '../../hooks/useFavorites';
@@ -13,7 +13,7 @@ export function ToolCard({ tool, compact }: { tool: ToolMeta; compact?: boolean 
   const fav = isFavorite(tool.slug);
 
   return (
-    <motion.div variants={fadeUp} className="glass lift tool-card" style={{ position: 'relative', borderRadius: 'var(--radius-lg)' }}>
+    <m.div variants={fadeUp} className="glass lift tool-card" style={{ position: 'relative', borderRadius: 'var(--radius-lg)' }}>
       <Link
         to={`/tools/${tool.slug}`}
         className="stretched"
@@ -79,6 +79,6 @@ export function ToolCard({ tool, compact }: { tool: ToolMeta; compact?: boolean 
       >
         <Star size={16} strokeWidth={1.9} fill={fav ? 'currentColor' : 'none'} />
       </button>
-    </motion.div>
+    </m.div>
   );
 }

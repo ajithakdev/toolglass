@@ -40,3 +40,15 @@ CHROME_PATH=/usr/bin/chromium-browser npx -y lighthouse@12.8.2 https://toolglass
 ```
 
 Or paste the URL into https://pagespeed.web.dev for Google's own numbers.
+
+## Bundle size (2026-10-24, #141)
+
+JavaScript a page downloads before it can run (entry plus its preloads), measured on `dist/tools/uuid.html`:
+
+| | Upfront JS (gzip) |
+| --- | --- |
+| Before | 160.7 KB |
+| `About` and `ToolsHub` lazy-loaded | 156.3 KB |
+| plus framer-motion `LazyMotion` with `m` components | 130.9 KB |
+
+Most of the remaining 131 KB is react-dom, react-router and framer-motion's `m` core. The framer-motion animation features (`domMax`, about 30 KB gzip) load after first paint from `src/lib/motionFeatures.ts`. Getting under the 100 KB target would mean replacing a library, which is not planned.

@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion';
+import { m } from 'framer-motion';
 import { useId, useRef, type KeyboardEvent, type MouseEvent, type ReactNode } from 'react';
 import { spring } from '../../lib/motion';
 
@@ -87,7 +87,7 @@ export function Segmented<T extends string>({
             }}
           >
             {active && (
-              <motion.span
+              <m.span
                 layoutId={`seg-${id}`}
                 transition={spring}
                 aria-hidden

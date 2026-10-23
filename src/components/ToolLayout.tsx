@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion';
+import { m } from 'framer-motion';
 import { Check, ChevronRight, Link2, ShieldCheck, Star } from 'lucide-react';
 import { useEffect, type ReactNode } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
@@ -49,7 +49,7 @@ export function ToolLayout({ children }: { children: ReactNode }) {
   const fav = isFavorite(tool.slug);
 
   return (
-    <motion.div
+    <m.div
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.28, ease: EASE_OUT }}
@@ -109,13 +109,13 @@ export function ToolLayout({ children }: { children: ReactNode }) {
       {related.length > 0 && (
         <section aria-labelledby="related-h" style={{ display: 'flex', flexDirection: 'column', gap: 'var(--s-3)', marginTop: 'var(--s-6)' }}>
           <h2 id="related-h" className="section-label">More {category?.name.toLowerCase()} tools</h2>
-          <motion.div className="tool-grid" initial="hidden" animate="show" variants={stagger(0.05)}>
+          <m.div className="tool-grid" initial="hidden" animate="show" variants={stagger(0.05)}>
             {related.map((t) => (
               <ToolCard key={t.slug} tool={t} compact />
             ))}
-          </motion.div>
+          </m.div>
         </section>
       )}
-    </motion.div>
+    </m.div>
   );
 }

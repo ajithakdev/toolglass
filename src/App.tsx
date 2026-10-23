@@ -1,21 +1,24 @@
-import { MotionConfig } from 'framer-motion';
-import { useEffect, useState } from 'react';
+import { LazyMotion, MotionConfig } from 'framer-motion';
+import { lazy, Suspense, useEffect, useState } from 'react';
 import { Route, Routes, useLocation } from 'react-router-dom';
 import { CommandPalette } from './components/CommandPalette';
 import { Shell } from './components/Shell';
-import { About } from './pages/About';
 import { Home } from './pages/Home';
 import { ToolPage } from './pages/ToolPage';
-import { ToolsHub } from './pages/ToolsHub';
 import { ToastProvider } from './components/ui/Toast';
 import { applyMetaToDocument, HOME, pageForPath } from './seo';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { NotFound } from './pages/NotFound';
 
+// Home, ToolPage and NotFound (used by ToolPage) stay in the entry chunk: they are where visitors land
+const About = lazy(() => import('./pages/About').then((m) => ({ default: m.About })));
+const ToolsHub = lazy(() => import('./pages/ToolsHub').then((m) => ({ default: m.ToolsHub })));
+
 function Page({ children }: { children: React.ReactNode }) {
   return (
     <div className="container" style={{ paddingTop: 'var(--s-5)' }}>
-      {children}
+      {/* Full-height fallback keeps the footer below the fold while a lazy page loads */}
+      <Suspense fallback={<div style={{ minHeight: '100vh' }} />}>{children}</Suspense>
     </div>
   );
 }
@@ -43,6 +46,8 @@ export default function App() {
   return (
     // reducedMotion="user": framer drops transforms but keeps fades when the OS asks for less motion
     <MotionConfig reducedMotion="user">
+      {/* `m` componentss render at once and animate when these features arrive */}
+      <LazyMotion features={() => import('./lib/motionFeatures').then((r) => r.default)}>
       <ToastProvider>
         <Shell onOpenPalette={() => setPaletteOpen(true)}>
           <ErrorBoundary>
@@ -57,6 +62,7 @@ export default function App() {
         </Shell>
         <CommandPalette open={paletteOpen} onClose={() => setPaletteOpen(false)} />
       </ToastProvider>
+      </LazyMotion>
     </MotionConfig>
   );
 }

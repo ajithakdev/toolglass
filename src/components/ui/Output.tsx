@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion';
+import { m } from 'framer-motion';
 import type { ReactNode } from 'react';
 import { CopyButton } from './CopyButton';
 
@@ -34,7 +34,7 @@ export function Output({
         aria-label={label}
         style={{ display: 'contents' }}
       >
-        <motion.div
+        <m.div
           key={value || 'empty'}
           initial={{ opacity: 0, y: 4 }}
           animate={{ opacity: 1, y: 0 }}
@@ -53,7 +53,7 @@ export function Output({
           }}
         >
           {value || placeholder}
-        </motion.div>
+        </m.div>
       </output>
       <div style={{ display: 'flex', gap: 8, alignSelf: multiline ? 'flex-end' : 'auto' }}>
         {trailing}

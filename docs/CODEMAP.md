@@ -35,7 +35,7 @@ index.html
 | `vite.config.ts` | `base: '/'`. PWA plugin (autoUpdate, precaches woff2). `seoPages` plugin writes per-page HTML, `404.html`, and `sitemap.xml` from `src/seo.ts` after build. Vitest config: jsdom, globals, `src/**/*.test.{ts,tsx}`. |
 | `tsconfig.json` | strict, noUnusedLocals, noUnusedParameters, `include: ["src"]`. |
 | `eslint.config.js` (26) | Flat config. Several `react-hooks/*` rules turned off (set-state-in-effect, purity, refs, error-boundaries, set-state-in-render). |
-| `index.html` | Meta, OG tags, JSON-LD, pre-paint theme script. Fonts are self-hosted Geist and Geist Mono (see `index.css`). |
+| `index.html` | Content-Security-Policy meta, meta, OG tags, JSON-LD, pre-paint theme script. Fonts are self-hosted Geist and Geist Mono (see `index.css`). |
 | `.github/ISSUE_TEMPLATE/` | Issue forms: `bug_report.yml`, `feature_request.yml`; `config.yml` turns off blank issues and links Discussions, SECURITY.md, and the site. Tool-request links in `ToolsHub.tsx` and `About.tsx` open `feature_request.yml` with `template=`. |
 | `.github/workflows/ci-cd.yml` | `verify` job: `npm ci`, lint, build, test, upload Pages artifact. `deploy` job: Pages, only on a `v*` tag push or a manual run; it alone has `pages`/`id-token` write. |
 | `scripts/gen-keccak-permute.py` | Prints the unrolled Keccak `permute` for `src/tools/hash/hash.ts`. Only needed if that function is ever regenerated. |
@@ -126,7 +126,7 @@ Catalog: `catalog.ts` exports `CategoryId`, `Audience`, `CATEGORIES`, `AUDIENCES
 | `json-to-ts` | `json-to-ts/JsonToTsTool.tsx` (136) | inline, converter above L86 | no | |
 | `api-tester` | `curl-to-fetch/CurlTool.tsx` (35) + parts | `curl-to-fetch/curlSecurity.ts` (252) | yes (286) | HTTP client, cURL import, saved workflows, history. Split into several files; map below. |
 | `qr` | `qr/QrTool.tsx` (109) | `qrcode` package | no | PNG and SVG export. |
-| `markdown` | `markdown/MarkdownTool.tsx` (104) | `marked` + `dompurify` | no | Output is sanitized before render and before "Copy HTML". |
+| `markdown` | `markdown/MarkdownTool.tsx` | `render.ts`: `renderMarkdown(md, keepRemoteImages)` (`marked` + `dompurify`) | yes | Output is sanitized. The preview and print window drop remote image `src`; Copy and Download keep them. |
 | `chmod` | `chmod/ChmodTool.tsx` | `chmod.ts` | yes | URL state: `v` (octal). Shell-escapes filenames in the copied command. From PR #93. |
 | `case-converter` | `case-converter/CaseConverterTool.tsx` | `caseConverter.ts` | yes | URL state: `t`. Unicode-aware word splitting. From PR #94. |
 | `word-counter` | `word-counter/WordCounterTool.tsx` | `wordCount.ts`: `textStats` (Intl.Segmenter) | yes | |
@@ -204,6 +204,7 @@ Only `fetch` calls in the app: `tools/curl-to-fetch/useApiTester.ts:447` and `:6
 
 ## Gotchas
 
+- `index.html` has a CSP. The inline theme script is allowed by its sha256 hash: change the script and the hash must be recomputed, or the theme flashes and the console shows a CSP error. `img-src` and `media-src` allow only self, `data:` and `blob:`; `connect-src *` is for the API Tester. A new tool that needs anything else must update the policy.
 - `npm run dev` and `vite preview` fall back to `index.html` for any path. GitHub Pages does not: it needs the `tools/<slug>.html` and `404.html` files the build writes. Check the built `dist/` when changing routes.
 - `ToolLayout` Backspace goes to `/tools` unless focus is in an input, textarea, select, or contenteditable, or a modifier key is held.
 - Use `m.*` from framer-motion, not `motion.*`: `App.tsx` wraps everything in `LazyMotion` so the animation code loads after first paint. A `motion.*` component still works but pulls the full library into its chunk (`Reorder` in `ToolsHub.tsx` does this on purpose).

@@ -7,6 +7,10 @@ All notable changes to Toolglass. The format follows [Keep a Changelog](https://
 ### Changed
 - The site now deploys once a week with each release (Sunday), not on every merge. Urgent fixes ship as a same-day patch release.
 
+### Security
+- The Markdown preview no longer loads remote images, so a tracking pixel in pasted Markdown can't tell anyone you opened it. Copy and Download still keep the image links.
+- The site now sends a Content-Security-Policy that blocks remote images, media and scripts on every page. The API Tester can still call any URL (#142).
+
 ### Fixed
 - Pages load less JavaScript up front (161 KB to 131 KB gzipped): the About and Tools pages load on demand, and the animation code loads after the first paint (#141).
 - Screen readers now follow the highlighted result in the command palette and hear how many tools match the search. Tab no longer gets stuck when the result list shrinks.

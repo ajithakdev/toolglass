@@ -1,19 +1,19 @@
 import { useState, useMemo } from 'react';
 import { TextArea } from '../../components/ui/Field';
-import { marked } from 'marked';
-import DOMPurify from 'dompurify';
 import { ToolLayout } from '../../components/ToolLayout';
 import { CopyButton } from '../../components/ui/CopyButton';
 import { Button } from '../../components/ui/Button';
+import { renderMarkdown } from './render';
 
 export default function MarkdownTool() {
   const [markdown, setMarkdown] = useState('# Hello World\n\nThis is a **Markdown** preview.\n\n- Write markdown on the left\n- See HTML on the right\n\n```javascript\nconsole.log("Enjoy!");\n```');
 
-  const html = useMemo(() => {
+  // `preview` (on screen and in the print window) never loads remote images; Copy and Download keep them
+  const [preview, html] = useMemo(() => {
     try {
-      return DOMPurify.sanitize(marked.parse(markdown) as string);
+      return [renderMarkdown(markdown), renderMarkdown(markdown, true)];
     } catch {
-      return 'Error parsing markdown';
+      return ['Error parsing markdown', 'Error parsing markdown'];
     }
   }, [markdown]);
 
@@ -33,7 +33,7 @@ export default function MarkdownTool() {
           </style>
         </head>
         <body>
-          ${html}
+          ${preview}
         </body>
       </html>
     `);
@@ -95,7 +95,7 @@ export default function MarkdownTool() {
               overflowY: 'auto',
               background: 'var(--surface-icon-bg)'
             }}
-            dangerouslySetInnerHTML={{ __html: html }}
+            dangerouslySetInnerHTML={{ __html: preview }}
           />
         </div>
       </div>

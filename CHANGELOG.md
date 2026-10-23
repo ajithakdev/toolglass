@@ -7,6 +7,9 @@ All notable changes to Toolglass. The format follows [Keep a Changelog](https://
 ### Fixed
 - The home page no longer freezes on devices without a graphics chip, including Google's PageSpeed test. The 3D glass background only starts on a real GPU; otherwise the logo poster stays. Lighthouse mobile performance went from 39 to 85 on a local build.
 - Screen readers now name both inputs in the Color tool. The text box used to be read out as an unnamed edit field (#140, thanks @Dtzul04).
+- Cron "next runs" in the Timestamp tool now match standard cron: day-of-month and day-of-week are ORed when both are set, 7 counts as Sunday, yearly and leap-day schedules show up, and bad fields like `abc` or `99` show an error instead of a schedule (#137).
+- "Clear everything" on the About page now also clears Notepad text, World Clock zones and the API Tester's per-tab credentials (#139).
+- Two quick pushes to `main` no longer cancel a site deploy partway through (#144).
 
 ## [1.1.1] - 2026-10-21
 

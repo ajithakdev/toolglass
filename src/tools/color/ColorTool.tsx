@@ -87,6 +87,7 @@ export default function ColorTool() {
               <Pipette size={20} style={{ pointerEvents: 'none', color: '#fff', filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.5))', mixBlendMode: 'difference' }} />
               <input
                 type="color"
+                aria-label="Pick a color"
                 value={parsed?.isHex || '#000000'}
                 onChange={(e) => setInput(e.target.value)}
                 style={{
@@ -102,6 +103,7 @@ export default function ColorTool() {
             <input
               type="text"
               className="input"
+              aria-label="Color value"
               value={input}
               onChange={(e) => setInput(e.target.value)}
               style={{ 

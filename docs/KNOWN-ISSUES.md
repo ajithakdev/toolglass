@@ -22,7 +22,7 @@ Remove an entry when its fix is merged.
 ## 5. Test coverage gaps
 
 - 11 of 17 tools have no tests. Of the hooks, only `useUrlState` has a test.
-- Untested logic worth extracting: cron parsing and date-offset parsing in `TimestampTool.tsx`, `parseCurl` in `CurlTool.tsx`, `inferType` in `JsonToTsTool.tsx`.
+- Untested logic worth extracting: date-offset parsing in `TimestampTool.tsx`, `parseCurl` in `CurlTool.tsx`, `inferType` in `JsonToTsTool.tsx`.
 
 ## 6. Theme and font edge cases
 

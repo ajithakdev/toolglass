@@ -6,18 +6,7 @@ import { PrivacyMeter } from '../components/PrivacyMeter';
 import { Button } from '../components/ui/Button';
 import { useToast } from '../components/ui/Toast';
 import { fadeUp, stagger } from '../lib/motion';
-
-// Everything Toolglass keeps, all in this browser's localStorage
-const STORED: { key: string; what: string }[] = [
-  { key: 'toolglass-theme', what: 'Your theme choice (absent means Auto)' },
-  { key: 'toolglass_favorites', what: 'Tools you starred, in your order' },
-  { key: 'toolglass_recent_tools', what: 'The last few tools you opened' },
-  { key: 'toolglass_stats', what: 'How often you used each tool' },
-  { key: 'toolglass_telemetry_enabled', what: 'Whether usage counting is on' },
-  { key: 'tg_ts_history', what: 'Timestamp tool history' },
-  { key: 'toolglass_saved_requests', what: 'API Tester saved requests, without passwords or tokens' },
-  { key: 'toolglass_request_history', what: 'API Tester history, without passwords or tokens' },
-];
+import { STORED } from '../lib/stored';
 
 function Section({ id, title, children }: { id: string; title: string; children: React.ReactNode }) {
   return (
@@ -32,12 +21,12 @@ function Section({ id, title, children }: { id: string; title: string; children:
 
 export function About() {
   const toast = useToast();
-  const [present, setPresent] = useState(() => STORED.filter((s) => safeHas(s.key)).map((s) => s.key));
+  const [present, setPresent] = useState(() => STORED.filter(safeHas).map((s) => s.key));
 
   const clearAll = () => {
     STORED.forEach((s) => {
       try {
-        localStorage.removeItem(s.key);
+        (s.session ? sessionStorage : localStorage).removeItem(s.key);
       } catch {
         // storage blocked: nothing stored either
       }
@@ -89,7 +78,7 @@ export function About() {
       </Section>
 
       <Section id="stored" title="What is saved on this device">
-        <p style={{ margin: 0, color: 'var(--ink-soft)' }}>Only these, in this browser's local storage. Nothing is synced anywhere.</p>
+        <p style={{ margin: 0, color: 'var(--ink-soft)' }}>Only these, in this browser's storage. Nothing is synced anywhere.</p>
         <div className="glass" style={{ overflow: 'hidden' }}>
           <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 'var(--t-sm)' }}>
             <tbody>
@@ -133,9 +122,9 @@ export function About() {
   );
 }
 
-function safeHas(key: string) {
+function safeHas({ key, session }: { key: string; session?: true }) {
   try {
-    return localStorage.getItem(key) !== null;
+    return (session ? sessionStorage : localStorage).getItem(key) !== null;
   } catch {
     return false;
   }

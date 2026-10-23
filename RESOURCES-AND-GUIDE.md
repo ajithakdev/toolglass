@@ -6,7 +6,7 @@ Every link for Toolglass, what it is for, how to contribute, and how to run and 
 
 - Site: https://toolglass.ajithakdev.com
 - Every tool runs entirely in the browser with zero tracking, no cookies, and no server calls.
-- Pushing to `main` deploys to GitHub Pages; pushes touching only `docs/` or markdown skip CI.
+- Merging to `main` only runs checks. The site deploys when a release tag (`vX.Y.Z`) is pushed: once a week on Sunday, or same day for a hotfix.
 - Add tools by adding a folder in `src/tools/`, an entry in `src/tools/catalog.ts`, and visuals in `src/tools/registry.tsx`.
 - Before opening a PR: run `npm run lint`, `npm test`, and `npm run build`.
 
@@ -53,14 +53,17 @@ Every link for Toolglass, what it is for, how to contribute, and how to run and 
 | Check lint | `npm run lint` or `npm run lint -- --fix` |
 | Build and type-check | `npm run build` |
 | Preview build | `npm run preview` |
-| Deploy | Push to `main`. GitHub Actions runs `ci-cd.yml` on Node 22 and deploys to GitHub Pages |
-| Release | Update version in `package.json`, document changes in `CHANGELOG.md`, tag, and push |
+| Deploy | Push a `vX.Y.Z` tag (the release does this). Merges to `main` are checked but not deployed |
+| Release (every Sunday) | Patch if the week had only fixes, minor if it added a tool or feature. Move `## [Unreleased]` in `CHANGELOG.md` under `## [X.Y.Z] - date`, bump `package.json`, commit `chore: release vX.Y.Z`, tag `vX.Y.Z`, push the tag, then `gh release create` with that changelog section |
+| Hotfix (broken tool, security) | Same release steps the same day, as a patch |
+| Redeploy without a release | Actions, CI/CD, "Run workflow" on `main` |
 
 ## When something goes wrong
 
 | Problem | Fix |
 | --- | --- |
-| Site does not deploy after a push | Pushes that only touch markdown files or `docs/` skip CI by design in `.github/workflows/ci-cd.yml` |
+| Merged change is not live | Expected: only release tags deploy. Cut a release, or run the workflow by hand for an urgent fix |
+| Release tag did not deploy | Check that the `github-pages` environment allows tags `v*` (Settings, Environments) |
 | Direct tool route 404s on GitHub Pages | Run `npm run build` to generate `tools/<slug>.html` and `404.html` via the `seoPages` plugin |
 | Theme does not follow system changes | Clear localStorage `toolglass-theme` key if an older version set a permanent mode |
 | Scroll animation fades out in pinned sections | Use `useRange` in `src/pages/Home.tsx` instead of plain `useTransform` |

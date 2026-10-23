@@ -8,7 +8,7 @@ import { useToast } from '../../components/ui/Toast';
 import { useUrlState } from '../../hooks/useUrlState';
 import { useClipboard } from '../../hooks/useClipboard';
 import { useToolStats } from '../../hooks/useToolStats';
-import { isoWithOffset, rfc2822 } from './timestamp';
+import { describeCron, getNextCronRuns, isoWithOffset, rfc2822 } from './timestamp';
 
 // ── Timezone Lists ──
 const DEFAULT_TZS = ['UTC', 'America/New_York', 'Asia/Kolkata', 'Europe/London'];
@@ -100,98 +100,6 @@ function formatLocal(date: Date, timeZone: string, type: 'all' | 'date' | 'time'
     return 'Invalid TZ';
   }
   return '';
-}
-
-// ── Cron Next Runs ──
-function getNextCronRuns(cron: string, count = 5): Date[] {
-  const parts = cron.trim().split(/\s+/);
-  if (parts.length < 5) return [];
-  const [minPat, hourPat, domPat, monthPat, dowPat] = parts;
-
-  function parseField(pattern: string, minVal: number, maxVal: number): number[] {
-    const list: number[] = [];
-    const subpatterns = pattern.split(',');
-    for (const sub of subpatterns) {
-      if (sub === '*') {
-        for (let i = minVal; i <= maxVal; i++) list.push(i);
-      } else if (sub.includes('/')) {
-        const [range, stepStr] = sub.split('/');
-        const step = Number(stepStr) || 1;
-        let start = minVal;
-        let end = maxVal;
-        if (range !== '*') {
-          if (range.includes('-')) {
-            const [s, e] = range.split('-');
-            start = Number(s);
-            end = Number(e);
-          } else {
-            start = Number(range);
-          }
-        }
-        for (let i = start; i <= end; i += step) {
-          list.push(i);
-        }
-      } else if (sub.includes('-')) {
-        const [s, e] = sub.split('-');
-        const start = Number(s);
-        const end = Number(e);
-        for (let i = start; i <= end; i++) list.push(i);
-      } else {
-        list.push(Number(sub));
-      }
-    }
-    return Array.from(new Set(list)).sort((a, b) => a - b);
-  }
-
-  try {
-    const minutes = parseField(minPat!, 0, 59);
-    const hours = parseField(hourPat!, 0, 23);
-    const doms = parseField(domPat!, 1, 31);
-    const months = parseField(monthPat!, 1, 12);
-    const dows = parseField(dowPat!, 0, 6);
-
-    const runs: Date[] = [];
-    const current = new Date();
-    current.setSeconds(0);
-    current.setMilliseconds(0);
-    current.setMinutes(current.getMinutes() + 1);
-
-    let iterations = 0;
-    while (runs.length < count && iterations < 30000) {
-      iterations++;
-      const min = current.getMinutes();
-      const hour = current.getHours();
-      const dom = current.getDate();
-      const month = current.getMonth() + 1;
-      const dow = current.getDay();
-
-      if (
-        minutes.includes(min) &&
-        hours.includes(hour) &&
-        doms.includes(dom) &&
-        months.includes(month) &&
-        dows.includes(dow)
-      ) {
-        runs.push(new Date(current));
-      }
-      current.setMinutes(current.getMinutes() + 1);
-    }
-    return runs;
-  } catch {
-    return [];
-  }
-}
-
-function describeCron(cron: string): string {
-  const parts = cron.trim().split(/\s+/);
-  if (parts.length < 5) return 'Invalid cron expression';
-  const [minPat, hourPat, domPat, monthPat, dowPat] = parts;
-  const describeField = (pat: string | undefined, name: string) => {
-    if (!pat || pat === '*') return `every ${name}`;
-    if (pat.startsWith('*/')) return `every ${pat.slice(2)} ${name}s`;
-    return `at ${name} ${pat}`;
-  };
-  return `Runs ${describeField(minPat, 'minute')}, ${describeField(hourPat, 'hour')}, on day ${describeField(domPat, 'of month')}, in ${describeField(monthPat, 'month')}, on ${describeField(dowPat, 'day of week')}.`;
 }
 
 // ── Diff Duration helper ──

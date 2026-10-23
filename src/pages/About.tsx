@@ -43,7 +43,7 @@ export function About() {
       className="prose about-grid"
     >
       <m.header variants={fadeUp} className="about-intro">
-        <h1 style={{ margin: 0, fontSize: 'clamp(34px, 4.2vw, 56px)', lineHeight: 1.02, letterSpacing: 'var(--track-tight)', fontWeight: 650 }}>
+        <h1 style={{ margin: 0, fontSize: 'clamp(34px, 2.8vw, 44px)', lineHeight: 1.02, letterSpacing: 'var(--track-tight)', fontWeight: 650 }}>
           Small tools, kept on your side of the screen.
         </h1>
         <p style={{ margin: 0, fontSize: 'var(--t-lg)', color: 'var(--ink-soft)' }}>

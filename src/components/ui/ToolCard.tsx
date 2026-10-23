@@ -19,10 +19,10 @@ export function ToolCard({ tool, compact }: { tool: ToolMeta; compact?: boolean 
         className="stretched"
         style={{
           display: 'flex',
-          gap: 'var(--s-4)',
+          gap: 'var(--s-3)',
           alignItems: compact ? 'center' : 'flex-start',
           flexDirection: compact ? 'row' : 'column',
-          padding: compact ? 'var(--s-3) var(--s-4)' : 'var(--s-5)',
+          padding: compact ? 'var(--s-3) var(--s-4)' : 'var(--s-4) var(--s-5)',
           height: '100%',
         }}
       >

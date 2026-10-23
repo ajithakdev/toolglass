@@ -5,6 +5,8 @@ All notable changes to Toolglass. The format follows [Keep a Changelog](https://
 ## [Unreleased]
 
 ### Changed
+- Calmer layout on big screens: the content column is 1200px wide instead of 1600px, and page headings and section gaps are smaller on desktop. Phone layouts are unchanged.
+- The "0 requests" status dot now pulses, so it reads as live. It stays still if your system asks for reduced motion.
 - The site now deploys once a week with each release (Sunday), not on every merge. Urgent fixes ship as a same-day patch release.
 
 ### Security
@@ -12,6 +14,9 @@ All notable changes to Toolglass. The format follows [Keep a Changelog](https://
 - The site now sends a Content-Security-Policy that blocks remote images, media and scripts on every page. The API Tester can still call any URL (#142).
 
 ### Fixed
+- Picking a short tool category no longer nudges the whole page sideways when the scrollbar disappears.
+- Coming back to the home page no longer flashes the flat logo before the 3D glass appears.
+- A flat sheet behind the white glass tile no longer peeks out at its edge.
 - Pages load less JavaScript up front (161 KB to 131 KB gzipped): the About and Tools pages load on demand, and the animation code loads after the first paint (#141).
 - Screen readers now follow the highlighted result in the command palette and hear how many tools match the search. Tab no longer gets stuck when the result list shrinks.
 - The home page no longer freezes on devices without a graphics chip, including Google's PageSpeed test. The 3D glass background only starts on a real GPU; otherwise the logo poster stays. Lighthouse mobile performance went from 39 to 85 on a local build.

@@ -4,7 +4,7 @@
 //
 // The world (renderer, environment, compiled shaders) is built once and reused,
 // so returning to Home does not rebuild it. Building it is the expensive part.
-import { useEffect, useRef } from 'react';
+import { useLayoutEffect, useRef } from 'react';
 import {
   ACESFilmicToneMapping,
   CanvasTexture,
@@ -154,10 +154,11 @@ function buildWorld(): World | null {
     }),
   );
   front.position.set(0.55, -0.55, 0.45);
-  // Opaque plate right behind the front pane (transmission only refracts opaque
-  // objects). A child of the pane, so it moves with it and stays behind it.
+  // Opaque plate the front pane refracts (transmission only refracts opaque objects).
+  // It sits inside the pane, so the glass hides its edges at every angle; 2.05 fits
+  // within the rounded corners of the 2.3 box.
   const plate = new Mesh(new PlaneGeometry(2.05, 2.05), new MeshBasicMaterial({ map: plateTexture(), toneMapped: false }));
-  plate.position.set(0, 0, -0.5);
+  plate.position.set(0, 0, -0.05);
   front.add(plate);
   panes.add(back, front);
   panes.rotation.set(-0.18, 0.42, 0.06);
@@ -210,7 +211,8 @@ export interface GlassSceneProps {
 export default function GlassScene({ progress, onReady }: GlassSceneProps) {
   const hostRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
+  // Layout effect: on a return visit the canvas is attached and drawn before the browser paints
+  useLayoutEffect(() => {
     const host = hostRef.current;
     if (!host) return;
     let alive = true;
@@ -219,6 +221,7 @@ export default function GlassScene({ progress, onReady }: GlassSceneProps) {
     // Build after the page transition has painted, so navigation never hitches
     const start = () => {
       if (!alive) return;
+      const reused = world !== undefined;
       if (world === undefined) world = buildWorld();
       const w = world;
       if (!w) return;
@@ -240,6 +243,8 @@ export default function GlassScene({ progress, onReady }: GlassSceneProps) {
       const ro = new ResizeObserver(resize);
       ro.observe(host);
       resize();
+      // Return visit: shaders are compiled, so draw now instead of leaving the stage empty for a frame
+      if (reused) draw();
 
       // Pointer parallax, eased toward the target every frame
       const pointer = { x: 0, y: 0, tx: 0, ty: 0 };
@@ -317,9 +322,10 @@ export default function GlassScene({ progress, onReady }: GlassSceneProps) {
       };
     };
 
-    const idle = window.requestIdleCallback
-      ? window.requestIdleCallback(start, { timeout: 400 })
-      : window.setTimeout(start, 120);
+    // First visit: build after the page transition has painted. Return visit: the world exists, attach at once
+    let idle = 0;
+    if (world) start();
+    else idle = window.requestIdleCallback ? window.requestIdleCallback(start, { timeout: 400 }) : window.setTimeout(start, 120);
 
     return () => {
       alive = false;

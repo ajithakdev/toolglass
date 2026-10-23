@@ -138,7 +138,7 @@ export function ToolsHub() {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--s-6)', paddingBottom: 'var(--s-8)' }}>
-      <header style={{ display: 'flex', flexDirection: 'column', gap: 'var(--s-3)', paddingTop: 'var(--s-6)' }}>
+      <header style={{ display: 'flex', flexDirection: 'column', gap: 'var(--s-3)', paddingTop: 'var(--s-4)' }}>
         <h1 style={{ margin: 0, fontSize: 'var(--t-3xl)', lineHeight: 1.02, letterSpacing: 'var(--track-tight)', fontWeight: 650 }}>All tools</h1>
         <p style={{ margin: 0, color: 'var(--ink-soft)', fontSize: 'var(--t-md)', maxWidth: 'var(--measure)' }}>
           <span className="num">{tools.length}</span> free tools. Each one runs in your browser, so your files and text never leave this device.

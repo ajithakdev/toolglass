@@ -25,6 +25,8 @@ function useRange<T extends number | string>(p: MotionValue<number>, input: numb
 }
 
 const GlassScene = lazy(() => import('../components/home/GlassScene'));
+// The scene is kept between visits: once it has drawn, coming back to Home skips the poster and the fade
+let sceneShown = false;
 
 /* ── Act 1: hero ─────────────────────────────────────────────── */
 
@@ -43,8 +45,11 @@ function Hero() {
   const ref = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end start'] });
   const progress = useCallback(() => scrollYProgress.get(), [scrollYProgress]);
-  const [ready, setReady] = useState(false);
-  const onReady = useCallback(() => setReady(true), []);
+  const [ready, setReady] = useState(sceneShown);
+  const onReady = useCallback(() => {
+    sceneShown = true;
+    setReady(true);
+  }, []);
   // Copy drifts up slower than the page: the glass reads as further away
   const copyY = useRange(scrollYProgress, [0, 1], [0, -60]);
   const copyOpacity = useRange(scrollYProgress, [0.35, 0.9], [1, 0]);
@@ -78,6 +83,7 @@ function Hero() {
         {/* Poster: the logo as flat glass, shown until the 3D scene has drawn a frame */}
         <m.div
           aria-hidden
+          initial={false}
           animate={{ opacity: ready ? 0 : 1 }}
           transition={{ duration: 0.6, ease: EASE_OUT }}
           style={{ position: 'absolute', inset: 0, display: 'grid', placeItems: 'center', pointerEvents: 'none' }}
@@ -86,7 +92,7 @@ function Hero() {
             <Logo size={240} />
           </div>
         </m.div>
-        <m.div animate={{ opacity: ready ? 1 : 0 }} transition={{ duration: 0.8, ease: EASE_OUT }} style={{ position: 'absolute', inset: 0 }}>
+        <m.div initial={false} animate={{ opacity: ready ? 1 : 0 }} transition={{ duration: 0.8, ease: EASE_OUT }} style={{ position: 'absolute', inset: 0 }}>
           <Suspense fallback={null}>
             <GlassScene progress={progress} onReady={onReady} />
           </Suspense>

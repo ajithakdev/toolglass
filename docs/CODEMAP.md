@@ -49,7 +49,7 @@ index.html
 | `App.tsx` | `default App` | Meta effect on navigation, Ctrl/Cmd+K handler, routes (`/`, `/tools`, `/tools/:slug`, `*`). `MotionConfig reducedMotion="user"`. |
 | `main.tsx` (17) | none | Mount point. Redirects legacy hash URLs. |
 | `seo.ts` | `SITE_URL`, `HOME`, `toolPage`, `allPages`, `applyMeta`, `applyMetaToDocument`, `sitemapXml` | Page-meta helpers. `applyMeta` rewrites HTML at build time; `applyMetaToDocument` updates title, description, social tags, and canonical on client-side navigation (App effect). Has a test. |
-| `index.css` | none | Design tokens (canvas, ink, one accent, status, 3 glass surfaces, 3 elevations, type scale, 4px space scale, radii, motion), dark overrides, legacy aliases for old token names, base styles, ambient light (`body::before`) and grain (`body::after`), focus, scrollbars, `.glass`, `.container`, `.lift`, shell classes (`.nav-link`, `.nav-btn`, `.hide-sm`, `.skip-link`). |
+| `index.css` | none | Design tokens (canvas, ink, one accent, status, 3 glass surfaces, 3 elevations, type scale, 4px space scale, radii, motion), dark overrides, legacy aliases for old token names, base styles, ambient light (`body::before`) and grain (`body::after`), focus, scrollbars, `.glass`, `.container` (max 1200px), `.status-dot` (pulsing live dot, color via `--dot`), `.lift`, shell classes (`.nav-link`, `.nav-btn`, `.hide-sm`, `.skip-link`). |
 | `lib/cn.ts` (3) | `cn(...parts)` | Joins truthy class names. |
 | `lib/motionFeatures.ts` | default `domMax` | framer-motion features, loaded async by `LazyMotion` in `App.tsx`. |
 | `lib/stored.ts` | `STORED` | Every storage key the About page lists and clears. `stored.test.ts` checks it against the storage table below. |
@@ -64,7 +64,7 @@ index.html
 
 | File | Notes |
 |---|---|
-| `Home.tsx` | Six acts: `Hero` (copy, `HeroSearch`, lazy `GlassScene` with a logo poster until the first frame), `Collapse` (pinned 340vh scene: clutter cards pulled into the glass, then a real toolbar; `CollapseStill` for reduced motion), `ForEveryone` (audience switch + tool cards), `Proof` (live third-party request count), `Ending`. Scroll maps use `useRange` (JS-computed; see Gotchas). |
+| `Home.tsx` | Six acts: `Hero` (copy, `HeroSearch`, lazy `GlassScene` with a logo poster until the first frame; module flag `sceneShown` skips the poster on return visits), `Collapse` (pinned 340vh scene: clutter cards pulled into the glass, then a real toolbar; `CollapseStill` for reduced motion), `ForEveryone` (audience switch + tool cards), `Proof` (live third-party request count), `Ending`. Scroll maps use `useRange` (JS-computed; see Gotchas). |
 | `ToolsHub.tsx` | `/tools`. Search, category chips, audience switch (all in the URL: `q`, `cat`, `for`), favorites rail (drag to reorder), recents rail, grouped grid, empty state linking to a tool request. Has a test. |
 | `About.tsx` | `/about`. Privacy model, live meter, table of everything stored (from `lib/stored.ts`) with a "clear all" button, open source links. |
 | `ToolPage.tsx` (55) | `Loader` L9-30 (skeleton Suspense fallback). `ToolPage` L32-55: unknown slug renders `NotFound`, else `ErrorBoundary > Suspense > Component`. Calls `addRecent(slug)`. |
@@ -74,11 +74,11 @@ index.html
 
 | File | Notes |
 |---|---|
-| `home/GlassScene.tsx` | Lazy three.js scene: two `MeshPhysicalMaterial` panes (transmission, dispersion) refracting a ring of glyph tiles and a light disc. Time-based animation, pointer parallax, scroll progress prop, pauses offscreen/hidden, one static frame for reduced motion, lower DPR on modest hardware, disposes everything on unmount. |
+| `home/GlassScene.tsx` | Lazy three.js scene: two `MeshPhysicalMaterial` panes (transmission, dispersion) refracting a ring of glyph tiles and a light disc. Time-based animation, pointer parallax, scroll progress prop, pauses offscreen/hidden, one static frame for reduced motion, lower DPR on modest hardware. The built world is kept in a module variable between visits: a return visit attaches and draws it in a layout effect, before paint. The refracted plate sits inside the front pane so its edges never show. |
 | `home/HeroSearch.tsx` | ARIA combobox over `searchTools`; Enter opens the highlighted tool. |
 | `Shell.tsx` | `Shell`, `Kbd`. Sticky glass header (logo, Home/Tools nav with sliding indicator, search, install, theme switch), footer (privacy meter, usage-count opt-out, GitHub). |
 | `Logo.tsx` | Two-pane glass mark; mirrors `public/favicon.svg`. |
-| `PrivacyMeter.tsx` | Live count of requests to other origins via `PerformanceObserver` (Resource Timing). |
+| `PrivacyMeter.tsx` | Live count of requests to other origins via `PerformanceObserver` (Resource Timing), with a pulsing `.status-dot`. |
 | `ToolLayout.tsx` (121) | Wraps every tool. Takes only `children`. Breadcrumb, Favorite and Share (copies `currentUrl()`), privacy note (API Tester gets its own wording), related tools. Backspace outside a text field navigates to `/tools`. |
 | `CommandPalette.tsx` (463) | Props `open`, `onClose`. Filters `tools` from registry. Arrow keys, Enter, Escape. |
 | `ErrorBoundary.tsx` (344) | Class component. Optional prop `toolTitle`. Has a test. |
@@ -208,6 +208,7 @@ Only `fetch` calls in the app: `tools/curl-to-fetch/useApiTester.ts:447` and `:6
 - `npm run dev` and `vite preview` fall back to `index.html` for any path. GitHub Pages does not: it needs the `tools/<slug>.html` and `404.html` files the build writes. Check the built `dist/` when changing routes.
 - `ToolLayout` Backspace goes to `/tools` unless focus is in an input, textarea, select, or contenteditable, or a modifier key is held.
 - Use `m.*` from framer-motion, not `motion.*`: `App.tsx` wraps everything in `LazyMotion` so the animation code loads after first paint. A `motion.*` component still works but pulls the full library into its chunk (`Reorder` in `ToolsHub.tsx` does this on purpose).
+- `html` has `scrollbar-gutter: stable`. Without it, a short page (one filtered category) drops the scrollbar and the centered layout slides about 5px sideways.
 - framer-motion 13 hands plain `useTransform(scrollYProgress, ...)` opacity maps to the browser's native scroll timeline, which maps pinned sections wrongly (elements fade back out). Use `useRange` in `Home.tsx` (function-form `useTransform`) for scroll-linked values.
 - Transmissive three.js materials only refract opaque objects; use `alphaTest` instead of `transparent` for anything that should show through the glass.
 - ESLint ignores only `dist` and `node_modules`, and its TS rules apply to `**/*.{ts,tsx}`.

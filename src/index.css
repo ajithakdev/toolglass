@@ -67,9 +67,9 @@
   --t-md: 17px;
   --t-lg: 20px;
   --t-xl: 26px;
-  --t-2xl: clamp(30px, 3.6vw, 42px);
-  --t-3xl: clamp(38px, 5.6vw, 68px);
-  --t-display: clamp(44px, 8.2vw, 104px);
+  --t-2xl: clamp(30px, 2.6vw, 34px);
+  --t-3xl: clamp(38px, 3.6vw, 50px);
+  --t-display: clamp(44px, 5.4vw, 80px);
   --track-tight: -0.035em;
   --track-snug: -0.018em;
   --measure: 62ch;
@@ -86,7 +86,7 @@
   --s-9: 96px;
   --s-10: 128px;
   --gutter: clamp(16px, 4vw, 40px);
-  --section: clamp(72px, 12vw, 160px);
+  --section: clamp(72px, 7vw, 112px);
 
   /* Shape */
   --radius-sm: 10px;
@@ -194,6 +194,8 @@ html {
   background: var(--canvas);
   -webkit-text-size-adjust: 100%;
   overflow-x: clip;
+  /* Always reserve the scrollbar's space, so short pages (one filtered category) don't shift sideways */
+  scrollbar-gutter: stable;
 }
 
 body {
@@ -397,8 +399,8 @@ select:focus-visible {
 
 .container {
   width: 100%;
-  /* Wide so side-by-side tools (diff, JSON, API tester) use big screens; prose keeps its own --measure */
-  max-width: 1600px;
+  /* 1200px leaves calm side margins on big screens (owner's call, 2026-10-24); side-by-side tools still get ~560px per pane */
+  max-width: 1200px;
   margin-inline: auto;
   padding-inline: var(--gutter);
 }
@@ -432,6 +434,29 @@ select:focus-visible {
 }
 
 /* Reduced motion: fewer and gentler. JS motion is handled by MotionConfig. */
+/* Live status dot: a ring pings outward so it reads as "operational". The ring is
+   absolutely positioned, so it never moves layout. Set the color with --dot. */
+.status-dot {
+  position: relative;
+  flex-shrink: 0;
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: var(--dot);
+}
+.status-dot::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: var(--dot);
+  animation: status-ping 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+@keyframes status-ping {
+  0% { transform: scale(1); opacity: 0.6; }
+  75%, 100% { transform: scale(2.6); opacity: 0; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -611,7 +636,7 @@ select:focus-visible {
 }
 .hero-title {
   margin: 0;
-  font-size: clamp(40px, 6vw, 80px);
+  font-size: clamp(40px, 4.4vw, 64px);
   line-height: 0.98;
   letter-spacing: var(--track-tight);
   font-weight: 650;

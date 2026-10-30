@@ -5,6 +5,7 @@ All notable changes to Toolglass. The format follows [Keep a Changelog](https://
 ## [Unreleased]
 
 ### Changed
+- Tool URLs stay clean while you work. Settings go into a link only when you press Share, so text you type no longer lands in browser history.
 - Calmer layout on big screens: the content column is 1200px wide instead of 1600px, and page headings and section gaps are smaller on desktop. Phone layouts are unchanged.
 - The "0 requests" status dot now pulses, so it reads as live. It stays still if your system asks for reduced motion.
 - The site now deploys once a week with each release (Sunday), not on every merge. Urgent fixes ship as a same-day patch release.

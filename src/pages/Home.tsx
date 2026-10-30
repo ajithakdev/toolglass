@@ -1,21 +1,19 @@
-import { interpolate, m, useReducedMotion, useScroll, useTransform, type MotionValue } from 'framer-motion';
-import { ArrowRight, Braces, FileText, Globe2, Heading, Image, KeyRound, NotebookPen, Pipette, QrCode, Ruler, Type, Video } from 'lucide-react';
-import { lazy, Suspense, useCallback, useMemo, useRef, useState, type ReactNode } from 'react';
+import { interpolate, m, useScroll, useTransform, type MotionValue } from 'framer-motion';
+import { ArrowRight, Braces, Calculator, Clock, Globe2, Heading, Image, KeyRound, NotebookPen, Palette, Pipette, QrCode, Ruler, ShieldCheck, Type, Video, FileText, type LucideIcon } from 'lucide-react';
+import { lazy, Suspense, useCallback, useRef, useState, type ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import { HeroSearch } from '../components/home/HeroSearch';
 import { FavoritesRail, RecentRail } from '../components/ToolRails';
 import { Logo } from '../components/Logo';
 import { Kbd } from '../components/Shell';
-import { Segmented } from '../components/ui/Segmented';
 import { ToolCard } from '../components/ui/ToolCard';
 import { useFavorites } from '../hooks/useFavorites';
-import { useMediaQuery } from '../hooks/useMediaQuery';
 import { useRecentTools } from '../hooks/useRecentTools';
 import { useThirdPartyCount } from '../hooks/useThirdPartyCount';
 import { EASE_OUT, fadeUp, stagger } from '../lib/motion';
 import { shortcut } from '../lib/platform';
-import { AUDIENCES, type Audience } from '../tools/catalog';
-import { toolBySlug, tools, type ToolMeta } from '../tools/registry';
+import { CATEGORIES } from '../tools/catalog';
+import { toolBySlug, toolsInCategory, type ToolMeta } from '../tools/registry';
 
 /**
  * Scroll-linked value computed in JS. Framer would otherwise hand plain
@@ -32,17 +30,6 @@ const GlassScene = lazy(() => import('../components/home/GlassScene'));
 let sceneShown = false;
 
 /* ── Act 1: hero ─────────────────────────────────────────────── */
-
-const POPULAR = [
-  ['password', 'Password'],
-  ['qr', 'QR code'],
-  ['json', 'JSON'],
-  ['timestamp', 'Timestamp'],
-  ['case-converter', 'Text case'],
-  ['color', 'Color'],
-]
-  .map(([slug, label]) => ({ ...toolBySlug(slug!)!, label: label! }))
-  .filter((t) => t.slug);
 
 function Hero() {
   const ref = useRef<HTMLElement>(null);
@@ -69,15 +56,6 @@ function Hero() {
         </m.p>
         <m.div variants={fadeUp} style={{ width: '100%' }}>
           <HeroSearch />
-        </m.div>
-        <m.div variants={fadeUp} style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 8 }}>
-          <span style={{ fontSize: 'var(--t-xs)', color: 'var(--ink-mute)', marginRight: 2 }}>Popular</span>
-          {POPULAR.map((t) => (
-            <Link key={t.slug} to={`/tools/${t.slug}`} className="try-chip">
-              <span className="try-chip-icon">{t.icon}</span>
-              {t.label}
-            </Link>
-          ))}
         </m.div>
       </m.div>
       </m.div>
@@ -136,158 +114,91 @@ function QuickAccess() {
   );
 }
 
-/* ── Acts 2 and 3: the clutter, then one toolbar ─────────────── */
+/* ── Browse by category ──────────────────────────────────────── */
 
-const CLUTTER: { icon: ReactNode; what: string; catch: string; x: number; y: number }[] = [
-  { icon: <Image size={18} />, what: 'An image compressor', catch: 'Uploads your photo to its server', x: -36, y: -6 },
-  { icon: <Pipette size={18} />, what: 'A color picker extension', catch: 'Can read every site you visit', x: -12, y: -4 },
-  { icon: <FileText size={18} />, what: 'A PDF merge site', catch: 'Free until the second file', x: 13, y: -7 },
-  { icon: <Braces size={18} />, what: 'A JSON formatter', catch: 'Wants you to sign in first', x: 37, y: -3 },
-  { icon: <Globe2 size={18} />, what: 'A time zone converter', catch: 'An ad between every step', x: -39, y: 13 },
-  { icon: <Type size={18} />, what: 'A word counter', catch: 'Sends your text to its server', x: -16, y: 16 },
-  { icon: <Ruler size={18} />, what: 'A unit converter', catch: 'Full-screen ads on mobile', x: 16, y: 12 },
-  { icon: <QrCode size={18} />, what: 'A QR code maker', catch: 'Codes stop working without a plan', x: 39, y: 15 },
-  { icon: <Video size={18} />, what: 'A screen recorder extension', catch: 'Watermarks unless you upgrade', x: -34, y: 32 },
-  { icon: <KeyRound size={18} />, what: 'A password generator', catch: 'You hope it is not logging them', x: -10, y: 35 },
-  { icon: <NotebookPen size={18} />, what: 'An online notepad', catch: 'Needs an account to save', x: 13, y: 31 },
-  { icon: <Heading size={18} />, what: 'A Markdown editor', catch: 'One more app to install', x: 36, y: 34 },
-];
+const CATEGORY_ICONS: Record<string, LucideIcon> = {
+  images: Image,
+  pdf: FileText,
+  text: Type,
+  calculators: Calculator,
+  time: Clock,
+  media: QrCode,
+  security: ShieldCheck,
+  developers: Braces,
+  design: Palette,
+};
 
-const TOOLBAR = ['password', 'qr', 'json', 'timestamp', 'color', 'hash', 'markdown', 'case-converter']
-  .map(toolBySlug)
-  .filter((t): t is ToolMeta => !!t);
+const categoryTiles = CATEGORIES.map((c) => ({ ...c, items: toolsInCategory(c.id) })).filter((c) => c.items.length > 0);
 
-function ClutterCard({ item, i, p, narrow }: { item: (typeof CLUTTER)[number]; i: number; p: MotionValue<number>; narrow: boolean }) {
-  const start = i * 0.026;
-  // Phones get a zigzag down the screen instead of the wide desktop scatter
-  const px = narrow ? (i % 2 ? 7 : -7) : item.x;
-  const py = narrow ? -4 + i * 4 : item.y;
-  const opacity = useRange(p, [start, start + 0.08, 0.5, 0.64], [0, 1, 1, 0]);
-  const scale = useRange(p, [start, start + 0.08, 0.5, 0.64], [0.92, 1, 1, 0.4]);
-  // Pulled into the glass at the centre
-  const x = useRange(p, [0.46, 0.64], [`${px}vw`, '0vw']);
-  const y = useRange(p, [0.46, 0.64], [`${py}vh`, '0vh']);
-  const rotate = useRange(p, [start, 0.5], [(i % 2 ? 1 : -1) * 4, (i % 2 ? 1 : -1) * 2]);
+function Categories() {
   return (
-    <m.div className="clutter-card glass" style={{ opacity, scale, x, y, rotate }}>
-      <span className="clutter-icon">{item.icon}</span>
-      <span style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-        <span style={{ fontWeight: 600, fontSize: 14 }}>{item.what}</span>
-        <span style={{ fontSize: 'var(--t-xs)', color: 'var(--status-error)' }}>{item.catch}</span>
-      </span>
-    </m.div>
-  );
-}
-
-function Collapse() {
-  const ref = useRef<HTMLElement>(null);
-  const narrow = useMediaQuery('(max-width: 640px)');
-  const { scrollYProgress: p } = useScroll({ target: ref, offset: ['start start', 'end end'] });
-  // Visible while the scene scrolls into place, so there is no dead scroll after the hero
-  const beforeOpacity = useRange(p, [0, 0.46, 0.56], [1, 1, 0]);
-  const afterOpacity = useRange(p, [0.62, 0.72], [0, 1]);
-  const afterY = useRange(p, [0.62, 0.72], [16, 0]);
-  const barScale = useRange(p, [0.58, 0.72], [0.6, 1]);
-  const barOpacity = useRange(p, [0.58, 0.68], [0, 1]);
-  const coreScale = useRange(p, [0.44, 0.62, 0.7], [0.8, 1.15, 0.6]);
-  const coreOpacity = useRange(p, [0.42, 0.5, 0.66, 0.72], [0, 1, 1, 0]);
-
-  return (
-    <section ref={ref} className="collapse" aria-label="Why one place">
-      <div className="collapse-stage">
-        <m.div className="collapse-head" style={{ opacity: beforeOpacity }}>
-          <h2 className="act-title">Small jobs, scattered across the web.</h2>
-          <p className="act-sub">Each one is another tab, another install, or another sign-up.</p>
-        </m.div>
-
-        {CLUTTER.map((c, i) => (
-          <ClutterCard key={c.what} item={c} i={i} p={p} narrow={narrow} />
-        ))}
-
-        {/* The glass that takes it all in */}
-        <m.div aria-hidden style={{ position: 'absolute', scale: coreScale, opacity: coreOpacity }}>
-          <div style={{ filter: 'drop-shadow(0 20px 50px rgba(37,69,220,0.35))' }}>
-            <Logo size={150} />
-          </div>
-        </m.div>
-
-        <m.div className="collapse-after" style={{ opacity: afterOpacity, y: afterY }}>
-          <h2 className="act-title">Now they live in one place.</h2>
-          <p className="act-sub">The same jobs, in one bookmark. Nothing gets uploaded.</p>
-        </m.div>
-
-        <m.nav aria-label="Popular tools" className="toolbar glass-strong" style={{ scale: barScale, opacity: barOpacity }}>
-          {TOOLBAR.map((t) => (
-            <Link key={t.slug} to={`/tools/${t.slug}`} className="toolbar-item" title={t.title}>
-              <span className="toolbar-icon">{t.icon}</span>
-              <span className="toolbar-label">{t.title.split(' ')[0]}</span>
-            </Link>
-          ))}
-        </m.nav>
+    <section className="container home-section" aria-labelledby="cats-h">
+      <h2 id="cats-h" className="section-label">Browse by category</h2>
+      <div className="cat-grid">
+        {categoryTiles.map((c) => {
+          const Icon = CATEGORY_ICONS[c.id] ?? Braces;
+          return (
+            <div key={c.id} className="cat-tile glass">
+              <Link to={`/tools#cat-${c.id}`} className="cat-tile-main">
+                <span className="clutter-icon"><Icon size={18} /></span>
+                <span style={{ display: 'flex', flexDirection: 'column' }}>
+                  <span style={{ fontWeight: 600 }}>{c.name}</span>
+                  <span style={{ fontSize: 'var(--t-xs)', color: 'var(--ink-mute)' }}>{c.items.length} {c.items.length === 1 ? 'tool' : 'tools'}</span>
+                </span>
+              </Link>
+              <ul className="cat-links">
+                {c.items.slice(0, 3).map((t) => (
+                  <li key={t.slug}>
+                    <Link to={`/tools/${t.slug}`} className="link">{t.title}</Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          );
+        })}
       </div>
     </section>
   );
 }
 
-/** Reduced motion: the same story without pinning or travel. */
-function CollapseStill() {
+/* ── Instead of ──────────────────────────────────────────────── */
+
+const INSTEAD: { icon: ReactNode; what: string; catch: string; slug: string }[] = [
+  { icon: <Image size={18} />, what: 'An image compressor', catch: 'Uploads your photo to its server', slug: 'image-compress' },
+  { icon: <Pipette size={18} />, what: 'A color picker extension', catch: 'Can read every site you visit', slug: 'color' },
+  { icon: <Braces size={18} />, what: 'A JSON formatter', catch: 'Wants you to sign in first', slug: 'json' },
+  { icon: <Globe2 size={18} />, what: 'A time zone converter', catch: 'An ad between every step', slug: 'world-clock' },
+  { icon: <Type size={18} />, what: 'A word counter', catch: 'Sends your text to its server', slug: 'word-counter' },
+  { icon: <Ruler size={18} />, what: 'A unit converter', catch: 'Full-screen ads on mobile', slug: 'unit-converter' },
+  { icon: <QrCode size={18} />, what: 'A QR code maker', catch: 'Codes stop working without a plan', slug: 'qr' },
+  { icon: <Video size={18} />, what: 'A screen recorder extension', catch: 'Watermarks unless you upgrade', slug: 'screen-recorder' },
+  { icon: <KeyRound size={18} />, what: 'A password generator', catch: 'You hope it is not logging them', slug: 'password' },
+  { icon: <NotebookPen size={18} />, what: 'An online notepad', catch: 'Needs an account to save', slug: 'notepad' },
+  { icon: <Heading size={18} />, what: 'A Markdown editor', catch: 'One more app to install', slug: 'markdown' },
+].filter((c) => toolBySlug(c.slug));
+
+function InsteadOf() {
   return (
-    <section className="container" style={{ paddingBlock: 'var(--section)', display: 'flex', flexDirection: 'column', gap: 'var(--s-6)', alignItems: 'center', textAlign: 'center' }}>
-      <h2 className="act-title">Small jobs, scattered across the web. Now in one place.</h2>
-      <ul style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--s-3)', justifyContent: 'center', padding: 0, margin: 0, listStyle: 'none' }}>
-        {CLUTTER.map((c) => (
-          <li key={c.what} className="clutter-card glass" style={{ position: 'static' }}>
-            <span className="clutter-icon">{c.icon}</span>
-            <span style={{ display: 'flex', flexDirection: 'column', gap: 2, textAlign: 'left' }}>
-              <span style={{ fontWeight: 600, fontSize: 14 }}>{c.what}</span>
-              <span style={{ fontSize: 'var(--t-xs)', color: 'var(--status-error)' }}>{c.catch}</span>
-            </span>
-          </li>
-        ))}
-      </ul>
-      <nav aria-label="Popular tools" className="toolbar glass-strong" style={{ position: 'static' }}>
-        {TOOLBAR.map((t) => (
-          <Link key={t.slug} to={`/tools/${t.slug}`} className="toolbar-item" title={t.title}>
-            <span className="toolbar-icon">{t.icon}</span>
-            <span className="toolbar-label">{t.title.split(' ')[0]}</span>
-          </Link>
-        ))}
-      </nav>
-    </section>
-  );
-}
-
-/* ── Act 4: for everyone ─────────────────────────────────────── */
-
-function ForEveryone() {
-  const options = AUDIENCES.filter((a) => tools.some((t) => t.audience.includes(a.id))).map((a) => ({
-    value: a.id,
-    label: a.id === 'everyone' ? 'Everyday' : a.name,
-  }));
-  const [aud, setAud] = useState<Audience>('everyone');
-  const picks = useMemo(() => tools.filter((t) => t.audience.includes(aud)).slice(0, 6), [aud]);
-
-  return (
-    <section className="container" aria-labelledby="who-h" style={{ paddingBlock: 'var(--section)', display: 'flex', flexDirection: 'column', gap: 'var(--s-6)' }}>
-      <m.div initial="hidden" whileInView="show" viewport={{ once: true, margin: '-15%' }} variants={stagger(0.08)} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--s-4)', maxWidth: 680 }}>
-        <m.h2 id="who-h" variants={fadeUp} className="act-title" style={{ textAlign: 'left' }}>
-          Built for whoever has a browser open.
-        </m.h2>
-        <m.p variants={fadeUp} className="act-sub" style={{ textAlign: 'left', margin: 0 }}>
-          Writers fixing text, designers checking colors, developers formatting JSON, anyone making a QR code for a menu.
-        </m.p>
-        <m.div variants={fadeUp} className="rail">
-          <Segmented label="Show tools for" value={aud} options={options} onChange={setAud} />
-        </m.div>
+    <section className="container home-section" aria-labelledby="instead-h">
+      <m.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: '-10%' }} transition={{ duration: 0.3, ease: EASE_OUT }} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--s-5)' }}>
+        <h2 id="instead-h" className="act-title" style={{ textAlign: 'left', fontSize: 'var(--t-2xl)', maxWidth: '24ch' }}>
+          Small jobs, scattered across the web. Now in one place.
+        </h2>
+        <ul className="instead-grid">
+          {INSTEAD.map((c) => (
+            <li key={c.slug}>
+              <Link to={`/tools/${c.slug}`} className="clutter-card glass">
+                <span className="clutter-icon">{c.icon}</span>
+                <span style={{ display: 'flex', flexDirection: 'column', gap: 2, minWidth: 0 }}>
+                  <span style={{ fontWeight: 600, fontSize: 14 }}>{c.what}</span>
+                  <span style={{ fontSize: 'var(--t-xs)', color: 'var(--status-error)' }}>{c.catch}</span>
+                  <span className="instead-to">{toolBySlug(c.slug)!.title}<ArrowRight size={14} /></span>
+                </span>
+              </Link>
+            </li>
+          ))}
+        </ul>
       </m.div>
-      <m.div key={aud} className="tool-grid" initial="hidden" animate="show" variants={stagger(0.05)}>
-        {picks.map((t) => (
-          <ToolCard key={t.slug} tool={t} />
-        ))}
-      </m.div>
-      <Link to={`/tools?for=${aud}`} className="link" style={{ alignSelf: 'flex-start', display: 'inline-flex', alignItems: 'center', gap: 6, fontWeight: 550 }}>
-        See every tool for {options.find((o) => o.value === aud)?.label.toLowerCase()} <ArrowRight size={16} />
-      </Link>
     </section>
   );
 }
@@ -335,8 +246,8 @@ function Ending() {
         transition={{ duration: 0.3, ease: EASE_OUT }}
         className="glass-strong ending"
       >
-        <Logo size={56} />
-        <h2 className="act-title">Bookmark it once.</h2>
+        <Logo size={44} />
+        <h2 className="act-title" style={{ fontSize: 'var(--t-2xl)' }}>Bookmark it once.</h2>
         <p className="act-sub">
           Press <Kbd>{shortcut('D')}</Kbd> and the next small job is one click away.
         </p>
@@ -349,13 +260,12 @@ function Ending() {
 }
 
 export function Home() {
-  const reduce = useReducedMotion();
   return (
     <>
       <Hero />
       <QuickAccess />
-      {reduce ? <CollapseStill /> : <Collapse />}
-      <ForEveryone />
+      <Categories />
+      <InsteadOf />
       <Proof />
       <Ending />
     </>

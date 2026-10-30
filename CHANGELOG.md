@@ -8,6 +8,8 @@ All notable changes to Toolglass. The format follows [Keep a Changelog](https://
 - Tool sidebar on desktop: favorites, recent and every category one click away, and switching tools no longer blanks the page.
 
 ### Changed
+- Home page is tools first: browse by category, a short 'instead of' list, and no more long scroll animation.
+- About page is reorganised with a sticky contents list, grouped storage list, keyboard shortcuts, install and version info.
 - Tool pages are reorganised: compact header, the tool next to the sidebar, related tools and the privacy note in a side column, flat sections instead of boxes inside boxes, and smaller inputs, buttons and results.
 - The home page hero is half the height, with your recent, favorite or popular tools right under it.
 - Header, content and footer share one 1440px width on every page, so nothing jumps when you move between pages.

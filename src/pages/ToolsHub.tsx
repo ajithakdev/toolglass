@@ -1,6 +1,7 @@
 import { AnimatePresence, m } from 'framer-motion';
 import { Search, X } from 'lucide-react';
 import { useEffect, useMemo, useRef } from 'react';
+import { useLocation } from 'react-router-dom';
 import { Kbd } from '../components/Shell';
 import { FavoritesRail, RecentRail } from '../components/ToolRails';
 import { Segmented } from '../components/ui/Segmented';
@@ -79,6 +80,7 @@ export function ToolsHub() {
   const [audience, setAudience] = useUrlState('for', 'all', id, id);
   const [category, setCategory] = useUrlState('cat', 'all', id, id);
   const desktop = useMediaQuery('(min-width: 1024px)');
+  const { hash } = useLocation();
 
   const filtered = useMemo(() => {
     const byAudience = audience === 'all' ? tools : tools.filter((t) => t.audience.includes(audience as Audience));
@@ -91,6 +93,11 @@ export function ToolsHub() {
     .map((c) => ({ ...c, items: filtered.filter((t) => t.category === c.id) }))
     .map((g) => (searching ? g : { ...g, items: byTitle(g.items) }))
     .filter((g) => g.items.length > 0);
+
+  // Home's category tiles link to /tools#cat-<id>
+  useEffect(() => {
+    if (hash) document.getElementById(hash.slice(1))?.scrollIntoView({ block: 'start' });
+  }, [hash]);
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--s-5)', paddingBottom: 'var(--s-7)' }}>
@@ -150,7 +157,7 @@ export function ToolsHub() {
             {groups.map((g) => (
               <m.section key={g.id} variants={fadeUp} aria-labelledby={`cat-${g.id}`} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--s-4)' }}>
                 <div style={{ display: 'flex', alignItems: 'baseline', gap: 'var(--s-3)', flexWrap: 'wrap' }}>
-                  <h2 id={`cat-${g.id}`} style={{ margin: 0, fontSize: 'var(--t-xl)', fontWeight: 620 }}>{g.name}</h2>
+                  <h2 id={`cat-${g.id}`} style={{ margin: 0, scrollMarginTop: 'calc(var(--header-h) + var(--s-4))', fontSize: 'var(--t-xl)', fontWeight: 620 }}>{g.name}</h2>
                   <span style={{ color: 'var(--ink-mute)', fontSize: 'var(--t-sm)' }}>{g.blurb}</span>
                 </div>
                 <m.div variants={stagger(0.04)} className="tool-grid">

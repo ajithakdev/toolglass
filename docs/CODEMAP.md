@@ -53,7 +53,7 @@ index.html
 | `index.css` | none | Design tokens (canvas, ink, one accent, status, 3 glass surfaces, 3 elevations, type scale, 4px space scale, radii, motion), dark overrides, legacy aliases for old token names, base styles, ambient light (`body::before`) and grain (`body::after`), focus, scrollbars, `.glass`, `.container` (max `--container-max`, 1200px, 1440px on /tools via `Shell`), `.rail-item`, `.status-dot` (pulsing live dot, color via `--dot`), `.lift`, shell classes (`.nav-link`, `.nav-btn`, `.hide-sm`, `.skip-link`). |
 | `lib/cn.ts` (3) | `cn(...parts)` | Joins truthy class names. |
 | `lib/motionFeatures.ts` | default `domMax` | framer-motion features, loaded async by `LazyMotion` in `App.tsx`. |
-| `lib/stored.ts` | `STORED` | Every storage key the About page lists and clears. `stored.test.ts` checks it against the storage table below. |
+| `lib/stored.ts` | `STORED`, `StoredGroup` | Every storage key the About page lists (under Preferences, Tool data or API Tester) and clears. `stored.test.ts` checks it against the storage table below. |
 | `lib/motion.ts` | `EASE_OUT`, `spring`, `fadeUp`, `fade`, `stagger()` | Shared framer-motion presets. |
 | `lib/platform.ts` | `IS_MAC`, `shortcut(key)` | Shortcut labels per OS. |
 | `lib/search.ts` | `searchTools(tools, query)` | Word-AND ranking over title, keywords, replaces, description; accent-insensitive. Used by hub, hero search, and command palette. Has a test. |
@@ -65,9 +65,9 @@ index.html
 
 | File | Notes |
 |---|---|
-| `Home.tsx` | Seven parts: `Hero` (half-height; copy, `HeroSearch`, lazy `GlassScene` with a logo poster until the first frame; module flag `sceneShown` skips the poster on return visits), `QuickAccess` (favorites and recents, or 8 popular cards; chosen once on mount so it never swaps), `Collapse` (pinned 340vh scene: clutter cards pulled into the glass, then a real toolbar; `CollapseStill` for reduced motion), `ForEveryone` (audience switch + tool cards), `Proof` (live third-party request count), `Ending`. Scroll maps use `useRange` (JS-computed; see Gotchas). |
-| `ToolsHub.tsx` | `/tools`. Search, category chips, audience switch (all in the URL: `q`, `cat`, `for`), favorites rail (drag to reorder), recents rail, grouped grid, empty state linking to a tool request. Has a test. |
-| `About.tsx` | `/about`. Privacy model, live meter, table of everything stored (from `lib/stored.ts`) with a "clear all" button, open source links. |
+| `Home.tsx` | Six parts: `Hero` (half-height; copy, `HeroSearch`, lazy `GlassScene` with a logo poster until the first frame; module flag `sceneShown` skips the poster on return visits; copy parallax uses `useRange`), `QuickAccess` (favorites and recents, or 8 popular cards; chosen once on mount so it never swaps), `Categories` (tile per non-empty category: icon, count, first 3 tools A to Z, tile links to `/tools#cat-<id>`), `InsteadOf` (static cards, each linking to the tool that replaces it; fade-in once), `Proof` (live third-party request count), `Ending`. |
+| `ToolsHub.tsx` | `/tools`. Scrolls to `#cat-<id>` on load. Search, category chips, audience switch (all in the URL: `q`, `cat`, `for`), favorites rail (drag to reorder), recents rail, grouped grid, empty state linking to a tool request. Has a test. |
+| `About.tsx` | `/about`. Two columns from 1024px (left sticky under the header: title, intro, contents list with the active section marked by an IntersectionObserver, button), chip row on phones. Sections: privacy and live meter, what is saved (grouped by `STORED[].group`, clear all), install and offline, keyboard shortcuts, open source, version (`__APP_VERSION__`, from `package.json` via Vite `define`, typed in `src/version.d.ts`). `HomeAbout.test.tsx` covers both pages. |
 | `ToolPage.tsx` (55) | `Loader` L9-30 (skeleton Suspense fallback). `ToolPage` L32-55: unknown slug renders `NotFound`, else `ErrorBoundary > Suspense > Component`. Calls `addRecent(slug)`. |
 | `NotFound.tsx` (377) | Props `attemptedSlug`, `isToolNotFound`. Suggests tools; default suggestions hardcoded at L60 (`timestamp`, `jwt`, `password`). Has a test. |
 
@@ -214,7 +214,7 @@ Only `fetch` calls in the app: `tools/curl-to-fetch/useApiTester.ts:447` and `:6
 - `ToolLayout` Backspace goes to `/tools` unless focus is in an input, textarea, select, or contenteditable, or a modifier key is held.
 - Use `m.*` from framer-motion, not `motion.*`: `App.tsx` wraps everything in `LazyMotion` so the animation code loads after first paint. A `motion.*` component still works but pulls the full library into its chunk (`Reorder` in `ToolsHub.tsx` does this on purpose).
 - `html` has `scrollbar-gutter: stable`. Without it, a short page (one filtered category) drops the scrollbar and the centered layout slides about 5px sideways.
-- framer-motion 13 hands plain `useTransform(scrollYProgress, ...)` opacity maps to the browser's native scroll timeline, which maps pinned sections wrongly (elements fade back out). Use `useRange` in `Home.tsx` (function-form `useTransform`) for scroll-linked values.
+- framer-motion 13 hands plain `useTransform(scrollYProgress, ...)` opacity maps to the browser's native scroll timeline, which maps pinned sections wrongly (elements fade back out). Use `useRange` in `Home.tsx` (function-form `useTransform`) for scroll-linked values (only the hero uses it now).
 - Transmissive three.js materials only refract opaque objects; use `alphaTest` instead of `transparent` for anything that should show through the glass.
 - ESLint ignores only `dist` and `node_modules`, and its TS rules apply to `**/*.{ts,tsx}`.
 

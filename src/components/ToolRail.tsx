@@ -1,5 +1,5 @@
 import { ChevronDown, PanelLeftClose, PanelLeftOpen, Search } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link, useLocation, useParams } from 'react-router-dom';
 import { useFavorites } from '../hooks/useFavorites';
 import { useRecentTools } from '../hooks/useRecentTools';
@@ -43,6 +43,28 @@ export function ToolRail() {
   const [collapsed, setCollapsed] = useState(readCollapsed);
   const [closed, setClosed] = useState<Set<string>>(new Set());
   const [query, setQuery] = useState('');
+  const slot = useRef<HTMLDivElement>(null);
+  const panel = useRef<HTMLElement>(null);
+
+  // Pinned panel: full window height, shrunk only while the footer scrolls into view so it never overlaps it.
+  useEffect(() => {
+    const fit = () => {
+      const s = slot.current?.getBoundingClientRect();
+      const p = panel.current;
+      if (!s || !p) return;
+      p.style.maxHeight = '';
+      const top = parseFloat(getComputedStyle(p).top) || 0;
+      const room = s.bottom - Math.max(s.top, top);
+      if (room < p.offsetHeight) p.style.maxHeight = `${Math.max(room, 0)}px`;
+    };
+    fit();
+    addEventListener('scroll', fit, { passive: true });
+    addEventListener('resize', fit);
+    return () => {
+      removeEventListener('scroll', fit);
+      removeEventListener('resize', fit);
+    };
+  }, []);
 
   const toggleRail = () => {
     const next = !collapsed;
@@ -84,16 +106,16 @@ export function ToolRail() {
     );
 
   return (
+    <div ref={slot} style={{ alignSelf: 'stretch', flexShrink: 0, contain: 'size', width: collapsed ? 56 : 240 }}>
     <nav
+      ref={panel}
       aria-label="Tools"
       className="glass"
       style={{
         position: 'sticky',
-        top: 'var(--header-h)',
-        alignSelf: 'flex-start',
-        flexShrink: 0,
-        width: collapsed ? 56 : 240,
-        height: 'calc(100dvh - var(--header-h) - var(--s-4))',
+        top: 'calc(var(--header-h) + var(--s-4))',
+        width: '100%',
+        height: 'calc(100dvh - var(--header-h) - 2 * var(--s-4))',
         overflow: 'hidden',
         borderRadius: 'var(--radius-lg)',
         display: 'flex',
@@ -166,6 +188,7 @@ export function ToolRail() {
       )}
       </div>
     </nav>
+    </div>
   );
 }
 

@@ -20,7 +20,7 @@ export function ToolsLayout() {
   return (
     <div className="container" style={{ paddingTop: 'var(--s-4)', display: 'flex', alignItems: 'flex-start', gap: 'var(--s-5)' }}>
       {desktop && <ToolRail />}
-      <div style={{ flex: 1, minWidth: 0 }}>
+      <div style={{ flex: 1, minWidth: 0, minHeight: 'calc(100dvh - var(--header-h) - 2 * var(--s-4))' }}>
         {/* The height floor stops the footer jumping up while a cold chunk loads */}
         <Suspense fallback={<div style={{ minHeight: '100vh' }} />}>
           <Outlet />

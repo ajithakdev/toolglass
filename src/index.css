@@ -327,9 +327,12 @@ select:focus-visible {
 }
 
 /* ── Scrollbars ───────────────────────────────────────────────── */
-* {
-  scrollbar-width: thin;
-  scrollbar-color: color-mix(in srgb, var(--ink) 22%, transparent) transparent;
+/* Chromium 121+ ignores ::-webkit-scrollbar when scrollbar-width is set, so the standard properties are Firefox-only */
+@supports not selector(::-webkit-scrollbar) {
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: color-mix(in srgb, var(--ink) 22%, transparent) transparent;
+  }
 }
 ::-webkit-scrollbar {
   width: 10px;
@@ -1036,16 +1039,16 @@ select:focus-visible {
   font-weight: 600;
   box-shadow: var(--edge);
 }
-.rail-scroll {
-  scrollbar-width: thin;
-  scrollbar-color: color-mix(in srgb, var(--ink) 24%, transparent) transparent;
-}
 .rail-scroll::-webkit-scrollbar {
   width: 6px;
 }
 .rail-scroll::-webkit-scrollbar-track {
   background: transparent;
-  margin-block: 6px;
+  margin-block: 10px;
+}
+.rail-scroll::-webkit-scrollbar-button {
+  display: none;
+  height: 0;
 }
 .rail-scroll::-webkit-scrollbar-thumb {
   background: color-mix(in srgb, var(--ink) 24%, transparent);

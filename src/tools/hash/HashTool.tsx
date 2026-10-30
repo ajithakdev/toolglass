@@ -136,7 +136,7 @@ function FileMode() {
             <div key={a} style={{ display: 'grid', gridTemplateColumns: '96px 1fr auto', gap: 12, alignItems: 'center' }}>
               <span style={{ fontSize: 'var(--t-sm)', color: 'var(--ink-mute)' }}>{a}</span>
               <code style={{ fontFamily: 'var(--font-mono)', fontSize: 'var(--t-sm)', wordBreak: 'break-all' }}>{hashes[a]}</code>
-              <CopyButton value={hashes[a]} size="sm" label={`Copy ${a}`} />
+              <CopyButton value={hashes[a]} label={`Copy ${a}`} compact />
             </div>
           ))}
         </div>

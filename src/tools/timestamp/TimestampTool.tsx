@@ -2,6 +2,7 @@ import { useEffect, useState, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import { m, AnimatePresence } from 'framer-motion';
 import { Button } from '../../components/ui/Button';
+import { CopyButton } from '../../components/ui/CopyButton';
 import { Field, TextInput, TextArea, Dropdown } from '../../components/ui/Field';
 import { ToolLayout } from '../../components/ToolLayout';
 import { useToast } from '../../components/ui/Toast';
@@ -1006,6 +1007,9 @@ function ValueRow({
             &lt;/&gt; Code
           </button>
         )}
+        <span onClick={(e) => e.stopPropagation()} style={{ display: 'inline-flex' }}>
+          <CopyButton value={value} label={`Copy ${label}`} compact />
+        </span>
       </div>
     </div>
   );

@@ -65,7 +65,7 @@ index.html
 
 | File | Notes |
 |---|---|
-| `Home.tsx` | Six acts: `Hero` (copy, `HeroSearch`, lazy `GlassScene` with a logo poster until the first frame; module flag `sceneShown` skips the poster on return visits), `Collapse` (pinned 340vh scene: clutter cards pulled into the glass, then a real toolbar; `CollapseStill` for reduced motion), `ForEveryone` (audience switch + tool cards), `Proof` (live third-party request count), `Ending`. Scroll maps use `useRange` (JS-computed; see Gotchas). |
+| `Home.tsx` | Seven parts: `Hero` (half-height; copy, `HeroSearch`, lazy `GlassScene` with a logo poster until the first frame; module flag `sceneShown` skips the poster on return visits), `QuickAccess` (favorites and recents, or 8 popular cards; chosen once on mount so it never swaps), `Collapse` (pinned 340vh scene: clutter cards pulled into the glass, then a real toolbar; `CollapseStill` for reduced motion), `ForEveryone` (audience switch + tool cards), `Proof` (live third-party request count), `Ending`. Scroll maps use `useRange` (JS-computed; see Gotchas). |
 | `ToolsHub.tsx` | `/tools`. Search, category chips, audience switch (all in the URL: `q`, `cat`, `for`), favorites rail (drag to reorder), recents rail, grouped grid, empty state linking to a tool request. Has a test. |
 | `About.tsx` | `/about`. Privacy model, live meter, table of everything stored (from `lib/stored.ts`) with a "clear all" button, open source links. |
 | `ToolPage.tsx` (55) | `Loader` L9-30 (skeleton Suspense fallback). `ToolPage` L32-55: unknown slug renders `NotFound`, else `ErrorBoundary > Suspense > Component`. Calls `addRecent(slug)`. |
@@ -77,7 +77,8 @@ index.html
 |---|---|
 | `home/GlassScene.tsx` | Lazy three.js scene: two `MeshPhysicalMaterial` panes (transmission, dispersion) refracting a ring of glyph tiles and a light disc. Time-based animation, pointer parallax, scroll progress prop, pauses offscreen/hidden, one static frame for reduced motion, lower DPR on modest hardware. The built world is kept in a module variable between visits: a return visit attaches and draws it in a layout effect, before paint. The refracted plate sits inside the front pane so its edges never show. |
 | `home/HeroSearch.tsx` | ARIA combobox over `searchTools`; Enter opens the highlighted tool. |
-| `Shell.tsx` | `Shell`, `Kbd`. Sticky glass header (logo, Home/Tools nav with sliding indicator, search, install, theme switch), footer (privacy meter, usage-count opt-out, GitHub). |
+| `Shell.tsx` | `Shell`, `Kbd`. Header, content and footer all use `.container` (1440px). Sticky glass header (logo, Home/Tools nav with sliding indicator, search, install, theme switch), footer (privacy meter, usage-count opt-out, GitHub). |
+| `ToolRails.tsx` | `FavoritesRail` (drag to reorder) and `RecentRail`, shared by `ToolsHub` and `Home`. |
 | `ToolsLayout.tsx` | `ToolsLayout`. Layout route for `/tools` and `/tools/:slug`: renders `ToolRail` on >= 1024px, a `Suspense` (min-height 100vh fallback) around the `Outlet`, and idle-preloads favorites and recents. Router navigations are transitions, so the old page stays until the new chunk arrives. |
 | `ToolRail.tsx` | `ToolRail`. Desktop sidebar (240px, 56px collapsed, state in `toolglass_rail_collapsed`): filter via `searchTools`, Favorites, Recent, collapsible categories. Category click also scrolls to `#cat-<id>` on `/tools`. Hover/focus preloads a tool's chunk. Has a test. |
 | `Logo.tsx` | Two-pane glass mark; mirrors `public/favicon.svg`. |

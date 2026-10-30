@@ -3,11 +3,14 @@ import { ArrowRight, Braces, FileText, Globe2, Heading, Image, KeyRound, Noteboo
 import { lazy, Suspense, useCallback, useMemo, useRef, useState, type ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import { HeroSearch } from '../components/home/HeroSearch';
+import { FavoritesRail, RecentRail } from '../components/ToolRails';
 import { Logo } from '../components/Logo';
 import { Kbd } from '../components/Shell';
 import { Segmented } from '../components/ui/Segmented';
 import { ToolCard } from '../components/ui/ToolCard';
+import { useFavorites } from '../hooks/useFavorites';
 import { useMediaQuery } from '../hooks/useMediaQuery';
+import { useRecentTools } from '../hooks/useRecentTools';
 import { useThirdPartyCount } from '../hooks/useThirdPartyCount';
 import { EASE_OUT, fadeUp, stagger } from '../lib/motion';
 import { shortcut } from '../lib/platform';
@@ -89,7 +92,7 @@ function Hero() {
           style={{ position: 'absolute', inset: 0, display: 'grid', placeItems: 'center', pointerEvents: 'none' }}
         >
           <div style={{ filter: 'drop-shadow(0 30px 60px rgba(22,34,51,0.25))' }}>
-            <Logo size={240} />
+            <Logo size={200} />
           </div>
         </m.div>
         <m.div initial={false} animate={{ opacity: ready ? 1 : 0 }} transition={{ duration: 0.8, ease: EASE_OUT }} style={{ position: 'absolute', inset: 0 }}>
@@ -98,6 +101,37 @@ function Hero() {
           </Suspense>
         </m.div>
       </div>
+    </section>
+  );
+}
+
+/* Right under the hero: your own tools if you have any, otherwise the popular ones */
+const POPULAR_GRID = ['password', 'qr', 'json', 'timestamp', 'case-converter', 'color', 'hash', 'markdown']
+  .map(toolBySlug)
+  .filter((t): t is ToolMeta => !!t);
+
+function QuickAccess() {
+  const { favorites } = useFavorites();
+  const { recents } = useRecentTools();
+  // Decided once on mount: starring a card in the Popular grid must not swap the section under the pointer
+  const [mine] = useState(() => favorites.length + recents.length > 0);
+  return (
+    <section className="container" aria-label="Quick access" style={{ display: 'flex', flexDirection: 'column', gap: 'var(--s-4)', paddingBottom: 'var(--s-4)' }}>
+      {mine ? (
+        <>
+          <FavoritesRail />
+          <RecentRail />
+        </>
+      ) : (
+        <>
+          <h2 className="section-label">Popular</h2>
+          <div className="tool-grid">
+            {POPULAR_GRID.map((t) => (
+              <ToolCard key={t.slug} tool={t} compact />
+            ))}
+          </div>
+        </>
+      )}
     </section>
   );
 }
@@ -319,6 +353,7 @@ export function Home() {
   return (
     <>
       <Hero />
+      <QuickAccess />
       {reduce ? <CollapseStill /> : <Collapse />}
       <ForEveryone />
       <Proof />

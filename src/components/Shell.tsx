@@ -1,7 +1,7 @@
 import { m } from 'framer-motion';
 import { Download, Search } from 'lucide-react';
 import { useEffect, useState, type ReactNode } from 'react';
-import { Link, NavLink, useLocation } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 import { useToolStats } from '../hooks/useToolStats';
 import { spring } from '../lib/motion';
 import { IS_MAC, shortcut } from '../lib/platform';
@@ -94,7 +94,7 @@ function Header({ onOpenPalette }: { onOpenPalette: () => void }) {
         boxShadow: scrolled ? '0 1px 0 var(--border)' : 'none',
       }}
     >
-      <div className="container" style={{ maxWidth: 1440, display: 'flex', alignItems: 'center', gap: 'var(--s-4)' }}>
+      <div className="container" style={{ display: 'flex', alignItems: 'center', gap: 'var(--s-4)' }}>
         <Link to="/" aria-label="Toolglass home" style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
           <Logo size={28} />
           <span className="hide-sm" style={{ fontWeight: 650, fontSize: 'var(--t-md)', letterSpacing: '-0.02em' }}>
@@ -141,7 +141,7 @@ function Header({ onOpenPalette }: { onOpenPalette: () => void }) {
 function Footer() {
   const { enabled, toggleTelemetry } = useToolStats();
   return (
-    <footer className="container" style={{ maxWidth: 1440, paddingBlock: 'var(--s-7) var(--s-5)' }}>
+    <footer className="container" style={{ paddingBlock: 'var(--s-7) var(--s-5)' }}>
       <div
         style={{
           display: 'flex',
@@ -178,10 +178,8 @@ function Footer() {
 }
 
 export function Shell({ children, onOpenPalette }: { children: ReactNode; onOpenPalette: () => void }) {
-  // Tools pages sit next to a 240px sidebar, so their content gets a wider container. Header and footer are always 1440px so they never move between routes
-  const wide = useLocation().pathname.startsWith('/tools');
   return (
-    <div style={{ minHeight: '100dvh', display: 'flex', flexDirection: 'column', ...(wide && { '--container-max': '1440px' }) } as React.CSSProperties}>
+    <div style={{ minHeight: '100dvh', display: 'flex', flexDirection: 'column' }}>
       <a href="#main" className="skip-link">
         Skip to content
       </a>

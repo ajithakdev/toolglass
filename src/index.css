@@ -400,8 +400,8 @@ select:focus-visible {
 
 .container {
   width: 100%;
-  /* 1200px leaves calm side margins on big screens (owner's call, 2026-10-24); side-by-side tools still get ~560px per pane */
-  max-width: var(--container-max, 1200px);
+  /* The 240px tool sidebar needs room, and header, content and footer share one width so nothing jumps between pages */
+  max-width: 1440px;
   margin-inline: auto;
   padding-inline: var(--gutter);
 }
@@ -629,10 +629,9 @@ select:focus-visible {
 .hero {
   display: grid;
   grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
-  align-items: center;
+  align-items: start;
   gap: var(--s-5);
-  min-height: calc(100svh - 52px);
-  padding-block: var(--s-5) var(--s-7);
+  padding-block: var(--s-4) var(--s-5);
 }
 .hero-copy {
   display: flex;
@@ -659,13 +658,11 @@ select:focus-visible {
 }
 .hero-stage {
   position: relative;
-  height: min(62svh, 560px);
-  min-height: 320px;
+  height: clamp(300px, 42svh, 400px);
 }
 @media (max-width: 860px) {
   .hero {
     grid-template-columns: 1fr;
-    min-height: 0;
     padding-block: var(--s-5) var(--s-6);
   }
   .hero-title {
@@ -916,6 +913,7 @@ select:focus-visible {
   gap: var(--s-5);
 }
 .about-body {
+  max-width: calc(var(--measure) + 10ch);
   display: flex;
   flex-direction: column;
   gap: var(--s-8);

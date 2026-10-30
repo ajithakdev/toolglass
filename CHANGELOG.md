@@ -8,6 +8,8 @@ All notable changes to Toolglass. The format follows [Keep a Changelog](https://
 - Tool sidebar on desktop: favorites, recent and every category one click away, and switching tools no longer blanks the page.
 
 ### Changed
+- The home page hero is half the height, with your recent, favorite or popular tools right under it.
+- Header, content and footer share one 1440px width on every page, so nothing jumps when you move between pages.
 - Tighter, denser layout on desktop: smaller headings, cards and spacing.
 - Tool URLs stay clean while you work. Settings go into a link only when you press Share, so text you type no longer lands in browser history.
 - Calmer layout on big screens: the content column is 1200px wide instead of 1600px, and page headings and section gaps are smaller on desktop. Phone layouts are unchanged.

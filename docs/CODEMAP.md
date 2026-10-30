@@ -1,6 +1,6 @@
 # Toolglass code map
 
-Mapped at commit: `511327b` plus branch `test/138-timestamp-json-to-ts` (2026-10-26). Sections not touched by that branch were last checked at `6811fb6`.
+Mapped at commit: `511327b` plus branch `test/138-timestamp-json-to-ts` (2026-10-26). Sections not touched by that branch were last checked at `6811fb6`. Timestamp and JSON-to-TS sections updated at `41d6999` (#196, 2026-10-31).
 
 Check for drift before trusting this file: `git diff --stat c7cd085..HEAD -- src`
 

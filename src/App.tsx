@@ -16,7 +16,7 @@ const ToolsHub = lazy(() => import('./pages/ToolsHub').then((m) => ({ default: m
 
 function Page({ children }: { children: React.ReactNode }) {
   return (
-    <div className="container" style={{ paddingTop: 'var(--s-5)' }}>
+    <div className="container" style={{ paddingTop: 'var(--s-4)' }}>
       {/* Full-height fallback keeps the footer below the fold while a lazy page loads */}
       <Suspense fallback={<div style={{ minHeight: '100vh' }} />}>{children}</Suspense>
     </div>

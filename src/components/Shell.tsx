@@ -85,8 +85,8 @@ function Header({ onOpenPalette }: { onOpenPalette: () => void }) {
         position: 'sticky',
         top: 0,
         zIndex: 100,
-        paddingTop: 'max(10px, env(safe-area-inset-top))',
-        paddingBottom: 10,
+        paddingTop: 'max(8px, env(safe-area-inset-top))',
+        paddingBottom: 8,
         transition: 'background-color var(--dur-3) var(--ease-out), box-shadow var(--dur-3) var(--ease-out)',
         background: scrolled ? 'color-mix(in srgb, var(--canvas) 72%, transparent)' : 'transparent',
         backdropFilter: scrolled ? 'var(--blur)' : 'none',
@@ -141,7 +141,7 @@ function Header({ onOpenPalette }: { onOpenPalette: () => void }) {
 function Footer() {
   const { enabled, toggleTelemetry } = useToolStats();
   return (
-    <footer className="container" style={{ paddingBlock: 'var(--s-8) var(--s-6)' }}>
+    <footer className="container" style={{ paddingBlock: 'var(--s-7) var(--s-5)' }}>
       <div
         style={{
           display: 'flex',

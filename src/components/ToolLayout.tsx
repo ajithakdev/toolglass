@@ -53,7 +53,7 @@ export function ToolLayout({ children }: { children: ReactNode }) {
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.28, ease: EASE_OUT }}
-      style={{ display: 'flex', flexDirection: 'column', gap: 'var(--s-5)', paddingBottom: 'var(--s-8)' }}
+      style={{ display: 'flex', flexDirection: 'column', gap: 'var(--s-4)', paddingBottom: 'var(--s-7)' }}
     >
       <nav aria-label="Breadcrumb" style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 'var(--t-sm)', color: 'var(--ink-mute)', paddingTop: 'var(--s-3)' }}>
         <Link to="/tools" className="crumb">Tools</Link>
@@ -70,7 +70,7 @@ export function ToolLayout({ children }: { children: ReactNode }) {
       <header style={{ display: 'flex', gap: 'var(--s-4)', alignItems: 'flex-start', flexWrap: 'wrap' }}>
         <span
           aria-hidden
-          style={{ width: 56, height: 56, flexShrink: 0, borderRadius: 'var(--radius)', display: 'grid', placeItems: 'center', background: 'var(--surface-3)', boxShadow: 'var(--edge), var(--e1)' }}
+          style={{ width: 44, height: 44, flexShrink: 0, borderRadius: 'var(--radius)', display: 'grid', placeItems: 'center', background: 'var(--surface-3)', boxShadow: 'var(--edge), var(--e1)' }}
         >
           <span style={{ transform: 'scale(1.15)', display: 'grid' }}>{tool.icon}</span>
         </span>
@@ -96,7 +96,7 @@ export function ToolLayout({ children }: { children: ReactNode }) {
         </div>
       </header>
 
-      <GlassCard strong padding="clamp(16px, 3vw, 28px)" style={{ borderRadius: 'var(--radius-xl)' }}>
+      <GlassCard strong padding="clamp(16px, 2.4vw, 22px)" style={{ borderRadius: 'var(--radius-xl)' }}>
         {children}
       </GlassCard>
 
@@ -107,7 +107,7 @@ export function ToolLayout({ children }: { children: ReactNode }) {
       )}
 
       {related.length > 0 && (
-        <section aria-labelledby="related-h" style={{ display: 'flex', flexDirection: 'column', gap: 'var(--s-3)', marginTop: 'var(--s-6)' }}>
+        <section aria-labelledby="related-h" style={{ display: 'flex', flexDirection: 'column', gap: 'var(--s-3)', marginTop: 'var(--s-5)' }}>
           <h2 id="related-h" className="section-label">More {category?.name.toLowerCase()} tools</h2>
           <m.div className="tool-grid" initial="hidden" animate="show" variants={stagger(0.05)}>
             {related.map((t) => (

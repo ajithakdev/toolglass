@@ -42,7 +42,7 @@ function SearchBox({ value, onChange }: { value: string; onChange: (v: string) =
   }, []);
 
   return (
-    <div className="glass-strong focus-pill" style={{ display: 'flex', alignItems: 'center', gap: 'var(--s-3)', padding: '0 var(--s-4)', height: 56, borderRadius: 'var(--radius-lg)' }}>
+    <div className="glass-strong focus-pill" style={{ display: 'flex', alignItems: 'center', gap: 'var(--s-3)', padding: '0 var(--s-4)', height: 44, borderRadius: 'var(--radius-lg)' }}>
       <Search size={20} strokeWidth={1.8} color="var(--ink-mute)" aria-hidden />
       <input
         ref={ref}
@@ -137,9 +137,9 @@ export function ToolsHub() {
     .filter((g) => g.items.length > 0);
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--s-6)', paddingBottom: 'var(--s-8)' }}>
-      <header style={{ display: 'flex', flexDirection: 'column', gap: 'var(--s-3)', paddingTop: 'var(--s-4)' }}>
-        <h1 style={{ margin: 0, fontSize: 'var(--t-3xl)', lineHeight: 1.02, letterSpacing: 'var(--track-tight)', fontWeight: 650 }}>All tools</h1>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--s-5)', paddingBottom: 'var(--s-7)' }}>
+      <header style={{ display: 'flex', flexDirection: 'column', gap: 'var(--s-2)', paddingTop: 'var(--s-2)' }}>
+        <h1 style={{ margin: 0, fontSize: 'var(--t-3xl)', lineHeight: 1.05, letterSpacing: 'var(--track-tight)', fontWeight: 650 }}>All tools</h1>
         <p style={{ margin: 0, color: 'var(--ink-soft)', fontSize: 'var(--t-md)', maxWidth: 'var(--measure)' }}>
           <span className="num">{tools.length}</span> free tools. Each one runs in your browser, so your files and text never leave this device.
         </p>
@@ -187,7 +187,7 @@ export function ToolsHub() {
             ))}
           </m.section>
         ) : (
-          <m.div key={`g-${category}-${audience}`} initial="hidden" animate="show" variants={stagger(0.06)} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--s-7)' }}>
+          <m.div key={`g-${category}-${audience}`} initial="hidden" animate="show" variants={stagger(0.06)} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--s-6)' }}>
             {groups.map((g) => (
               <m.section key={g.id} variants={fadeUp} aria-labelledby={`cat-${g.id}`} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--s-4)' }}>
                 <div style={{ display: 'flex', alignItems: 'baseline', gap: 'var(--s-3)', flexWrap: 'wrap' }}>

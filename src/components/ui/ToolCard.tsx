@@ -19,18 +19,18 @@ export function ToolCard({ tool, compact }: { tool: ToolMeta; compact?: boolean 
         className="stretched"
         style={{
           display: 'flex',
-          gap: 'var(--s-3)',
+          gap: 'var(--s-2)',
           alignItems: compact ? 'center' : 'flex-start',
           flexDirection: compact ? 'row' : 'column',
-          padding: compact ? 'var(--s-3) var(--s-4)' : 'var(--s-4) var(--s-5)',
+          padding: compact ? 'var(--s-2) var(--s-3)' : 'var(--s-3) var(--s-4)',
           height: '100%',
         }}
       >
         <span
           aria-hidden
           style={{
-            width: compact ? 36 : 44,
-            height: compact ? 36 : 44,
+            width: compact ? 32 : 36,
+            height: compact ? 32 : 36,
             flexShrink: 0,
             borderRadius: 'var(--radius-sm)',
             display: 'grid',
@@ -42,12 +42,12 @@ export function ToolCard({ tool, compact }: { tool: ToolMeta; compact?: boolean 
           {tool.icon}
         </span>
         <span style={{ display: 'flex', flexDirection: 'column', gap: 3, minWidth: 0, paddingRight: compact ? 28 : 0 }}>
-          <span style={{ fontSize: compact ? 14 : 'var(--t-md)', fontWeight: 600, letterSpacing: '-0.012em', color: 'var(--ink)' }}>
+          <span style={{ fontSize: compact ? 'var(--t-base)' : 'var(--t-md)', fontWeight: 600, letterSpacing: '-0.012em', color: 'var(--ink)' }}>
             {tool.title}
           </span>
-          <span style={{ fontSize: 'var(--t-sm)', color: 'var(--ink-soft)', lineHeight: 1.45 }}>{tool.short}</span>
+          <span style={{ fontSize: 'var(--t-sm)', color: 'var(--ink-soft)', lineHeight: 1.4 }}>{tool.short}</span>
           {!compact && tool.replaces && (
-            <span style={{ fontSize: 'var(--t-xs)', color: 'var(--ink-mute)', marginTop: 6 }}>Instead of {tool.replaces}</span>
+            <span style={{ fontSize: 'var(--t-xs)', color: 'var(--ink-mute)', marginTop: 4 }}>Instead of {tool.replaces}</span>
           )}
         </span>
         {!compact && enabled && count > 0 && (
@@ -65,7 +65,7 @@ export function ToolCard({ tool, compact }: { tool: ToolMeta; compact?: boolean 
         className="fav-btn"
         style={{
           position: 'absolute',
-          top: compact ? '50%' : 12,
+          top: compact ? '50%' : 8,
           right: 12,
           transform: compact ? 'translateY(-50%)' : undefined,
           zIndex: 2,

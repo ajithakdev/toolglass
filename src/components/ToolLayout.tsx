@@ -50,10 +50,10 @@ export function ToolLayout({ children }: { children: ReactNode }) {
 
   return (
     <m.div
-      initial={{ opacity: 0, y: 8 }}
-      animate={{ opacity: 1, y: 0 }}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
       transition={{ duration: 0.28, ease: EASE_OUT }}
-      style={{ display: 'flex', flexDirection: 'column', gap: 'var(--s-4)', paddingBottom: 'var(--s-7)' }}
+      style={{ display: 'flex', flexDirection: 'column', gap: 'var(--s-4)', paddingBottom: 'var(--s-7)', width: '100%', maxWidth: tool.wide ? undefined : 820, marginInline: 'auto' }}
     >
       <nav aria-label="Breadcrumb" style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 'var(--t-sm)', color: 'var(--ink-mute)', paddingTop: 'var(--s-3)' }}>
         <Link to="/tools" className="crumb">Tools</Link>

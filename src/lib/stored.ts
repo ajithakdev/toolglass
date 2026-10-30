@@ -3,6 +3,7 @@ export const STORED: { key: string; what: string; session?: true }[] = [
   { key: 'toolglass-theme', what: 'Your theme choice (absent means Auto)' },
   { key: 'toolglass_favorites', what: 'Tools you starred, in your order' },
   { key: 'toolglass_recent_tools', what: 'The last few tools you opened' },
+  { key: 'toolglass_rail_collapsed', what: 'Whether the desktop tool sidebar is shrunk to icons' },
   { key: 'toolglass_stats', what: 'How often you used each tool' },
   { key: 'toolglass_telemetry_enabled', what: 'Whether usage counting is on' },
   { key: 'tg_ts_history', what: 'Timestamp tool history' },

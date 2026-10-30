@@ -46,168 +46,176 @@ import {
 export interface ToolMeta extends ToolInfo {
   icon: ReactNode;
   Component: LazyExoticComponent<ComponentType>;
+  /** Starts downloading the tool's chunk so opening it is instant. Safe to call repeatedly. */
+  preload: () => void;
 }
 
-const visuals: Record<string, Pick<ToolMeta, 'icon' | 'Component'>> = {
+const lazyTool = (load: () => Promise<{ default: ComponentType }>) => ({
+  Component: lazy(load),
+  // A failed preload is ignored: the real navigation retries and shows the error boundary
+  preload: () => void load().catch(() => {}),
+});
+
+const visuals: Record<string, Pick<ToolMeta, 'icon' | 'Component' | 'preload'>> = {
   'password': {
     icon: <KeyRound size={22} strokeWidth={1.5} color="var(--ink)" />,
-    Component: lazy(() => import('./password/PasswordTool')),
+    ...lazyTool(() => import('./password/PasswordTool')),
   },
   'jwt': {
     icon: <FileBadge2 size={22} strokeWidth={1.5} color="var(--ink)" />,
-    Component: lazy(() => import('./jwt/JwtTool')),
+    ...lazyTool(() => import('./jwt/JwtTool')),
   },
   'uuid': {
     icon: <Fingerprint size={22} strokeWidth={1.5} color="var(--ink)" />,
-    Component: lazy(() => import('./uuid/UuidTool')),
+    ...lazyTool(() => import('./uuid/UuidTool')),
   },
   'objectid': {
     icon: <Leaf size={22} strokeWidth={1.5} color="var(--ink)" />,
-    Component: lazy(() => import('./objectid/ObjectIdTool')),
+    ...lazyTool(() => import('./objectid/ObjectIdTool')),
   },
   'nanoid': {
     icon: <Zap size={22} strokeWidth={1.5} color="var(--ink)" />,
-    Component: lazy(() => import('./nanoid/NanoIdTool')),
+    ...lazyTool(() => import('./nanoid/NanoIdTool')),
   },
   'hash': {
     icon: <Hash size={22} strokeWidth={1.5} color="var(--ink)" />,
-    Component: lazy(() => import('./hash/HashTool')),
+    ...lazyTool(() => import('./hash/HashTool')),
   },
   'base64': {
     icon: <Binary size={22} strokeWidth={1.5} color="var(--ink)" />,
-    Component: lazy(() => import('./base64/Base64Tool')),
+    ...lazyTool(() => import('./base64/Base64Tool')),
   },
   'timestamp': {
     icon: <Clock size={22} strokeWidth={1.5} color="var(--ink)" />,
-    Component: lazy(() => import('./timestamp/TimestampTool')),
+    ...lazyTool(() => import('./timestamp/TimestampTool')),
   },
   'json': {
     icon: <Braces size={22} strokeWidth={1.5} color="var(--ink)" />,
-    Component: lazy(() => import('./json/JsonTool')),
+    ...lazyTool(() => import('./json/JsonTool')),
   },
   'jwt-decode': {
     icon: <ScanEye size={22} strokeWidth={1.5} color="var(--ink)" />,
-    Component: lazy(() => import('./jwt-decode/JwtDecodeTool')),
+    ...lazyTool(() => import('./jwt-decode/JwtDecodeTool')),
   },
   'url': {
     icon: <Link size={22} strokeWidth={1.5} color="var(--ink)" />,
-    Component: lazy(() => import('./url/UrlTool')),
+    ...lazyTool(() => import('./url/UrlTool')),
   },
   'color': {
     icon: <Palette size={22} strokeWidth={1.5} color="var(--ink)" />,
-    Component: lazy(() => import('./color/ColorTool')),
+    ...lazyTool(() => import('./color/ColorTool')),
   },
   'regex': {
     icon: <Regex size={22} strokeWidth={1.5} color="var(--ink)" />,
-    Component: lazy(() => import('./regex/RegexTool')),
+    ...lazyTool(() => import('./regex/RegexTool')),
   },
   'json-to-ts': {
     icon: <Code2 size={22} strokeWidth={1.5} color="var(--ink)" />,
-    Component: lazy(() => import('./json-to-ts/JsonToTsTool')),
+    ...lazyTool(() => import('./json-to-ts/JsonToTsTool')),
   },
   'api-tester': {
     icon: <Globe2 size={22} strokeWidth={1.5} color="var(--ink)" />,
-    Component: lazy(() => import('./curl-to-fetch/CurlTool')),
+    ...lazyTool(() => import('./curl-to-fetch/CurlTool')),
   },
   'qr': {
     icon: <QrCode size={22} strokeWidth={1.5} color="var(--ink)" />,
-    Component: lazy(() => import('./qr/QrTool')),
+    ...lazyTool(() => import('./qr/QrTool')),
   },
   'markdown': {
     icon: <FileText size={22} strokeWidth={1.5} color="var(--ink)" />,
-    Component: lazy(() => import('./markdown/MarkdownTool')),
+    ...lazyTool(() => import('./markdown/MarkdownTool')),
   },
   'chmod': {
     icon: <Terminal size={22} strokeWidth={1.5} color="var(--ink)" />,
-    Component: lazy(() => import('./chmod/ChmodTool')),
+    ...lazyTool(() => import('./chmod/ChmodTool')),
   },
   'case-converter': {
     icon: <Type size={22} strokeWidth={1.5} color="var(--ink)" />,
-    Component: lazy(() => import('./case-converter/CaseConverterTool')),
+    ...lazyTool(() => import('./case-converter/CaseConverterTool')),
   },
   'word-counter': {
     icon: <WholeWord size={22} strokeWidth={1.5} color="var(--ink)" />,
-    Component: lazy(() => import('./word-counter/WordCounterTool')),
+    ...lazyTool(() => import('./word-counter/WordCounterTool')),
   },
   'text-diff': {
     icon: <GitCompare size={22} strokeWidth={1.5} color="var(--ink)" />,
-    Component: lazy(() => import('./text-diff/TextDiffTool')),
+    ...lazyTool(() => import('./text-diff/TextDiffTool')),
   },
   'notepad': {
     icon: <StickyNote size={22} strokeWidth={1.5} color="var(--ink)" />,
-    Component: lazy(() => import('./notepad/NotepadTool')),
+    ...lazyTool(() => import('./notepad/NotepadTool')),
   },
   'unit-converter': {
     icon: <Ruler size={22} strokeWidth={1.5} color="var(--ink)" />,
-    Component: lazy(() => import('./unit-converter/UnitConverterTool')),
+    ...lazyTool(() => import('./unit-converter/UnitConverterTool')),
   },
   'percentage': {
     icon: <Percent size={22} strokeWidth={1.5} color="var(--ink)" />,
-    Component: lazy(() => import('./percentage/PercentageTool')),
+    ...lazyTool(() => import('./percentage/PercentageTool')),
   },
   'world-clock': {
     icon: <Earth size={22} strokeWidth={1.5} color="var(--ink)" />,
-    Component: lazy(() => import('./world-clock/WorldClockTool')),
+    ...lazyTool(() => import('./world-clock/WorldClockTool')),
   },
   'timer': {
     icon: <Timer size={22} strokeWidth={1.5} color="var(--ink)" />,
-    Component: lazy(() => import('./timer/TimerTool')),
+    ...lazyTool(() => import('./timer/TimerTool')),
   },
   'image-compress': {
     icon: <ImageDown size={22} strokeWidth={1.5} color="var(--ink)" />,
-    Component: lazy(() => import('./image-compress/ImageCompressTool')),
+    ...lazyTool(() => import('./image-compress/ImageCompressTool')),
   },
   'screen-recorder': {
     icon: <Video size={22} strokeWidth={1.5} color="var(--ink)" />,
-    Component: lazy(() => import('./screen-recorder/ScreenRecorderTool')),
+    ...lazyTool(() => import('./screen-recorder/ScreenRecorderTool')),
   },
   'csv-json': {
     icon: <Sheet size={22} strokeWidth={1.5} color="var(--ink)" />,
-    Component: lazy(() => import('./csv-json/CsvJsonTool')),
+    ...lazyTool(() => import('./csv-json/CsvJsonTool')),
   },
   'yaml-toml': {
     icon: <ArrowLeftRight size={22} strokeWidth={1.5} color="var(--ink)" />,
-    Component: lazy(() => import('./yaml-toml/YamlTomlTool')),
+    ...lazyTool(() => import('./yaml-toml/YamlTomlTool')),
   },
   'sql-format': {
     icon: <Database size={22} strokeWidth={1.5} color="var(--ink)" />,
-    Component: lazy(() => import('./sql-format/SqlFormatTool')),
+    ...lazyTool(() => import('./sql-format/SqlFormatTool')),
   },
   'http-status': {
     icon: <Signal size={22} strokeWidth={1.5} color="var(--ink)" />,
-    Component: lazy(() => import('./http-status/HttpStatusTool')),
+    ...lazyTool(() => import('./http-status/HttpStatusTool')),
   },
   'number-base': {
     icon: <Calculator size={22} strokeWidth={1.5} color="var(--ink)" />,
-    Component: lazy(() => import('./number-base/NumberBaseTool')),
+    ...lazyTool(() => import('./number-base/NumberBaseTool')),
   },
   'html-entities': {
     icon: <Ampersand size={22} strokeWidth={1.5} color="var(--ink)" />,
-    Component: lazy(() => import('./html-entities/HtmlEntitiesTool')),
+    ...lazyTool(() => import('./html-entities/HtmlEntitiesTool')),
   },
   'list-transform': {
     icon: <ListFilter size={22} strokeWidth={1.5} color="var(--ink)" />,
-    Component: lazy(() => import('./list-transform/ListTransformTool')),
+    ...lazyTool(() => import('./list-transform/ListTransformTool')),
   },
   'keycode': {
     icon: <Keyboard size={22} strokeWidth={1.5} color="var(--ink)" />,
-    Component: lazy(() => import('./keycode/KeycodeTool')),
+    ...lazyTool(() => import('./keycode/KeycodeTool')),
   },
   'unicode': {
     icon: <ScanText size={22} strokeWidth={1.5} color="var(--ink)" />,
-    Component: lazy(() => import('./unicode/UnicodeTool')),
+    ...lazyTool(() => import('./unicode/UnicodeTool')),
   },
   'subnet': {
     icon: <Network size={22} strokeWidth={1.5} color="var(--ink)" />,
-    Component: lazy(() => import('./subnet/SubnetTool')),
+    ...lazyTool(() => import('./subnet/SubnetTool')),
   },
   'mime-types': {
     icon: <FileType size={22} strokeWidth={1.5} color="var(--ink)" />,
-    Component: lazy(() => import('./mime-types/MimeTypesTool')),
+    ...lazyTool(() => import('./mime-types/MimeTypesTool')),
   },
   'json-to-zod': {
     icon: <ShieldCheck size={22} strokeWidth={1.5} color="var(--ink)" />,
-    Component: lazy(() => import('./json-to-zod/JsonToZodTool')),
+    ...lazyTool(() => import('./json-to-zod/JsonToZodTool')),
   },
 };
 
@@ -215,3 +223,13 @@ export const tools: ToolMeta[] = catalog.map((info) => ({ ...info, ...visuals[in
 
 export const toolBySlug = (slug: string): ToolMeta | undefined =>
   tools.find((t) => t.slug === slug);
+
+export const preloadTool = (slug: string) => toolBySlug(slug)?.preload();
+
+/** Preloads the given tools once the browser is idle, unless the user asked to save data. */
+export function preloadWhenIdle(slugs: string[]) {
+  if ((navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData) return;
+  const run = () => slugs.forEach(preloadTool);
+  if ('requestIdleCallback' in window) window.requestIdleCallback(run);
+  else setTimeout(run, 1500);
+}

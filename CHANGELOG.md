@@ -4,11 +4,17 @@ All notable changes to Toolglass. The format follows [Keep a Changelog](https://
 
 ## [Unreleased]
 
+### Added
+- Tool sidebar on desktop: favorites, recent and every category one click away, and switching tools no longer blanks the page.
+
 ### Changed
 - Tighter, denser layout on desktop: smaller headings, cards and spacing.
 - Calmer layout on big screens: the content column is 1200px wide instead of 1600px, and page headings and section gaps are smaller on desktop. Phone layouts are unchanged.
 - The "0 requests" status dot now pulses, so it reads as live. It stays still if your system asks for reduced motion.
 - The site now deploys once a week with each release (Sunday), not on every merge. Urgent fixes ship as a same-day patch release.
+
+### Fixed
+- The theme switch is no longer cut off the right edge of the header on phones.
 
 ### Security
 - The Markdown preview no longer loads remote images, so a tracking pixel in pasted Markdown can't tell anyone you opened it. Copy and Download still keep the image links.

@@ -1,6 +1,6 @@
 # Toolglass code map
 
-Mapped at commit: `511327b` plus branch `test/138-timestamp-json-to-ts` (2026-10-26). Sections not touched by that branch were last checked at `6811fb6`. Timestamp and JSON-to-TS sections updated at `41d6999` (#196, 2026-10-31).
+Mapped at commit: `2a3c43b` (tool sidebar and layout route, 2026-10-31). Earlier note: `511327b` plus branch `test/138-timestamp-json-to-ts` (2026-10-26). Sections not touched by that branch were last checked at `6811fb6`. Timestamp and JSON-to-TS sections updated at `41d6999` (#196, 2026-10-31).
 
 Check for drift before trusting this file: `git diff --stat c7cd085..HEAD -- src`
 
@@ -13,15 +13,16 @@ index.html
   src/main.tsx (17)            legacy /#/ redirect, StrictMode > BrowserRouter > App
     src/App.tsx                MotionConfig > ToastProvider > Shell (header, main, footer) > ErrorBoundary > Routes
       /                        pages/Home.tsx
-      /tools                   pages/ToolsHub.tsx
+      /tools                   components/ToolsLayout.tsx (layout route: ToolRail + Suspense > Outlet)
+        index                  pages/ToolsHub.tsx
+        :slug                  pages/ToolPage.tsx  -> toolBySlug(slug) -> lazy Component
       /about                   pages/About.tsx
-      /tools/:slug             pages/ToolPage.tsx  -> toolBySlug(slug) -> lazy Component
       *                        pages/NotFound.tsx
     CommandPalette             sibling of Shell, opened by Ctrl/Cmd+K
 ```
 
 - Routing is `BrowserRouter` with clean URLs (`/tools/<slug>`). `main.tsx` rewrites old `/#/...` links. Hosting is GitHub Pages on `toolglass.ajithakdev.com` (`public/CNAME`); the build writes `tools/<slug>.html` per tool and a `404.html` SPA fallback.
-- Tool data lives in `src/tools/catalog.ts` (plain data: title, description, category, audience, keywords, replaces). `src/tools/registry.tsx` adds icon, tint, and lazy component per slug. Everything (pages, palette, build-time SEO pages, sitemap) reads these; there is no other slug list.
+- Tool data lives in `src/tools/catalog.ts` (plain data: title, description, category, audience, keywords, replaces, optional `wide`). `src/tools/registry.tsx` adds icon, tint, and lazy component per slug. Everything (pages, palette, build-time SEO pages, sitemap) reads these; there is no other slug list.
 - Every tool is a default-export component loaded with `React.lazy`. Each tool wraps its own body in `<ToolLayout>`, which reads the slug from the route and renders breadcrumb, title, description, icon, favorite and Share actions, a privacy note, usage count, and related tools.
 - Theme: modes Auto/Light/Dark. `data-theme="light|dark"` on `<html>`, set first by an inline script in `index.html` (no flash), then by the shared store in `useTheme`. All colors are CSS variables in `src/index.css`.
 
@@ -46,10 +47,10 @@ index.html
 
 | File | Exports | Notes |
 |---|---|---|
-| `App.tsx` | `default App` | Meta effect on navigation, Ctrl/Cmd+K handler, routes (`/`, `/tools`, `/tools/:slug`, `*`). `MotionConfig reducedMotion="user"`. |
+| `App.tsx` | `default App` | Meta effect on navigation, Ctrl/Cmd+K handler, routes (`/`, `/tools` layout with index and `:slug` children, `/about`, `*`). `MotionConfig reducedMotion="user"`. |
 | `main.tsx` (17) | none | Mount point. Redirects legacy hash URLs. |
 | `seo.ts` | `SITE_URL`, `HOME`, `toolPage`, `allPages`, `applyMeta`, `applyMetaToDocument`, `sitemapXml` | Page-meta helpers. `applyMeta` rewrites HTML at build time; `applyMetaToDocument` updates title, description, social tags, and canonical on client-side navigation (App effect). Has a test. |
-| `index.css` | none | Design tokens (canvas, ink, one accent, status, 3 glass surfaces, 3 elevations, type scale, 4px space scale, radii, motion), dark overrides, legacy aliases for old token names, base styles, ambient light (`body::before`) and grain (`body::after`), focus, scrollbars, `.glass`, `.container` (max 1200px), `.status-dot` (pulsing live dot, color via `--dot`), `.lift`, shell classes (`.nav-link`, `.nav-btn`, `.hide-sm`, `.skip-link`). |
+| `index.css` | none | Design tokens (canvas, ink, one accent, status, 3 glass surfaces, 3 elevations, type scale, 4px space scale, radii, motion), dark overrides, legacy aliases for old token names, base styles, ambient light (`body::before`) and grain (`body::after`), focus, scrollbars, `.glass`, `.container` (max `--container-max`, 1200px, 1440px on /tools via `Shell`), `.rail-item`, `.status-dot` (pulsing live dot, color via `--dot`), `.lift`, shell classes (`.nav-link`, `.nav-btn`, `.hide-sm`, `.skip-link`). |
 | `lib/cn.ts` (3) | `cn(...parts)` | Joins truthy class names. |
 | `lib/motionFeatures.ts` | default `domMax` | framer-motion features, loaded async by `LazyMotion` in `App.tsx`. |
 | `lib/stored.ts` | `STORED` | Every storage key the About page lists and clears. `stored.test.ts` checks it against the storage table below. |
@@ -77,9 +78,11 @@ index.html
 | `home/GlassScene.tsx` | Lazy three.js scene: two `MeshPhysicalMaterial` panes (transmission, dispersion) refracting a ring of glyph tiles and a light disc. Time-based animation, pointer parallax, scroll progress prop, pauses offscreen/hidden, one static frame for reduced motion, lower DPR on modest hardware. The built world is kept in a module variable between visits: a return visit attaches and draws it in a layout effect, before paint. The refracted plate sits inside the front pane so its edges never show. |
 | `home/HeroSearch.tsx` | ARIA combobox over `searchTools`; Enter opens the highlighted tool. |
 | `Shell.tsx` | `Shell`, `Kbd`. Sticky glass header (logo, Home/Tools nav with sliding indicator, search, install, theme switch), footer (privacy meter, usage-count opt-out, GitHub). |
+| `ToolsLayout.tsx` | `ToolsLayout`. Layout route for `/tools` and `/tools/:slug`: renders `ToolRail` on >= 1024px, a `Suspense` (min-height 100vh fallback) around the `Outlet`, and idle-preloads favorites and recents. Router navigations are transitions, so the old page stays until the new chunk arrives. |
+| `ToolRail.tsx` | `ToolRail`. Desktop sidebar (240px, 56px collapsed, state in `toolglass_rail_collapsed`): filter via `searchTools`, Favorites, Recent, collapsible categories. Category click also scrolls to `#cat-<id>` on `/tools`. Hover/focus preloads a tool's chunk. Has a test. |
 | `Logo.tsx` | Two-pane glass mark; mirrors `public/favicon.svg`. |
 | `PrivacyMeter.tsx` | Live count of requests to other origins via `PerformanceObserver` (Resource Timing), with a pulsing `.status-dot`. |
-| `ToolLayout.tsx` (121) | Wraps every tool. Takes only `children`. Breadcrumb, Favorite and Share (copies `currentUrl()`), privacy note (API Tester gets its own wording), related tools. Backspace outside a text field navigates to `/tools`. |
+| `ToolLayout.tsx` (121) | Wraps every tool. Takes only `children`. Column is capped at 820px unless the tool's catalog entry has `wide: true`. Breadcrumb, Favorite and Share (copies `currentUrl()`), privacy note (API Tester gets its own wording), related tools. Backspace outside a text field navigates to `/tools`. |
 | `CommandPalette.tsx` (463) | Props `open`, `onClose`. Filters `tools` from registry. Arrow keys, Enter, Escape. |
 | `ErrorBoundary.tsx` (344) | Class component. Optional prop `toolTitle`. Has a test. |
 | `ui/Button.tsx` (92) | `variant`: primary, ghost, soft. `size`: sm, md, lg. `full`. |
@@ -104,7 +107,7 @@ index.html
 
 ### src/tools
 
-Catalog: `catalog.ts` exports `CategoryId`, `Audience`, `CATEGORIES`, `AUDIENCES`, `ToolInfo`, `catalog`. Registry: `registry.tsx` exports `ToolMeta` (ToolInfo + `icon`, `tint`, `Component`), `tools`, `toolBySlug`. `registry.test.ts` checks slugs, metadata, and that every catalog entry has visuals.
+Catalog: `catalog.ts` exports `CategoryId`, `Audience`, `CATEGORIES`, `AUDIENCES`, `ToolInfo`, `catalog`. Registry: `registry.tsx` exports `ToolMeta` (ToolInfo + `icon`, `Component`, `preload`), `tools`, `toolBySlug`, `preloadTool`, `preloadWhenIdle`. `registry.test.ts` checks slugs, metadata, and that every catalog entry has visuals.
 
 17 tools. Slug is the route and the registry key. Folder name differs from slug for one tool (`api-tester` lives in `curl-to-fetch/`).
 
@@ -178,6 +181,7 @@ Tests: 44 files, each `*.test.ts(x)` next to the code it tests. Find them with `
 |---|---|---|
 | `toolglass-theme` | local | `hooks/useTheme.ts` (absent = Auto) |
 | `toolglass_recent_tools` | local | `hooks/useRecentTools.ts:3` |
+| `toolglass_rail_collapsed` | local | `components/ToolRail.tsx` (`1` = icons only) |
 | `toolglass_stats` | local | `hooks/useToolStats.ts:3` |
 | `toolglass_telemetry_enabled` | local | `hooks/useToolStats.ts:4` |
 | `toolglass_favorites` | local | `hooks/useFavorites.ts` |

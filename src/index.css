@@ -86,6 +86,7 @@
   --s-9: 96px;
   --s-10: 128px;
   --gutter: clamp(16px, 4vw, 40px);
+  --header-h: 52px;
   --section: clamp(56px, 5.4vw, 84px);
 
   /* Shape */
@@ -400,7 +401,7 @@ select:focus-visible {
 .container {
   width: 100%;
   /* 1200px leaves calm side margins on big screens (owner's call, 2026-10-24); side-by-side tools still get ~560px per pane */
-  max-width: 1200px;
+  max-width: var(--container-max, 1200px);
   margin-inline: auto;
   padding-inline: var(--gutter);
 }
@@ -1011,4 +1012,35 @@ select:focus-visible {
   flex-wrap: wrap;
   gap: 8px;
   align-items: center;
+}
+
+/* ── Tool rail (desktop sidebar on /tools routes) ─────────────── */
+.rail-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 30px;
+  padding: 0 8px;
+  border-radius: var(--radius-sm);
+  font-size: var(--t-sm);
+  color: var(--ink-soft);
+  white-space: nowrap;
+  overflow: hidden;
+  transition: background-color var(--dur-2) var(--ease-out), color var(--dur-2) var(--ease-out);
+}
+.rail-item:hover {
+  background: var(--surface-1);
+  color: var(--ink);
+}
+.rail-item[aria-current='page'] {
+  background: var(--surface-2);
+  color: var(--ink);
+  font-weight: 600;
+  box-shadow: var(--edge);
+}
+.rail-scroll {
+  scrollbar-width: thin;
+}
+[id^='cat-'] {
+  scroll-margin-top: 72px;
 }

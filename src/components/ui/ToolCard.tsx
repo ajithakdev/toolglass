@@ -17,6 +17,8 @@ export function ToolCard({ tool, compact }: { tool: ToolMeta; compact?: boolean 
       <Link
         to={`/tools/${tool.slug}`}
         className="stretched"
+        onMouseEnter={tool.preload}
+        onFocus={tool.preload}
         style={{
           display: 'flex',
           gap: 'var(--s-2)',

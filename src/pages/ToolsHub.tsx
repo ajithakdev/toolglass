@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import { Kbd } from '../components/Shell';
 import { Segmented } from '../components/ui/Segmented';
 import { ToolCard } from '../components/ui/ToolCard';
+import { useMediaQuery } from '../hooks/useMediaQuery';
 import { useFavorites } from '../hooks/useFavorites';
 import { useRecentTools } from '../hooks/useRecentTools';
 import { useUrlState } from '../hooks/useUrlState';
@@ -124,6 +125,7 @@ export function ToolsHub() {
   const [query, setQuery] = useUrlState('q', '', id, id);
   const [audience, setAudience] = useUrlState('for', 'all', id, id);
   const [category, setCategory] = useUrlState('cat', 'all', id, id);
+  const desktop = useMediaQuery('(min-width: 1024px)');
 
   const filtered = useMemo(() => {
     const byAudience = audience === 'all' ? tools : tools.filter((t) => t.audience.includes(audience as Audience));
@@ -148,6 +150,8 @@ export function ToolsHub() {
       <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--s-4)' }}>
         <SearchBox value={query} onChange={setQuery} />
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--s-3)', alignItems: 'center', justifyContent: 'space-between' }}>
+          {/* The sidebar covers categories on desktop; chips stay only to clear a ?cat= filter */}
+          {(!desktop || category !== 'all') && (
           <div className="rail" role="group" aria-label="Category">
             <Chip active={category === 'all'} onClick={() => setCategory('all')}>All categories</Chip>
             {categoryOptions.map((c) => (
@@ -156,6 +160,7 @@ export function ToolsHub() {
               </Chip>
             ))}
           </div>
+          )}
           <div className="rail">
             <Segmented label="Who it's for" value={audience} options={audienceOptions} onChange={setAudience} size="sm" />
           </div>

@@ -47,7 +47,7 @@ export default function SubnetTool() {
                   <dt style={{ fontSize: 'var(--t-xs)', color: 'var(--ink-mute)' }}>{label}</dt>
                   <dd className="num" style={{ margin: 0, fontWeight: 650, color: 'var(--ink)', overflowWrap: 'anywhere' }}>{value}</dd>
                 </div>
-                <CopyButton size="sm" value={value} />
+                <CopyButton value={value} label={`Copy ${label}`} compact />
               </div>
             ))}
           </dl>

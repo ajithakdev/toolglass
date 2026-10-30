@@ -217,7 +217,7 @@ export default function CaseConverterTool() {
               >
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <span style={{ fontSize: 12, fontWeight: 600, color: 'var(--ink-mute)' }}>{res.name}</span>
-                  <CopyButton value={res.value} label="Copy" size="sm" />
+                  <CopyButton value={res.value} label={`Copy ${res.name}`} compact />
                 </div>
                 <div
                   style={{
@@ -282,7 +282,7 @@ export default function CaseConverterTool() {
                 }}
               />
               <div style={{ position: 'absolute', top: 12, right: 12 }}>
-                <CopyButton value={batchOutput} label="Copy Output" size="sm" />
+                <CopyButton value={batchOutput} label="Copy output" compact />
               </div>
             </div>
           </div>

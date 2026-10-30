@@ -1,10 +1,8 @@
 import { useState, useMemo } from 'react';
 import { Pipette } from 'lucide-react';
-import { useParams } from 'react-router-dom';
 import { Field } from '../../components/ui/Field';
 import { ToolLayout } from '../../components/ToolLayout';
-import { useToolStats } from '../../hooks/useToolStats';
-import { useClipboard } from '../../hooks/useClipboard';
+import { CopyButton } from '../../components/ui/CopyButton';
 
 const PRESET_COLORS = [
   '#FF0000', '#FF5722', '#FF9800', '#FFC107', '#FFEB3B',
@@ -192,31 +190,21 @@ export default function ColorTool() {
 }
 
 function CopyRow({ label, value }: { label: string; value: string }) {
-  const { copy, copied } = useClipboard(2000);
-  const { slug = 'color' } = useParams();
-  const { increment } = useToolStats(slug);
-
   return (
-    <div 
-      style={{ 
-        display: 'flex', 
-        alignItems: 'center', 
-        gap: 12, 
-        cursor: 'pointer',
-        padding: '10px 14px',
+    <div
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: 12,
+        padding: '6px 6px 6px 14px',
         background: 'var(--glass-bg)',
         borderRadius: 8,
         border: '1px solid var(--glass-border)',
       }}
-      onClick={() => {
-        copy(value).then((ok) => ok && increment());
-      }}
     >
       <div style={{ width: 40, fontSize: 12, fontWeight: 600, color: 'var(--ink-soft)' }}>{label}</div>
       <div style={{ flex: 1, fontFamily: 'var(--font-mono)', fontSize: 14 }}>{value}</div>
-      <div style={{ fontSize: 12, color: copied ? 'var(--status-success)' : 'var(--ink-mute)', transition: 'color 0.2s', fontWeight: 500 }}>
-        {copied ? 'Copied!' : 'Copy'}
-      </div>
+      <CopyButton value={value} label={`Copy ${label}`} compact />
     </div>
   );
 }

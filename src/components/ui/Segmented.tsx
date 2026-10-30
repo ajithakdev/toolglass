@@ -27,7 +27,7 @@ export function Segmented<T extends string>({
 }) {
   const id = useId();
   const refs = useRef<(HTMLButtonElement | null)[]>([]);
-  const h = size === 'sm' ? 30 : 36;
+  const h = size === 'sm' ? 28 : 32;
 
   const onKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
     const step = e.key === 'ArrowRight' || e.key === 'ArrowDown' ? 1 : e.key === 'ArrowLeft' || e.key === 'ArrowUp' ? -1 : 0;
@@ -75,7 +75,7 @@ export function Segmented<T extends string>({
               position: 'relative',
               height: h - 8,
               minWidth: iconOnly ? h - 8 : undefined,
-              padding: iconOnly ? 0 : '0 12px',
+              padding: iconOnly ? 0 : '0 10px',
               borderRadius: 999,
               display: 'inline-grid',
               placeItems: 'center',

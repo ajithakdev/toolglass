@@ -1,17 +1,68 @@
 import { m } from 'framer-motion';
 import { Trash2 } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { PrivacyMeter } from '../components/PrivacyMeter';
+import { Kbd } from '../components/Shell';
 import { Button } from '../components/ui/Button';
 import { useToast } from '../components/ui/Toast';
+import { useThirdPartyCount } from '../hooks/useThirdPartyCount';
 import { fadeUp, stagger } from '../lib/motion';
-import { STORED } from '../lib/stored';
+import { shortcut } from '../lib/platform';
+import { STORED, type StoredGroup } from '../lib/stored';
+import { tools } from '../tools/registry';
+
+const REPO = 'https://github.com/ajithakdev/toolglass';
+const GROUPS: StoredGroup[] = ['Preferences', 'Tool data', 'API Tester'];
+const SECTIONS = [
+  ['privacy', 'How your data stays here'],
+  ['stored', 'What is saved'],
+  ['install', 'Install and use offline'],
+  ['shortcuts', 'Keyboard shortcuts'],
+  ['open-source', 'Open source'],
+  ['version', 'Version'],
+] as const;
+const SHORTCUTS: [string, string][] = [
+  [shortcut('K'), 'Open the command palette from any page'],
+  ['/', 'Jump to search on the All tools page'],
+  ['Backspace', 'Back to All tools from a tool, when you are not typing'],
+  ['Alt Z', 'API Tester shortcut'],
+];
+
+// The section nearest the top of the screen is the active one
+function useActiveSection() {
+  const [active, setActive] = useState<string>(SECTIONS[0][0]);
+  useEffect(() => {
+    const inBand = new Set<string>();
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => (e.isIntersecting ? inBand.add(e.target.id) : inBand.delete(e.target.id)));
+        // Last section that has started inside the upper band wins, so short final sections can become active
+        const last = SECTIONS.filter(([id]) => inBand.has(id)).pop();
+        if (last) setActive(last[0]);
+      },
+      { rootMargin: '-10% 0px -50% 0px' },
+    );
+    SECTIONS.forEach(([id]) => {
+      const el = document.getElementById(id);
+      if (el) io.observe(el);
+    });
+    // Footer on screen means the end of the page, where the last short sections never reach the band
+    const footer = document.querySelector('footer');
+    const end = new IntersectionObserver(([e]) => e?.isIntersecting && setActive(SECTIONS[SECTIONS.length - 1]![0]));
+    if (footer) end.observe(footer);
+    return () => {
+      io.disconnect();
+      end.disconnect();
+    };
+  }, []);
+  return active;
+}
 
 function Section({ id, title, children }: { id: string; title: string; children: React.ReactNode }) {
   return (
-    <m.section variants={fadeUp} aria-labelledby={id} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--s-3)' }}>
-      <h2 id={id} style={{ margin: 0, fontSize: 'var(--t-xl)', fontWeight: 620 }}>
+    <m.section id={id} variants={fadeUp} aria-labelledby={`${id}-h`} className="about-section" style={{ display: 'flex', flexDirection: 'column', gap: 'var(--s-3)' }}>
+      <h2 id={`${id}-h`} style={{ margin: 0, fontSize: 'var(--t-xl)', fontWeight: 620 }}>
         {title}
       </h2>
       {children}
@@ -21,6 +72,8 @@ function Section({ id, title, children }: { id: string; title: string; children:
 
 export function About() {
   const toast = useToast();
+  const active = useActiveSection();
+  const requests = useThirdPartyCount();
   const [present, setPresent] = useState(() => STORED.filter(safeHas).map((s) => s.key));
 
   const clearAll = () => {
@@ -50,17 +103,40 @@ export function About() {
           Toolglass collects the small utilities people reach for every week, so you don't need an extension, an app, or a sign-up for each one.
         </p>
         <nav aria-label="On this page" className="about-toc">
-          <a href="#privacy">How your data stays here</a>
-          <a href="#stored">What is saved</a>
-          <a href="#open-source">Open source</a>
+          {SECTIONS.map(([id, label]) => (
+            <a key={id} href={`#${id}`} aria-current={active === id ? 'true' : undefined}>
+              {label}
+            </a>
+          ))}
         </nav>
         <Link to="/tools" className="cta" style={{ alignSelf: 'flex-start' }}>
           Browse the tools
         </Link>
+        <dl className="glance glass" aria-label="At a glance">
+          <div>
+            <dt>Tools</dt>
+            <dd className="num">{tools.length}</dd>
+          </div>
+          <div>
+            <dt>Requests to other servers</dt>
+            <dd className="num">
+              <span aria-hidden className="status-dot" style={{ '--dot': requests ? 'var(--status-warn)' : requests === 0 ? 'var(--status-success)' : 'var(--ink-mute)' } as React.CSSProperties} />
+              <span style={requests === null ? { opacity: 0.4 } : undefined}>{requests ?? 0}</span>
+            </dd>
+          </div>
+          <div>
+            <dt>Saved on this device</dt>
+            <dd className="num">{present.length} {present.length === 1 ? 'item' : 'items'}</dd>
+          </div>
+          <div>
+            <dt>Version</dt>
+            <dd className="num">{__APP_VERSION__}</dd>
+          </div>
+        </dl>
       </m.header>
 
       <div className="about-body">
-      <Section id="privacy" title="How your data stays on your device">
+      <Section id="privacy" title="How your data stays here">
         <p style={{ margin: 0, color: 'var(--ink-soft)' }}>
           Every tool runs in your browser with standard Web APIs. There is no Toolglass server that sees your text, files, or passwords, because there is no
           server at all: the site is static files.
@@ -77,22 +153,25 @@ export function About() {
         </div>
       </Section>
 
-      <Section id="stored" title="What is saved on this device">
+      <Section id="stored" title="What is saved">
         <p style={{ margin: 0, color: 'var(--ink-soft)' }}>Only these, in this browser's storage. Nothing is synced anywhere.</p>
-        <div className="glass" style={{ overflow: 'hidden' }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 'var(--t-sm)' }}>
-            <tbody>
-              {STORED.map((s) => (
-                <tr key={s.key} style={{ borderTop: '1px solid var(--border)' }}>
-                  <td style={{ padding: '10px 14px', color: 'var(--ink-soft)' }}>{s.what}</td>
-                  <td style={{ padding: '10px 14px', textAlign: 'right', whiteSpace: 'nowrap', color: present.includes(s.key) ? 'var(--ink)' : 'var(--ink-mute)' }}>
-                    {present.includes(s.key) ? 'Saved' : 'Nothing saved'}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+        {GROUPS.map((g) => (
+          <div key={g} className="glass" style={{ overflow: 'hidden' }}>
+            <h3 style={{ margin: 0, padding: '10px 14px', fontSize: 'var(--t-xs)', fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase', color: 'var(--ink-mute)' }}>{g}</h3>
+            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 'var(--t-sm)' }}>
+              <tbody>
+                {STORED.filter((s) => s.group === g).map((s) => (
+                  <tr key={s.key} style={{ borderTop: '1px solid var(--border)' }}>
+                    <td style={{ padding: '10px 14px', color: 'var(--ink-soft)' }}>{s.what}</td>
+                    <td style={{ padding: '10px 14px', textAlign: 'right', whiteSpace: 'nowrap', color: present.includes(s.key) ? 'var(--ink)' : 'var(--ink-mute)' }}>
+                      {present.includes(s.key) ? 'Saved' : 'Nothing saved'}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        ))}
         <div>
           <Button variant="soft" onClick={clearAll} disabled={present.length === 0}>
             <Trash2 size={16} /> Clear everything Toolglass saved
@@ -100,19 +179,57 @@ export function About() {
         </div>
       </Section>
 
+      <Section id="install" title="Install and use offline">
+        <p style={{ margin: 0, color: 'var(--ink-soft)' }}>
+          When your browser supports it, an Install button appears in the header. It adds Toolglass as an app with its own window. Either way, the whole site is cached
+          after your first visit, so every tool still opens with no connection.
+        </p>
+      </Section>
+
+      <Section id="shortcuts" title="Keyboard shortcuts">
+        <div className="glass" style={{ overflow: 'hidden' }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 'var(--t-sm)' }}>
+            <tbody>
+              {SHORTCUTS.map(([keys, what], i) => (
+                <tr key={keys} style={{ borderTop: i ? '1px solid var(--border)' : undefined }}>
+                  <td style={{ padding: '10px 14px', whiteSpace: 'nowrap' }}>
+                    <Kbd>{keys}</Kbd>
+                  </td>
+                  <td style={{ padding: '10px 14px', color: 'var(--ink-soft)' }}>{what}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </Section>
+
       <Section id="open-source" title="Open source">
         <p style={{ margin: 0, color: 'var(--ink-soft)' }}>
           The code is on{' '}
-          <a href="https://github.com/ajithakdev/toolglass" target="_blank" rel="noreferrer">
+          <a href={REPO} target="_blank" rel="noreferrer">
             GitHub
           </a>{' '}
           under the MIT license. Missing a tool you use?{' '}
-          <a href="https://github.com/ajithakdev/toolglass/issues/new?template=feature_request.yml&labels=enhancement,new%20tool" target="_blank" rel="noreferrer">
+          <a href={`${REPO}/issues/new/choose`} target="_blank" rel="noreferrer">
             Request it
           </a>
           , or{' '}
-          <a href="https://github.com/ajithakdev/toolglass/blob/main/.github/CONTRIBUTING.md" target="_blank" rel="noreferrer">
+          <a href={`${REPO}/blob/main/.github/CONTRIBUTING.md`} target="_blank" rel="noreferrer">
             add it yourself
+          </a>
+          .
+        </p>
+      </Section>
+
+      <Section id="version" title="Version">
+        <p style={{ margin: 0, color: 'var(--ink-soft)' }}>
+          You are running Toolglass <span className="num">{__APP_VERSION__}</span>. See{' '}
+          <a href={`${REPO}/releases`} target="_blank" rel="noreferrer">
+            what changed in each release
+          </a>{' '}
+          or read the{' '}
+          <a href={`${REPO}/blob/main/CHANGELOG.md`} target="_blank" rel="noreferrer">
+            changelog
           </a>
           .
         </p>

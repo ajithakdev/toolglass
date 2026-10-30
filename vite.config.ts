@@ -3,6 +3,7 @@ import react from '@vitejs/plugin-react';
 import { VitePWA } from 'vite-plugin-pwa';
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
+import pkg from './package.json' with { type: 'json' };
 import { allPages, applyMeta, sitemapXml } from './src/seo';
 
 // Writes one HTML file per page (so each tool has its own title and meta for
@@ -29,6 +30,7 @@ function seoPages(): Plugin {
 
 export default defineConfig({
   base: '/',
+  define: { __APP_VERSION__: JSON.stringify(pkg.version) },
   plugins: [
     react(),
     VitePWA({

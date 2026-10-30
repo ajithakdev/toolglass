@@ -10,7 +10,7 @@ import { useUrlState } from '../hooks/useUrlState';
 import { fadeUp, stagger } from '../lib/motion';
 import { searchTools } from '../lib/search';
 import { AUDIENCES, CATEGORIES, type Audience, type CategoryId } from '../tools/catalog';
-import { tools } from '../tools/registry';
+import { byTitle, tools } from '../tools/registry';
 
 const id = (v: string) => v;
 const ISSUE_URL = 'https://github.com/ajithakdev/toolglass/issues/new?template=feature_request.yml&labels=enhancement,new%20tool&title=';
@@ -89,6 +89,7 @@ export function ToolsHub() {
   const searching = query.trim().length > 0;
   const groups = categoryOptions
     .map((c) => ({ ...c, items: filtered.filter((t) => t.category === c.id) }))
+    .map((g) => (searching ? g : { ...g, items: byTitle(g.items) }))
     .filter((g) => g.items.length > 0);
 
   return (

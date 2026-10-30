@@ -8,6 +8,7 @@ All notable changes to Toolglass. The format follows [Keep a Changelog](https://
 - Tool sidebar on desktop: favorites, recent and every category one click away, and switching tools no longer blanks the page.
 
 ### Changed
+- Tool pages are reorganised: compact header, the tool next to the sidebar, related tools and the privacy note in a side column, flat sections instead of boxes inside boxes, and smaller inputs, buttons and results.
 - The home page hero is half the height, with your recent, favorite or popular tools right under it.
 - Header, content and footer share one 1440px width on every page, so nothing jumps when you move between pages.
 - Tighter, denser layout on desktop: smaller headings, cards and spacing.
@@ -15,6 +16,10 @@ All notable changes to Toolglass. The format follows [Keep a Changelog](https://
 - Calmer layout on big screens: the content column is 1200px wide instead of 1600px, and page headings and section gaps are smaller on desktop. Phone layouts are unchanged.
 - The "0 requests" status dot now pulses, so it reads as live. It stays still if your system asks for reduced motion.
 - The site now deploys once a week with each release (Sunday), not on every merge. Urgent fixes ship as a same-day patch release.
+
+### Fixed
+- The sidebar scrollbar no longer runs into the panel's rounded corners.
+- Tools are listed A to Z in each category.
 
 ### Security
 - The Markdown preview no longer loads remote images, so a tracking pixel in pasted Markdown can't tell anyone you opened it. Copy and Download still keep the image links.

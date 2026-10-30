@@ -80,21 +80,21 @@ index.html
 | `Shell.tsx` | `Shell`, `Kbd`. Header, content and footer all use `.container` (1440px). Sticky glass header (logo, Home/Tools nav with sliding indicator, search, install, theme switch), footer (privacy meter, usage-count opt-out, GitHub). |
 | `ToolRails.tsx` | `FavoritesRail` (drag to reorder) and `RecentRail`, shared by `ToolsHub` and `Home`. |
 | `ToolsLayout.tsx` | `ToolsLayout`. Layout route for `/tools` and `/tools/:slug`: renders `ToolRail` on >= 1024px, a `Suspense` (min-height 100vh fallback) around the `Outlet`, and idle-preloads favorites and recents. Router navigations are transitions, so the old page stays until the new chunk arrives. |
-| `ToolRail.tsx` | `ToolRail`. Desktop sidebar (240px, 56px collapsed, state in `toolglass_rail_collapsed`): filter via `searchTools`, Favorites, Recent, collapsible categories. Category click also scrolls to `#cat-<id>` on `/tools`. Hover/focus preloads a tool's chunk. Has a test. |
+| `ToolRail.tsx` | `ToolRail`. Desktop sidebar (240px, 56px collapsed; the scroll is on an inner `.rail-scroll` list inside the rounded panel; categories A to Z via `toolsInCategory`, Recent capped at 5; state in `toolglass_rail_collapsed`): filter via `searchTools`, Favorites, Recent, collapsible categories. Category click also scrolls to `#cat-<id>` on `/tools`. Hover/focus preloads a tool's chunk. Has a test. |
 | `Logo.tsx` | Two-pane glass mark; mirrors `public/favicon.svg`. |
 | `PrivacyMeter.tsx` | Live count of requests to other origins via `PerformanceObserver` (Resource Timing), with a pulsing `.status-dot`. |
-| `ToolLayout.tsx` (121) | Wraps every tool. Takes only `children`. Column is capped at 820px unless the tool's catalog entry has `wide: true`. Breadcrumb, Favorite and Share (copies `currentUrl()`), privacy note (API Tester gets its own wording), related tools. Backspace outside a text field navigates to `/tools`. |
+| `ToolLayout.tsx` | Wraps every tool. Takes only `children`. Compact header (breadcrumb, icon, title, Favorite and Share, description), the tool in one `.tool-body` surface, and a side `aside` (privacy card with the API Tester's own wording, then "More <category> tools" A to Z). Layout is the `.tool-page` grid in `index.css`: from 1280px a 860px main column plus a sticky 280px aside, or full width with the aside below for `wide: true` tools; under 1280px the aside sits under the tool. Nested `.glass` inside `.tool-body` renders flat. Backspace outside a text field navigates to `/tools`. |
 | `CommandPalette.tsx` (463) | Props `open`, `onClose`. Filters `tools` from registry. Arrow keys, Enter, Escape. |
 | `ErrorBoundary.tsx` (344) | Class component. Optional prop `toolTitle`. Has a test. |
-| `ui/Button.tsx` (92) | `variant`: primary, ghost, soft. `size`: sm, md, lg. `full`. |
-| `ui/Field.tsx` (327) | `Field` L4, `TextInput` L33, `TextArea` L53, `Select` L76, `Dropdown` L115, `Toggle` L236, `Slider` L300. |
-| `ui/Output.tsx` (64) | Props `value`, `multiline`, `placeholder`, `trailing`, `label`. Result box with copy. |
-| `ui/CopyButton.tsx` (55) | Props `value`, `label`, `size`, `disabled`. Copies, toasts, and calls `increment()` for the current slug. |
+| `ui/Button.tsx` | `variant`: primary, ghost, soft. `size`: sm, md (34px), lg. `full`. Class `btn` raises the height to 40px under 640px. |
+| `ui/Field.tsx` | Inputs, selects and textareas use class `ctl` (36px desktop, 40px under 640px). `Field` L4, `TextInput` L33, `TextArea` L53, `Select` L76, `Dropdown` L115, `Toggle` L236, `Slider` L300. |
+| `ui/Output.tsx` | Props `value`, `multiline`, `placeholder`, `trailing`, `label`. Input-style result box (`.output-box`, monospace) with a compact icon copy button. |
+| `ui/CopyButton.tsx` | Props `value`, `label`, `size`, `disabled`, `compact` (quiet icon button, `aria-disabled` when empty). Copies, toasts, and calls `increment()` for the current slug. |
 | `ui/GlassCard.tsx` (21) | `m.div` with `.glass` or `.glass-strong` (`strong` prop), `padding`. |
 | `ui/Toast.tsx` (105) | `ToastProvider`, `useToast()` returns `{ push(message, kind?, id?) }`. Kinds: success, error, info. Passing an existing id updates that toast. |
 | `ui/ToolCard.tsx` | Card for one `ToolMeta`: icon, title, short, "Instead of …" (`replaces`), usage count, favorite star (stretched link + separate button). `compact` variant. |
 | `ui/ThemeToggle.tsx` | Auto / Light / Dark segmented switch. Circle reveal from the clicked button via View Transitions (skipped for reduced motion). |
-| `ui/Segmented.tsx` | Generic radio-group pill with sliding indicator and arrow-key navigation. |
+| `ui/Segmented.tsx` | Generic radio-group pill (32px, 28px for `sm`) with sliding indicator and arrow-key navigation. |
 
 ### src/hooks
 

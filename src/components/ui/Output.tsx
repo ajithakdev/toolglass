@@ -18,13 +18,12 @@ export function Output({
 }) {
   return (
     <div
-      className="glass-strong"
+      className="output-box"
       style={{
-        padding: 16,
         display: 'flex',
-        flexDirection: multiline ? 'column' : 'row',
-        gap: 12,
-        alignItems: multiline ? 'stretch' : 'center',
+        flexDirection: 'row',
+        gap: 8,
+        alignItems: multiline ? 'flex-start' : 'center',
       }}
     >
       {/* aria-live so screen readers announce generated results */}
@@ -42,22 +41,22 @@ export function Output({
           className="mono"
           style={{
             flex: 1,
-            fontSize: 14,
+            fontSize: 'var(--t-sm)',
             color: value ? 'var(--ink)' : 'var(--ink-mute)',
             wordBreak: 'break-all',
             whiteSpace: multiline ? 'pre-wrap' : 'nowrap',
             overflow: multiline ? 'auto' : 'hidden',
             textOverflow: 'ellipsis',
             maxHeight: multiline ? 360 : undefined,
-            padding: multiline ? 4 : 0,
+            minWidth: 0,
           }}
         >
           {value || placeholder}
         </m.div>
       </output>
-      <div style={{ display: 'flex', gap: 8, alignSelf: multiline ? 'flex-end' : 'auto' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexShrink: 0 }}>
         {trailing}
-        <CopyButton value={value} />
+        <CopyButton value={value} compact />
       </div>
     </div>
   );

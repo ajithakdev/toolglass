@@ -221,6 +221,11 @@ const visuals: Record<string, Pick<ToolMeta, 'icon' | 'Component' | 'preload'>> 
 
 export const tools: ToolMeta[] = catalog.map((info) => ({ ...info, ...visuals[info.slug]! }));
 
+/** Sorts tools A to Z by title. The one place category lists get their order. */
+export const byTitle = <T extends { title: string }>(list: T[]): T[] => [...list].sort((a, b) => a.title.localeCompare(b.title));
+
+export const toolsInCategory = (category: string): ToolMeta[] => byTitle(tools.filter((t) => t.category === category));
+
 export const toolBySlug = (slug: string): ToolMeta | undefined =>
   tools.find((t) => t.slug === slug);
 

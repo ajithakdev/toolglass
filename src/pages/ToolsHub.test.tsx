@@ -56,6 +56,6 @@ describe('ToolsHub', () => {
   it('filters by category', async () => {
     render('/tools?cat=time');
     await act(() => new Promise((r) => setTimeout(r, 50)));
-    expect(titles()).toEqual(['/tools/timestamp', '/tools/world-clock', '/tools/timer']);
+    expect(titles()).toEqual(['/tools/timer', '/tools/timestamp', '/tools/world-clock']);
   });
 });

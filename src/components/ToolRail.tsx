@@ -5,7 +5,7 @@ import { useFavorites } from '../hooks/useFavorites';
 import { useRecentTools } from '../hooks/useRecentTools';
 import { searchTools } from '../lib/search';
 import { CATEGORIES } from '../tools/catalog';
-import { toolBySlug, tools, type ToolMeta } from '../tools/registry';
+import { toolBySlug, tools, toolsInCategory, type ToolMeta } from '../tools/registry';
 
 const KEY = 'toolglass_rail_collapsed';
 const readCollapsed = () => {
@@ -86,24 +86,21 @@ export function ToolRail() {
   return (
     <nav
       aria-label="Tools"
-      className="glass rail-scroll"
+      className="glass"
       style={{
         position: 'sticky',
         top: 'var(--header-h)',
         alignSelf: 'flex-start',
         flexShrink: 0,
         width: collapsed ? 56 : 240,
-        height: 'calc(100dvh - var(--header-h) - 12px)',
-        overflowY: 'auto',
-        overflowX: 'hidden',
-        padding: 6,
+        height: 'calc(100dvh - var(--header-h) - var(--s-4))',
+        overflow: 'hidden',
         borderRadius: 'var(--radius-lg)',
         display: 'flex',
         flexDirection: 'column',
-        gap: 4,
       }}
     >
-      <div style={{ display: 'flex', alignItems: 'center', gap: 4, justifyContent: collapsed ? 'center' : 'space-between' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 4, justifyContent: collapsed ? 'center' : 'space-between', padding: 8, flexShrink: 0 }}>
         {!collapsed && (
           <label className="focus-pill" style={{ flex: 1, minWidth: 0, display: 'flex', alignItems: 'center', gap: 6, height: 32, padding: '0 8px', borderRadius: 'var(--radius-sm)', background: 'var(--surface-1)' }}>
             <Search size={14} color="var(--ink-mute)" aria-hidden />
@@ -131,6 +128,7 @@ export function ToolRail() {
         </button>
       </div>
 
+      <div className="rail-scroll" style={{ flex: 1, minHeight: 0, overflowY: 'auto', overflowX: 'hidden', padding: '0 6px 8px', display: 'flex', flexDirection: 'column', gap: 4 }}>
       {searching ? (
         (() => {
           const hits = searchTools(tools, query);
@@ -139,9 +137,9 @@ export function ToolRail() {
       ) : (
         <>
           {section('Favorites', pick(favorites))}
-          {section('Recent', pick(recents))}
+          {section('Recent', pick(recents).slice(0, 5))}
           {CATEGORIES.map((c) => {
-            const items = tools.filter((t) => t.category === c.id);
+            const items = toolsInCategory(c.id);
             if (items.length === 0) return null;
             const open = collapsed || !closed.has(c.id);
             return (
@@ -166,6 +164,7 @@ export function ToolRail() {
           })}
         </>
       )}
+      </div>
     </nav>
   );
 }

@@ -1,6 +1,6 @@
 import { interpolate, m, useScroll, useTransform, type MotionValue } from 'framer-motion';
-import { ArrowRight, Braces, Calculator, Clock, Globe2, Heading, Image, KeyRound, NotebookPen, Palette, Pipette, QrCode, Ruler, ShieldCheck, Type, Video, FileText, type LucideIcon } from 'lucide-react';
-import { lazy, Suspense, useCallback, useRef, useState, type ReactNode } from 'react';
+import { ArrowRight, Braces, Calculator, Clock, Image, Palette, QrCode, ShieldCheck, Type, FileText, type LucideIcon } from 'lucide-react';
+import { lazy, Suspense, useCallback, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { HeroSearch } from '../components/home/HeroSearch';
 import { FavoritesRail, RecentRail } from '../components/ToolRails';
@@ -94,12 +94,12 @@ function QuickAccess() {
   // Decided once on mount: starring a card in the Popular grid must not swap the section under the pointer
   const [mine] = useState(() => favorites.length + recents.length > 0);
   return (
-    <section className="container" aria-label="Quick access" style={{ display: 'flex', flexDirection: 'column', gap: 'var(--s-4)', paddingBottom: 'var(--s-4)' }}>
+    <section className="container home-section" aria-label="Quick access">
       {mine ? (
-        <>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--s-5)' }}>
           <FavoritesRail />
           <RecentRail />
-        </>
+        </div>
       ) : (
         <>
           <h2 className="section-label">Popular</h2>
@@ -149,9 +149,14 @@ function Categories() {
               <ul className="cat-links">
                 {c.items.slice(0, 3).map((t) => (
                   <li key={t.slug}>
-                    <Link to={`/tools/${t.slug}`} className="link">{t.title}</Link>
+                    <Link to={`/tools/${t.slug}`} className="pill">{t.title}</Link>
                   </li>
                 ))}
+                {c.items.length > 3 && (
+                  <li>
+                    <Link to={`/tools#cat-${c.id}`} className="pill">+{c.items.length - 3} more</Link>
+                  </li>
+                )}
               </ul>
             </div>
           );
@@ -163,36 +168,41 @@ function Categories() {
 
 /* ── Instead of ──────────────────────────────────────────────── */
 
-const INSTEAD: { icon: ReactNode; what: string; catch: string; slug: string }[] = [
-  { icon: <Image size={18} />, what: 'An image compressor', catch: 'Uploads your photo to its server', slug: 'image-compress' },
-  { icon: <Pipette size={18} />, what: 'A color picker extension', catch: 'Can read every site you visit', slug: 'color' },
-  { icon: <Braces size={18} />, what: 'A JSON formatter', catch: 'Wants you to sign in first', slug: 'json' },
-  { icon: <Globe2 size={18} />, what: 'A time zone converter', catch: 'An ad between every step', slug: 'world-clock' },
-  { icon: <Type size={18} />, what: 'A word counter', catch: 'Sends your text to its server', slug: 'word-counter' },
-  { icon: <Ruler size={18} />, what: 'A unit converter', catch: 'Full-screen ads on mobile', slug: 'unit-converter' },
-  { icon: <QrCode size={18} />, what: 'A QR code maker', catch: 'Codes stop working without a plan', slug: 'qr' },
-  { icon: <Video size={18} />, what: 'A screen recorder extension', catch: 'Watermarks unless you upgrade', slug: 'screen-recorder' },
-  { icon: <KeyRound size={18} />, what: 'A password generator', catch: 'You hope it is not logging them', slug: 'password' },
-  { icon: <NotebookPen size={18} />, what: 'An online notepad', catch: 'Needs an account to save', slug: 'notepad' },
-  { icon: <Heading size={18} />, what: 'A Markdown editor', catch: 'One more app to install', slug: 'markdown' },
+const INSTEAD: { what: string; catch: string; slug: string }[] = [
+  { what: 'An image compressor', catch: 'Uploads your photo to its server', slug: 'image-compress' },
+  { what: 'A color picker extension', catch: 'Can read every site you visit', slug: 'color' },
+  { what: 'A JSON formatter', catch: 'Wants you to sign in first', slug: 'json' },
+  { what: 'A time zone converter', catch: 'An ad between every step', slug: 'world-clock' },
+  { what: 'A word counter', catch: 'Sends your text to its server', slug: 'word-counter' },
+  { what: 'A unit converter', catch: 'Full-screen ads on mobile', slug: 'unit-converter' },
+  { what: 'A QR code maker', catch: 'Codes stop working without a plan', slug: 'qr' },
+  { what: 'A screen recorder extension', catch: 'Watermarks unless you upgrade', slug: 'screen-recorder' },
+  { what: 'A password generator', catch: 'You hope it is not logging them', slug: 'password' },
+  { what: 'An online notepad', catch: 'Needs an account to save', slug: 'notepad' },
+  { what: 'A Markdown editor', catch: 'One more app to install', slug: 'markdown' },
 ].filter((c) => toolBySlug(c.slug));
 
 function InsteadOf() {
   return (
     <section className="container home-section" aria-labelledby="instead-h">
-      <m.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: '-10%' }} transition={{ duration: 0.3, ease: EASE_OUT }} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--s-5)' }}>
-        <h2 id="instead-h" className="act-title" style={{ textAlign: 'left', fontSize: 'var(--t-2xl)', maxWidth: '24ch' }}>
-          Small jobs, scattered across the web. Now in one place.
-        </h2>
-        <ul className="instead-grid">
+      <m.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true, margin: '-10%' }} transition={{ duration: 0.3, ease: EASE_OUT }} className="board">
+        <div className="board-center">
+          <h2 id="instead-h" className="act-title" style={{ fontSize: 'var(--t-2xl)', maxWidth: '18ch' }}>
+            Small jobs, scattered across the web. Now in one place.
+          </h2>
+          <p className="act-sub" style={{ margin: 0, fontSize: 'var(--t-md)' }}>These are the tools they replace.</p>
+          <Link to="/tools" className="cta">
+            Open the tools <ArrowRight size={18} />
+          </Link>
+        </div>
+        <ul className="board-tags">
           {INSTEAD.map((c) => (
             <li key={c.slug}>
-              <Link to={`/tools/${c.slug}`} className="clutter-card glass">
-                <span className="clutter-icon">{c.icon}</span>
-                <span style={{ display: 'flex', flexDirection: 'column', gap: 2, minWidth: 0 }}>
-                  <span style={{ fontWeight: 600, fontSize: 14 }}>{c.what}</span>
-                  <span style={{ fontSize: 'var(--t-xs)', color: 'var(--status-error)' }}>{c.catch}</span>
-                  <span className="instead-to">{toolBySlug(c.slug)!.title}<ArrowRight size={14} /></span>
+              <Link to={`/tools/${c.slug}`} className="tag">
+                <span className="tag-text">
+                  <span className="tag-what">{c.what}</span>
+                  <span className="tag-catch">{c.catch}</span>
+                  <span className="sr-only">Use {toolBySlug(c.slug)!.title} instead</span>
                 </span>
               </Link>
             </li>
@@ -207,28 +217,38 @@ function InsteadOf() {
 
 function Proof() {
   const count = useThirdPartyCount();
+  // null: not measured yet or unsupported. Show a dimmed 0, never an invented figure.
+  const dot = count === null ? 'var(--ink-mute)' : count === 0 ? 'var(--status-success)' : 'var(--status-warn)';
   return (
-    <section className="container proof" aria-labelledby="proof-h">
-      <m.div initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: '-20%' }} transition={{ duration: 0.3, ease: EASE_OUT }} className="proof-number">
-        <span className="num" aria-hidden>{count ?? '?'}</span>
-      </m.div>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--s-4)' }}>
-        <h2 id="proof-h" className="act-title" style={{ textAlign: 'left' }}>
-          {count === null ? 'Your browser can\'t report requests to other servers.' : `${count === 1 ? 'Request' : 'Requests'} this page has sent to other servers.`}
-        </h2>
-        <p className="act-sub" style={{ textAlign: 'left', margin: 0 }}>
-          Counted live by your own browser, not claimed by us. Open your developer tools and check.
-        </p>
-        <ul className="proof-list">
-          <li>Works offline after your first visit.</li>
-          <li>No account, no tracking, no analytics.</li>
-          <li>
-            Open source under the MIT license.{' '}
-            <a className="link" href="https://github.com/ajithakdev/toolglass" target="_blank" rel="noreferrer">
-              Read the code
-            </a>
-          </li>
-        </ul>
+    <section className="container home-section" aria-labelledby="proof-h">
+      <div className="proof glass">
+        <div className="proof-stat">
+          <div className={count === null ? 'proof-number proof-number-dim' : 'proof-number'}>
+            <span className="num" aria-hidden>{count ?? '-'}</span>
+          </div>
+          <span className="proof-label" role="status">
+            <span aria-hidden className="status-dot" style={{ '--dot': dot } as React.CSSProperties} />
+            <span>requests to other servers from this tab</span>
+          </span>
+        </div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--s-3)' }}>
+          <h2 id="proof-h" className="act-title" style={{ textAlign: 'left', fontSize: 'var(--t-2xl)' }}>
+            {count === null ? 'Your browser can\'t report requests to other servers.' : `${count === 1 ? 'Request' : 'Requests'} this page has sent to other servers.`}
+          </h2>
+          <p className="act-sub" style={{ textAlign: 'left', margin: 0 }}>
+            Counted live by your own browser, not claimed by us. Open your developer tools and check.
+          </p>
+          <ul className="proof-list">
+            <li>Works offline after your first visit.</li>
+            <li>No account, no tracking, no analytics.</li>
+            <li>
+              Open source under the MIT license.{' '}
+              <a className="link" href="https://github.com/ajithakdev/toolglass" target="_blank" rel="noreferrer">
+                Read the code
+              </a>
+            </li>
+          </ul>
+        </div>
       </div>
     </section>
   );
@@ -238,7 +258,7 @@ function Proof() {
 
 function Ending() {
   return (
-    <section className="container" style={{ paddingBottom: 'var(--section)' }}>
+    <section className="container home-section" style={{ paddingBottom: 'var(--home-gap)' }}>
       <m.div
         initial={{ opacity: 0, y: 24 }}
         whileInView={{ opacity: 1, y: 0 }}

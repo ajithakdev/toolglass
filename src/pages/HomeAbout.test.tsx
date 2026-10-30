@@ -40,7 +40,21 @@ describe('Home', () => {
     expected.forEach((k, i) => {
       expect(tiles[i]!.textContent).toContain(`${toolsInCategory(k.id).length} tool`);
       expect(tiles[i]!.querySelector('a')!.getAttribute('href')).toBe(`/tools#cat-${k.id}`);
+      const pills = [...tiles[i]!.querySelectorAll('.pill')];
+      const n = toolsInCategory(k.id).length;
+      expect(pills).toHaveLength(Math.min(n, 3) + (n > 3 ? 1 : 0));
+      if (n > 3) {
+        expect(pills[3]!.textContent).toBe(`+${n - 3} more`);
+        expect(pills[3]!.getAttribute('href')).toBe(`/tools#cat-${k.id}`);
+      }
     });
+  });
+
+  it('renders the proof number immediately and the sticker board links', () => {
+    const c = render(<Home />);
+    expect(c.querySelector('.proof-number .num')!.textContent).toMatch(/^\d+$/);
+    expect(c.querySelectorAll('.board-tags a.tag').length).toBeGreaterThan(0);
+    expect(c.querySelector('.board-center a.cta')!.getAttribute('href')).toBe('/tools');
   });
 });
 
@@ -49,6 +63,8 @@ describe('About', () => {
     const c = render(<About />);
     ['privacy', 'stored', 'install', 'shortcuts', 'open-source', 'version'].forEach((id) => expect(c.querySelector(`section#${id}`)).not.toBeNull());
     expect(c.querySelectorAll('#stored table tr')).toHaveLength(STORED.length);
+    const rows = [...c.querySelectorAll('.glance > div dt')].map((d) => d.textContent);
+    expect(rows).toEqual(['Tools', 'Requests to other servers', 'Saved on this device', 'Version']);
     expect([...c.querySelectorAll('#stored h3')].map((h) => h.textContent)).toEqual(['Preferences', 'Tool data', 'API Tester']);
   });
 });

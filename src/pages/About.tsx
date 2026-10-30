@@ -6,9 +6,11 @@ import { PrivacyMeter } from '../components/PrivacyMeter';
 import { Kbd } from '../components/Shell';
 import { Button } from '../components/ui/Button';
 import { useToast } from '../components/ui/Toast';
+import { useThirdPartyCount } from '../hooks/useThirdPartyCount';
 import { fadeUp, stagger } from '../lib/motion';
 import { shortcut } from '../lib/platform';
 import { STORED, type StoredGroup } from '../lib/stored';
+import { tools } from '../tools/registry';
 
 const REPO = 'https://github.com/ajithakdev/toolglass';
 const GROUPS: StoredGroup[] = ['Preferences', 'Tool data', 'API Tester'];
@@ -71,6 +73,7 @@ function Section({ id, title, children }: { id: string; title: string; children:
 export function About() {
   const toast = useToast();
   const active = useActiveSection();
+  const requests = useThirdPartyCount();
   const [present, setPresent] = useState(() => STORED.filter(safeHas).map((s) => s.key));
 
   const clearAll = () => {
@@ -109,6 +112,27 @@ export function About() {
         <Link to="/tools" className="cta" style={{ alignSelf: 'flex-start' }}>
           Browse the tools
         </Link>
+        <dl className="glance glass" aria-label="At a glance">
+          <div>
+            <dt>Tools</dt>
+            <dd className="num">{tools.length}</dd>
+          </div>
+          <div>
+            <dt>Requests to other servers</dt>
+            <dd className="num">
+              <span aria-hidden className="status-dot" style={{ '--dot': requests ? 'var(--status-warn)' : requests === 0 ? 'var(--status-success)' : 'var(--ink-mute)' } as React.CSSProperties} />
+              <span style={requests === null ? { opacity: 0.4 } : undefined}>{requests ?? 0}</span>
+            </dd>
+          </div>
+          <div>
+            <dt>Saved on this device</dt>
+            <dd className="num">{present.length} {present.length === 1 ? 'item' : 'items'}</dd>
+          </div>
+          <div>
+            <dt>Version</dt>
+            <dd className="num">{__APP_VERSION__}</dd>
+          </div>
+        </dl>
       </m.header>
 
       <div className="about-body">

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { describeCron, getNextCronRuns, isoWithOffset, rfc2822 } from './timestamp';
+import { applyOffset, describeCron, getDurationDescription, getNextCronRuns, isoWithOffset, parseSmartDate, rfc2822 } from './timestamp';
 
 const d = new Date('2025-01-01T00:00:00.000Z');
 
@@ -55,5 +55,57 @@ describe('cron next runs', () => {
       expect(describeCron(bad), bad).toBe('Invalid cron expression');
     }
     expect(describeCron('*/5 * * * *')).toMatch(/^Runs every 5 minutes/);
+  });
+});
+
+describe('parseSmartDate', () => {
+  it('treats a short number as unix seconds', () => {
+    expect(parseSmartDate('1700000000')?.getTime()).toBe(1700000000000);
+  });
+
+  it('treats a 13-digit number as unix milliseconds', () => {
+    expect(parseSmartDate('1700000000000')?.getTime()).toBe(1700000000000);
+  });
+
+  it('returns null for empty or unparseable input', () => {
+    expect(parseSmartDate('')).toBeNull();
+    expect(parseSmartDate('   ')).toBeNull();
+    expect(parseSmartDate('not-a-date')).toBeNull();
+  });
+});
+
+describe('applyOffset', () => {
+  const base = new Date(2025, 0, 15, 12, 0, 0);
+
+  it('adds years and months', () => {
+    const next = applyOffset(base, '+1y2mo');
+    expect(next.getFullYear()).toBe(2026);
+    expect(next.getMonth()).toBe(2);
+    expect(next.getDate()).toBe(15);
+  });
+
+  it('subtracts days', () => {
+    const next = applyOffset(base, '-3d');
+    expect(next.getFullYear()).toBe(2025);
+    expect(next.getMonth()).toBe(0);
+    expect(next.getDate()).toBe(12);
+  });
+
+  it('returns the same date when the offset does not match', () => {
+    expect(applyOffset(base, 'nope')).toBe(base);
+  });
+});
+
+describe('getDurationDescription', () => {
+  it('breaks a duration into days, hours, minutes, and seconds', () => {
+    expect(getDurationDescription(90_061_000)).toBe('1d 1h 1m 1s');
+  });
+
+  it('marks a negative duration as past', () => {
+    expect(getDurationDescription(-90_061_000)).toBe('1d 1h 1m 1s ago');
+  });
+
+  it('uses 0s for an empty duration', () => {
+    expect(getDurationDescription(0)).toBe('0s');
   });
 });

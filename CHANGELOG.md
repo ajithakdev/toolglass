@@ -9,18 +9,17 @@ All notable changes to Toolglass. The format follows [Keep a Changelog](https://
 
 ### Changed
 - Tighter, denser layout on desktop: smaller headings, cards and spacing.
+- Tool URLs stay clean while you work. Settings go into a link only when you press Share, so text you type no longer lands in browser history.
 - Calmer layout on big screens: the content column is 1200px wide instead of 1600px, and page headings and section gaps are smaller on desktop. Phone layouts are unchanged.
 - The "0 requests" status dot now pulses, so it reads as live. It stays still if your system asks for reduced motion.
 - The site now deploys once a week with each release (Sunday), not on every merge. Urgent fixes ship as a same-day patch release.
-
-### Fixed
-- The theme switch is no longer cut off the right edge of the header on phones.
 
 ### Security
 - The Markdown preview no longer loads remote images, so a tracking pixel in pasted Markdown can't tell anyone you opened it. Copy and Download still keep the image links.
 - The site now sends a Content-Security-Policy that blocks remote images, media and scripts on every page. The API Tester can still call any URL (#142).
 
 ### Fixed
+- The theme switch is no longer cut off the right edge of the header on phones.
 - Picking a short tool category no longer nudges the whole page sideways when the scrollbar disappears.
 - Coming back to the home page no longer flashes the flat logo before the 3D glass appears.
 - A flat sheet behind the white glass tile no longer peeks out at its edge.

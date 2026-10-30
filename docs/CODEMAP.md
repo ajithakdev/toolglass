@@ -103,7 +103,7 @@ index.html
 | `useTheme.ts` | `useTheme()` returns `{ mode, theme, setMode }`; `setThemeMode(mode)` | Module-level store (`useSyncExternalStore`). Auto is not stored and follows the OS live. Syncs across tabs. Has a test. |
 | `useRecentTools.ts` (30) | returns `{ recents, addRecent }` | Keeps last 3 slugs. |
 | `useToolStats.ts` (74) | `useToolStats(slug?)` returns `{ count, allStats, increment, enabled, toggleTelemetry }` | When disabled, counts are hidden and `increment` does nothing; stored counts are kept. Syncs across components with a `toolglass-telemetry` window event. |
-| `useUrlState.ts` (99) | `useUrlState(key, default, parse, stringify)` returns `[value, setValue]`; `intParam(min, max, fallback)`; `currentUrl()` (page URL with pending writes applied, for Share) | Local state updates at once; the URL write is debounced 200 ms with `replace: true`. Re-syncs on external URL changes. Use `intParam` as `parse` for numeric params so crafted links are clamped. Has a test. |
+| `useUrlState.ts` (~100) | `useUrlState(key, default, parse, stringify)` returns `[value, setValue]`; `intParam(min, max, fallback)`; `currentUrl()` (page URL plus every non-default value of mounted hooks, for Share) | Reads its param once on mount, then strips it from the address bar (one batched `replace` navigation). The URL is never written while editing; values live in an in-memory registry (no storage) that `currentUrl()` reads. A param arriving later (pasted link) is adopted and cleaned again. Use `intParam` as `parse` for numeric params so crafted links are clamped. Has a test. |
 
 ### src/tools
 

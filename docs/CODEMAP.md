@@ -130,6 +130,7 @@ Catalog: `catalog.ts` exports `CategoryId`, `Audience`, `CATEGORIES`, `AUDIENCES
 | `chmod` | `chmod/ChmodTool.tsx` | `chmod.ts` | yes | URL state: `v` (octal). Shell-escapes filenames in the copied command. From PR #93. |
 | `case-converter` | `case-converter/CaseConverterTool.tsx` | `caseConverter.ts` | yes | URL state: `t`. Unicode-aware word splitting. From PR #94. |
 | `word-counter` | `word-counter/WordCounterTool.tsx` | `wordCount.ts`: `textStats` (Intl.Segmenter) | yes | |
+| `user-agent` | `user-agent/UserAgentTool.tsx` | `user-agent.ts`: `parseUserAgent` | yes | Client Hints render only when `navigator.userAgentData` exists. |
 | `text-diff` | `text-diff/TextDiffTool.tsx` | `diff.ts`: `diffLines` (LCS, capped at `MAX_CELLS`) | yes | Unified view. |
 | `notepad` | `notepad/NotepadTool.tsx` | reuses `textStats` | no | Autosaves to `toolglass_notepad`. |
 | `unit-converter` | `unit-converter/UnitConverterTool.tsx` | `units.ts`: `UNITS`, `convert`, `formatNumber` | yes | URL state: `cat`, `from`, `to`, `v`. |

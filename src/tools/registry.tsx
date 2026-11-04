@@ -41,6 +41,7 @@ import {
   Network,
   FileType,
   ShieldCheck,
+  MonitorSmartphone,
 } from 'lucide-react';
 
 export interface ToolMeta extends ToolInfo {
@@ -208,6 +209,10 @@ const visuals: Record<string, Pick<ToolMeta, 'icon' | 'Component'>> = {
   'json-to-zod': {
     icon: <ShieldCheck size={22} strokeWidth={1.5} color="var(--ink)" />,
     Component: lazy(() => import('./json-to-zod/JsonToZodTool')),
+  },
+  'user-agent': {
+    icon: <MonitorSmartphone size={22} strokeWidth={1.5} color="var(--ink)" />,
+    Component: lazy(() => import('./user-agent/UserAgentTool')),
   },
 };
 

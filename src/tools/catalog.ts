@@ -441,4 +441,14 @@ export const catalog: ToolInfo[] = [
     audience: ['developers'],
     keywords: ['zod', 'valibot', 'json', 'schema', 'typescript', 'validation', 'generate'],
   },
+  {
+    slug: 'user-agent',
+    title: 'User-Agent Parser',
+    short: 'Browser, OS, and device from a UA',
+    description: 'Paste a user-agent string to see the browser, version, engine, operating system, device, and whether it looks like a bot. Chromium also shows Client Hints.',
+    category: 'developers',
+    audience: ['developers', 'everyone'],
+    keywords: ['user agent', 'user-agent', 'browser', 'os', 'device', 'bot', 'client hints'],
+    replaces: 'whatismybrowser.com',
+  },
 ];

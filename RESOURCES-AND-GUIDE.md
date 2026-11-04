@@ -20,6 +20,7 @@ Every link for Toolglass, what it is for, how to contribute, and how to run and 
 | https://toolglass.ajithakdev.com/tools | Tools directory with category and audience filters |
 | https://toolglass.ajithakdev.com/about | Privacy model, local storage breakdown, and project info |
 | https://toolglass.ajithakdev.com/sitemap.xml | XML sitemap generated at build time |
+| https://ko-fi.com/ajithakdev | Tips and support |
 
 ### Behind the scenes
 

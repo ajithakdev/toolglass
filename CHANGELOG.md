@@ -4,6 +4,9 @@ All notable changes to Toolglass. The format follows [Keep a Changelog](https://
 
 ## [Unreleased]
 
+### Added
+- A "support it on Ko-fi" link in the Open source section of the About page. It's a plain link; no Ko-fi script loads.
+
 ### Changed
 - Calmer layout on big screens: the content column is 1200px wide instead of 1600px, and page headings and section gaps are smaller on desktop. Phone layouts are unchanged.
 - The "0 requests" status dot now pulses, so it reads as live. It stays still if your system asks for reduced motion.

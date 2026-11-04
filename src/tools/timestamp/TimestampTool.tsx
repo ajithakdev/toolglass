@@ -8,7 +8,16 @@ import { useToast } from '../../components/ui/Toast';
 import { useUrlState } from '../../hooks/useUrlState';
 import { useClipboard } from '../../hooks/useClipboard';
 import { useToolStats } from '../../hooks/useToolStats';
-import { describeCron, getNextCronRuns, isoWithOffset, rfc2822 } from './timestamp';
+import {
+  applyOffset,
+  describeCron,
+  getDurationDescription,
+  getNextCronRuns,
+  isoWithOffset,
+  OFFSET_REGEX,
+  parseSmartDate,
+  rfc2822,
+} from './timestamp';
 
 // ── Timezone Lists ──
 const DEFAULT_TZS = ['UTC', 'America/New_York', 'Asia/Kolkata', 'Europe/London'];
@@ -55,17 +64,6 @@ function getRelativeTime(d: Date): string {
   return diffDays > 0 ? `in ${diffYears}y` : `${diffYears}y ago`;
 }
 
-function parseSmartDate(input: string): Date | null {
-  const clean = input.trim();
-  if (!clean) return null;
-  if (/^-?\d+$/.test(clean)) {
-    const num = Number(clean);
-    return Math.abs(num) < 1e11 ? new Date(num * 1000) : new Date(num);
-  }
-  const d = new Date(clean);
-  return Number.isNaN(d.getTime()) ? null : d;
-}
-
 function formatLocal(date: Date, timeZone: string, type: 'all' | 'date' | 'time' | 'offset' | 'iso'): string {
   try {
     if (type === 'iso') return isoWithOffset(date, timeZone);
@@ -100,55 +98,6 @@ function formatLocal(date: Date, timeZone: string, type: 'all' | 'date' | 'time'
     return 'Invalid TZ';
   }
   return '';
-}
-
-// ── Diff Duration helper ──
-function getDurationDescription(ms: number): string {
-  const isPast = ms < 0;
-  const absMs = Math.abs(ms);
-  const secs = Math.floor(absMs / 1000);
-  const mins = Math.floor(secs / 60);
-  const hours = Math.floor(mins / 60);
-  const days = Math.floor(hours / 24);
-
-  const remHours = hours % 24;
-  const remMins = mins % 60;
-  const remSecs = secs % 60;
-
-  const parts = [];
-  if (days > 0) parts.push(`${days}d`);
-  if (remHours > 0) parts.push(`${remHours}h`);
-  if (remMins > 0) parts.push(`${remMins}m`);
-  if (remSecs > 0) parts.push(`${remSecs}s`);
-
-  if (parts.length === 0) return '0s';
-  return parts.join(' ') + (isPast ? ' ago' : '');
-}
-
-// ── Offset Parser ──
-const OFFSET_REGEX = /^([+-])?\s*(?:(\d+)\s*y)?\s*(?:(\d+)\s*mo)?\s*(?:(\d+)\s*d)?\s*(?:(\d+)\s*h)?\s*(?:(\d+)\s*m)?\s*(?:(\d+)\s*s)?$/i;
-
-function applyOffset(base: Date, offsetStr: string): Date {
-  const clean = offsetStr.trim();
-  const match = clean.match(OFFSET_REGEX);
-  if (!match) return base;
-
-  const sign = match[1] === '-' ? -1 : 1;
-  const y = (Number(match[2]) || 0) * sign;
-  const mo = (Number(match[3]) || 0) * sign;
-  const d = (Number(match[4]) || 0) * sign;
-  const h = (Number(match[5]) || 0) * sign;
-  const m = (Number(match[6]) || 0) * sign;
-  const s = (Number(match[7]) || 0) * sign;
-
-  const res = new Date(base);
-  if (y) res.setFullYear(res.getFullYear() + y);
-  if (mo) res.setMonth(res.getMonth() + mo);
-  if (d) res.setDate(res.getDate() + d);
-  if (h) res.setHours(res.getHours() + h);
-  if (m) res.setMinutes(res.getMinutes() + m);
-  if (s) res.setSeconds(res.getSeconds() + s);
-  return res;
 }
 
 export default function TimestampTool() {

@@ -106,3 +106,62 @@ export function describeCron(cron: string): string {
   };
   return `Runs ${describeField(minPat, 'minute')}, ${describeField(hourPat, 'hour')}, on day ${describeField(domPat, 'of month')}, in ${describeField(monthPat, 'month')}, on ${describeField(dowPat, 'day of week')}.`;
 }
+
+/** Unix seconds when the number is small, milliseconds when it is 13 digits, otherwise a date string. */
+export function parseSmartDate(input: string): Date | null {
+  const clean = input.trim();
+  if (!clean) return null;
+  if (/^-?\d+$/.test(clean)) {
+    const num = Number(clean);
+    return Math.abs(num) < 1e11 ? new Date(num * 1000) : new Date(num);
+  }
+  const d = new Date(clean);
+  return Number.isNaN(d.getTime()) ? null : d;
+}
+
+export function getDurationDescription(ms: number): string {
+  const isPast = ms < 0;
+  const absMs = Math.abs(ms);
+  const secs = Math.floor(absMs / 1000);
+  const mins = Math.floor(secs / 60);
+  const hours = Math.floor(mins / 60);
+  const days = Math.floor(hours / 24);
+
+  const remHours = hours % 24;
+  const remMins = mins % 60;
+  const remSecs = secs % 60;
+
+  const parts: string[] = [];
+  if (days > 0) parts.push(`${days}d`);
+  if (remHours > 0) parts.push(`${remHours}h`);
+  if (remMins > 0) parts.push(`${remMins}m`);
+  if (remSecs > 0) parts.push(`${remSecs}s`);
+
+  if (parts.length === 0) return '0s';
+  return parts.join(' ') + (isPast ? ' ago' : '');
+}
+
+export const OFFSET_REGEX = /^([+-])?\s*(?:(\d+)\s*y)?\s*(?:(\d+)\s*mo)?\s*(?:(\d+)\s*d)?\s*(?:(\d+)\s*h)?\s*(?:(\d+)\s*m)?\s*(?:(\d+)\s*s)?$/i;
+
+export function applyOffset(base: Date, offsetStr: string): Date {
+  const clean = offsetStr.trim();
+  const match = clean.match(OFFSET_REGEX);
+  if (!match) return base;
+
+  const sign = match[1] === '-' ? -1 : 1;
+  const y = (Number(match[2]) || 0) * sign;
+  const mo = (Number(match[3]) || 0) * sign;
+  const d = (Number(match[4]) || 0) * sign;
+  const h = (Number(match[5]) || 0) * sign;
+  const m = (Number(match[6]) || 0) * sign;
+  const s = (Number(match[7]) || 0) * sign;
+
+  const res = new Date(base);
+  if (y) res.setFullYear(res.getFullYear() + y);
+  if (mo) res.setMonth(res.getMonth() + mo);
+  if (d) res.setDate(res.getDate() + d);
+  if (h) res.setHours(res.getHours() + h);
+  if (m) res.setMinutes(res.getMinutes() + m);
+  if (s) res.setSeconds(res.getSeconds() + s);
+  return res;
+}

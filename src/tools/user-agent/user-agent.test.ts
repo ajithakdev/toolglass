@@ -70,12 +70,42 @@ const fixtures: { name: string; ua: string; expect: Partial<UserAgentInfo> }[] =
   {
     name: 'iOS Chrome',
     ua: 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/120.0.6099.119 Mobile/15E148 Safari/604.1',
-    expect: { browser: 'Chrome', version: '120.0.6099.119', engine: 'Blink', os: 'iOS 17.2', device: 'mobile', bot: false },
+    expect: { browser: 'Chrome', version: '120.0.6099.119', engine: 'WebKit', os: 'iOS 17.2', device: 'mobile', bot: false },
+  },
+  {
+    name: 'iOS Firefox',
+    ua: 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) FxiOS/121.0 Mobile/15E148 Safari/605.1.15',
+    expect: { browser: 'Firefox', version: '121.0', engine: 'WebKit', os: 'iOS 17.2', device: 'mobile', bot: false },
+  },
+  {
+    name: 'iOS Edge',
+    ua: 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) EdgiOS/120.0.2210.105 Version/17.0 Mobile/15E148 Safari/604.1',
+    expect: { browser: 'Edge', version: '120.0.2210.105', engine: 'WebKit', os: 'iOS 17.2', device: 'mobile', bot: false },
   },
   {
     name: 'Googlebot',
     ua: 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)',
     expect: { browser: 'Googlebot', version: '2.1', engine: 'unknown', device: 'unknown', bot: true },
+  },
+  {
+    name: 'Googlebot Smartphone',
+    ua: 'Mozilla/5.0 (Linux; Android 6.0.1; Nexus 5X Build/MMB29P) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.6099.230 Mobile Safari/537.36 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)',
+    expect: { browser: 'Googlebot', version: '2.1', engine: 'unknown', os: 'Android 6.0.1', device: 'mobile', bot: true },
+  },
+  {
+    name: 'Android tablet Chrome',
+    ua: 'Mozilla/5.0 (Linux; Android 13; SM-X900) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.6099.230 Safari/537.36',
+    expect: { browser: 'Chrome', version: '120.0.6099.230', engine: 'Blink', os: 'Android 13', device: 'tablet', bot: false },
+  },
+  {
+    name: 'Android WebView',
+    ua: 'Mozilla/5.0 (Linux; Android 14; Pixel 8 Build/UP1A; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/120.0.6099.230 Mobile Safari/537.36',
+    expect: { browser: 'Android WebView', version: '120.0.6099.230', engine: 'Blink', os: 'Android 14', device: 'mobile', bot: false },
+  },
+  {
+    name: 'Cubot phone is not a bot',
+    ua: 'Mozilla/5.0 (Linux; Android 10; CUBOT_X30) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.101 Mobile Safari/537.36',
+    expect: { browser: 'Chrome', version: '87.0.4280.101', os: 'Android 10', device: 'mobile', bot: false },
   },
   {
     name: 'Bingbot',

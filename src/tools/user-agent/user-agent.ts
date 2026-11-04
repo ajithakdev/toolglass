@@ -22,18 +22,19 @@ interface BrowserRule {
   engine: string;
 }
 
-// More specific products come first. Edge, Opera, and Samsung Internet also contain "Chrome".
-// Chrome also contains "Safari", so Safari is only the Version/…Safari form.
+// First match wins. Bots and WebView sit above browsers because their strings also contain Chrome or Edge.
+// Edge, Opera, and Samsung Internet also contain "Chrome". Safari is only the Version/…Safari form.
 const browserRules: BrowserRule[] = [
+  { name: 'Googlebot', re: /Googlebot\/([\d.]+)/, engine: 'unknown' },
+  { name: 'Bingbot', re: /bingbot\/([\d.]+)/, engine: 'unknown' },
+  { name: 'curl', re: /curl\/([\d.]+)/, engine: 'unknown' },
+  { name: 'Android WebView', re: /; wv\).*Chrome\/([\d.]+)/, engine: 'Blink' },
   { name: 'Samsung Internet', re: /SamsungBrowser\/([\d.]+)/, engine: 'Blink' },
   { name: 'Edge', re: /Edg(?:e|A|iOS)?\/([\d.]+)/, engine: 'Blink' },
   { name: 'Opera', re: /(?:OPR|Opera)\/([\d.]+)/, engine: 'Blink' },
   { name: 'Chrome', re: /(?:Chrome|CriOS)\/([\d.]+)/, engine: 'Blink' },
   { name: 'Firefox', re: /(?:Firefox|FxiOS)\/([\d.]+)/, engine: 'Gecko' },
   { name: 'Safari', re: /Version\/([\d.]+).*Safari\//, engine: 'WebKit' },
-  { name: 'Googlebot', re: /Googlebot\/([\d.]+)/, engine: 'unknown' },
-  { name: 'Bingbot', re: /bingbot\/([\d.]+)/, engine: 'unknown' },
-  { name: 'curl', re: /curl\/([\d.]+)/, engine: 'unknown' },
 ];
 
 function firstMatch(ua: string, re: RegExp): string | null {
@@ -57,6 +58,8 @@ function readOs(ua: string): string {
 function readDevice(ua: string, os: string): string {
   if (/iPad|Tablet/i.test(ua)) return 'tablet';
   if (/iPhone|iPod|Mobile/i.test(ua)) return 'mobile';
+  // Phone Chrome includes "Mobile". Tablet Chrome does not, so Android without it is a tablet.
+  if (os.startsWith('Android')) return 'tablet';
   if (os === 'Windows' || os.startsWith('macOS') || os === 'Linux' || os === 'ChromeOS') return 'desktop';
   return 'unknown';
 }
@@ -77,7 +80,10 @@ export function parseUserAgent(input: string): UserAgentInfo {
   }
 
   info.os = readOs(ua);
+  // Every browser on iOS uses WebKit, including Chrome, Firefox, and Edge.
+  if (info.os.startsWith('iOS')) info.engine = 'WebKit';
   info.device = readDevice(ua, info.os);
-  info.bot = /bot|spider|crawl|slurp|\bcurl\/|wget/i.test(ua);
+  // "bot" as its own word, or bot followed by / ; ). Avoids device names like Cubot.
+  info.bot = /\bbot\b|bot[\/;)]|spider|crawl|slurp|\bcurl\/|wget/i.test(ua);
   return info;
 }

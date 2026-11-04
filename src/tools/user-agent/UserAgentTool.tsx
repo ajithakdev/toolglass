@@ -50,7 +50,17 @@ export default function UserAgentTool() {
   return (
     <ToolLayout>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
-        <div role="status" aria-live="polite" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: 10 }}>
+        <Field label="User-agent string">
+          <TextArea value={ua} onChange={(e) => setUa(e.target.value)} rows={6} placeholder="Paste a user-agent string" />
+        </Field>
+        <div>
+          <Button variant="soft" onClick={() => setUa(navigator.userAgent)}>Use this browser</Button>
+        </div>
+        <p style={{ margin: 0, fontSize: 'var(--t-xs)', color: 'var(--ink-mute)' }}>
+          iPadOS Safari in desktop mode uses the same string as a Mac, so this tool cannot tell them apart.
+        </p>
+
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: 10 }}>
           {rows.map(([label, value]) => (
             <div key={label} className="glass-strong" style={{ padding: 14, borderRadius: 'var(--radius-sm)' }}>
               <div style={{ fontSize: 16, fontWeight: 650, color: 'var(--ink)', wordBreak: 'break-word' }}>{value}</div>
@@ -62,19 +72,12 @@ export default function UserAgentTool() {
         {/* Absent when readClientHints returned null, so non-Chromium browsers skip this block. */}
         {hints && (
           <div className="glass-strong" style={{ padding: 14, borderRadius: 'var(--radius-sm)', display: 'flex', flexDirection: 'column', gap: 8 }}>
-            <div style={{ fontSize: 'var(--t-sm)', fontWeight: 650, color: 'var(--ink)' }}>Client Hints</div>
+            <div style={{ fontSize: 'var(--t-sm)', fontWeight: 650, color: 'var(--ink)' }}>Client Hints (this browser)</div>
             <div style={{ fontSize: 'var(--t-sm)', color: 'var(--ink-soft)' }}>Brands: {hints.brands}</div>
             <div style={{ fontSize: 'var(--t-sm)', color: 'var(--ink-soft)' }}>Mobile: {hints.mobile}</div>
             <div style={{ fontSize: 'var(--t-sm)', color: 'var(--ink-soft)' }}>Platform: {hints.platform}</div>
           </div>
         )}
-
-        <Field label="User-agent string">
-          <TextArea value={ua} onChange={(e) => setUa(e.target.value)} rows={6} placeholder="Paste a user-agent string" />
-        </Field>
-        <div>
-          <Button variant="soft" onClick={() => setUa(navigator.userAgent)}>Use this browser</Button>
-        </div>
       </div>
     </ToolLayout>
   );

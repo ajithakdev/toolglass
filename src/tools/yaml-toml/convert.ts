@@ -1,4 +1,4 @@
-import yaml from 'js-yaml';
+import * as yaml from 'js-yaml';
 import { parse as parseToml, stringify as stringifyToml } from 'smol-toml';
 
 export type Format = 'json' | 'yaml' | 'toml';

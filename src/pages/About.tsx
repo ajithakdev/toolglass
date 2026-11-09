@@ -221,7 +221,7 @@ export function About() {
           <a href="https://ko-fi.com/ajithakdev" target="_blank" rel="noreferrer">
             support it on Ko-fi
           </a>
-          .
+          , or over UPI in India at <code>ajithakdev@sbi</code>.
         </p>
       </Section>
 

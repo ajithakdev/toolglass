@@ -220,7 +220,7 @@ const visuals: Record<string, Pick<ToolMeta, 'icon' | 'Component' | 'preload'>> 
   },
   'user-agent': {
     icon: <MonitorSmartphone size={22} strokeWidth={1.5} color="var(--ink)" />,
-    Component: lazy(() => import('./user-agent/UserAgentTool')),
+    ...lazyTool(() => import('./user-agent/UserAgentTool')),
   },
 };
 

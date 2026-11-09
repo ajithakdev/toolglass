@@ -118,6 +118,16 @@ const fixtures: { name: string; ua: string; expect: Partial<UserAgentInfo> }[] =
     expect: { browser: 'curl', version: '8.5.0', engine: 'unknown', os: 'unknown', device: 'unknown', bot: true },
   },
   {
+    name: 'Facebook link preview',
+    ua: 'facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_uatext.php)',
+    expect: { bot: true },
+  },
+  {
+    name: 'Chrome on iPhone uses WebKit',
+    ua: 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_4 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/122.0.6261.89 Mobile/15E148 Safari/604.1',
+    expect: { browser: 'Chrome', engine: 'WebKit', os: 'iOS 17.4', device: 'mobile' },
+  },
+  {
     name: 'unrecognized',
     ua: 'not a user agent',
     expect: { browser: 'unknown', version: 'unknown', bot: false },

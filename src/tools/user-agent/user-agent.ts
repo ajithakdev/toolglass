@@ -84,6 +84,6 @@ export function parseUserAgent(input: string): UserAgentInfo {
   if (info.os.startsWith('iOS')) info.engine = 'WebKit';
   info.device = readDevice(ua, info.os);
   // "bot" as its own word, or bot followed by / ; ). Avoids device names like Cubot.
-  info.bot = /\bbot\b|bot[/;)]|spider|crawl|slurp|\bcurl\/|wget/i.test(ua);
+  info.bot = /\bbot\b|bot[/;)]|spider|crawl|slurp|externalhit|\bcurl\/|wget/i.test(ua);
   return info;
 }

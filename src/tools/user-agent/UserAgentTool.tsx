@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { Button } from '../../components/ui/Button';
+import { CopyButton } from '../../components/ui/CopyButton';
 import { Field, TextArea } from '../../components/ui/Field';
 import { ToolLayout } from '../../components/ToolLayout';
 import { parseUserAgent } from './user-agent';
@@ -53,8 +54,9 @@ export default function UserAgentTool() {
         <Field label="User-agent string">
           <TextArea value={ua} onChange={(e) => setUa(e.target.value)} rows={6} placeholder="Paste a user-agent string" />
         </Field>
-        <div>
+        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
           <Button variant="soft" onClick={() => setUa(navigator.userAgent)}>Use this browser</Button>
+          <CopyButton value={ua.trim() ? JSON.stringify(info, null, 2) : ''} label="Copy as JSON" />
         </div>
         <p style={{ margin: 0, fontSize: 'var(--t-xs)', color: 'var(--ink-mute)' }}>
           iPadOS Safari in desktop mode uses the same string as a Mac, so this tool cannot tell them apart.

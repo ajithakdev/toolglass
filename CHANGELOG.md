@@ -5,6 +5,7 @@ All notable changes to Toolglass. The format follows [Keep a Changelog](https://
 ## [Unreleased]
 
 ### Added
+- A "support it on Ko-fi" link in the Open source section of the About page, plus the UPI ID for India. It is a plain link, so no Ko-fi script loads.
 - User-Agent Parser: paste a string to see the browser, version, engine, operating system, device, and whether it looks like a bot. Chromium also shows Client Hints for the current browser. Copy the result as JSON (#201, thanks @Dtzul04).
 
 ## [1.2.0] - 2026-11-10

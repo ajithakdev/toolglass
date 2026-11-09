@@ -9,6 +9,9 @@ All notable changes to Toolglass. The format follows [Keep a Changelog](https://
 - Support section in the README with Ko-fi and a UPI QR code.
 - User-Agent Parser: paste a string to see the browser, version, engine, operating system, device, and whether it looks like a bot. Chromium also shows Client Hints for the current browser. Copy the result as JSON (#201, thanks @Dtzul04).
 
+### Changed
+- Dependency updates (framer-motion, js-yaml 5, lucide-react, marked, react-router-dom, smol-toml, vite, typescript-eslint, fast-uri). The YAML/TOML converter works the same.
+
 ## [1.2.0] - 2026-11-10
 
 ### Added

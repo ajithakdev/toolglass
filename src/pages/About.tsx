@@ -217,7 +217,11 @@ export function About() {
           <a href={`${REPO}/blob/main/.github/CONTRIBUTING.md`} target="_blank" rel="noreferrer">
             add it yourself
           </a>
-          .
+          . Toolglass is free and stays free. If it saved you time, you can{' '}
+          <a href="https://ko-fi.com/ajithakdev" target="_blank" rel="noreferrer">
+            support it on Ko-fi
+          </a>
+          , or over UPI in India at <code>ajithakdev@sbi</code>.
         </p>
       </Section>
 

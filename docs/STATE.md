@@ -8,13 +8,14 @@ Update this file at the end of each work session. Keep it short. Delete entries 
 
 v1.2.0 is out: #199 squash-merged, tagged, GitHub release created, and the tag deploy succeeded (the live bundle matches the local build). It also carried the 1.1.2 fixes, since that release never went out. Lint has 0 errors (1 old warning in `curl-to-fetch/parts.tsx`), the build passes, and all 274 tests in 50 files pass.
 
+#201 (User-Agent Parser by Dtzul04) merged 2026-11-10 after my fixes (preload via `lazyTool`, Copy as JSON, link-preview bots). It ships in the next Sunday release.
+
 Plan file: `~/.claude/plans/i-have-couple-of-melodic-cascade.md` (it-tools analysis, tool gap list Tier A/B/C).
 
 Next, in order:
 1. #204 (Ko-fi link on About) and #205 (Support section with Ko-fi and UPI) are waiting on the owner to pick which UPI ID to publish.
-2. Review contributor PR #201 (User Agent tool, closes #187, by Dtzul04).
-3. Dependabot #202 (fast-uri) and #203 (monthly group of 8): run the tests on both, then merge.
-4. Roadmap: PR 4 platform (`npm run new-tool`, file in/download primitives, test per tool), then Tier A tools, PWA offline (#191), Docker self-host plus BASE_PATH.
+2. Dependabot #202 (fast-uri) and #203 (monthly group of 8): run the tests on both, then merge.
+3. Roadmap: PR 4 platform (`npm run new-tool`, file in/download primitives, test per tool), then Tier A tools, PWA offline (#191), Docker self-host plus BASE_PATH.
 
 Open checks and known leftovers:
 - 3D hero scene in its fixed 340px box not seen rendered (headless Chromium can't draw it); check in a real browser.

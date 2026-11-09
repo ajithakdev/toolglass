@@ -12,10 +12,11 @@ v1.2.0 is out: #199 squash-merged, tagged, GitHub release created, and the tag d
 
 Plan file: `~/.claude/plans/i-have-couple-of-melodic-cascade.md` (it-tools analysis, tool gap list Tier A/B/C).
 
+Also merged 2026-11-10: #204 (Ko-fi and UPI `ajithakdev@sbi` on About), #205 (README Support section, QR regenerated from a known UPI payload), #207 and #209 (all November dependency bumps incl. js-yaml 5; replaced Dependabot #202, #203, #206, #210), #208 (serialize-javascript). No PRs open. `@vitejs/plugin-react` 6.2.1 is held back (needs Babel 8). All of this ships with the next Sunday release (v1.3.0, since a tool landed).
+
 Next, in order:
-1. #204 (Ko-fi link on About) and #205 (Support section with Ko-fi and UPI) are waiting on the owner to pick which UPI ID to publish.
-2. Dependabot #202 (fast-uri) and #203 (monthly group of 8): run the tests on both, then merge.
-3. Roadmap: PR 4 platform (`npm run new-tool`, file in/download primitives, test per tool), then Tier A tools, PWA offline (#191), Docker self-host plus BASE_PATH.
+1. Sunday release v1.3.0.
+2. Roadmap: PR 4 platform (`npm run new-tool`, file in/download primitives, test per tool), then Tier A tools, PWA offline (#191), Docker self-host plus BASE_PATH.
 
 Open checks and known leftovers:
 - 3D hero scene in its fixed 340px box not seen rendered (headless Chromium can't draw it); check in a real browser.

@@ -4,6 +4,8 @@ All notable changes to Toolglass. The format follows [Keep a Changelog](https://
 
 ## [Unreleased]
 
+## [1.2.0] - 2026-11-10
+
 ### Added
 - Tool sidebar on desktop: favorites, recent and every category one click away, and switching tools no longer blanks the page.
 
@@ -25,12 +27,6 @@ All notable changes to Toolglass. The format follows [Keep a Changelog](https://
 - The tool sidebar stays fully on screen while you scroll, and its scrollbar no longer shows arrow buttons at the ends.
 - The sidebar scrollbar no longer runs into the panel's rounded corners.
 - Tools are listed A to Z in each category.
-
-### Security
-- The Markdown preview no longer loads remote images, so a tracking pixel in pasted Markdown can't tell anyone you opened it. Copy and Download still keep the image links.
-- The site now sends a Content-Security-Policy that blocks remote images, media and scripts on every page. The API Tester can still call any URL (#142).
-
-### Fixed
 - The theme switch is no longer cut off the right edge of the header on phones.
 - Picking a short tool category no longer nudges the whole page sideways when the scrollbar disappears.
 - Coming back to the home page no longer flashes the flat logo before the 3D glass appears.
@@ -42,6 +38,10 @@ All notable changes to Toolglass. The format follows [Keep a Changelog](https://
 - Cron "next runs" in the Timestamp tool now match standard cron: day-of-month and day-of-week are ORed when both are set, 7 counts as Sunday, yearly and leap-day schedules show up, and bad fields like `abc` or `99` show an error instead of a schedule (#137).
 - "Clear everything" on the About page now also clears Notepad text, World Clock zones and the API Tester's per-tab credentials (#139).
 - Two quick pushes to `main` no longer cancel a site deploy partway through (#144).
+
+### Security
+- The Markdown preview no longer loads remote images, so a tracking pixel in pasted Markdown can't tell anyone you opened it. Copy and Download still keep the image links.
+- The site now sends a Content-Security-Policy that blocks remote images, media and scripts on every page. The API Tester can still call any URL (#142).
 
 ## [1.1.1] - 2026-10-21
 

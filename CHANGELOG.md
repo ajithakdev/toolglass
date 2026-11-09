@@ -5,18 +5,33 @@ All notable changes to Toolglass. The format follows [Keep a Changelog](https://
 ## [Unreleased]
 
 ### Added
-- Support section in the README (Ko-fi and UPI).
+- Support section in the README with Ko-fi and a UPI QR code.
+- User-Agent Parser: paste a string to see the browser, version, engine, operating system, device, and whether it looks like a bot. Chromium also shows Client Hints for the current browser. Copy the result as JSON (#201, thanks @Dtzul04).
+
+## [1.2.0] - 2026-11-10
+
+### Added
+- Tool sidebar on desktop: favorites, recent and every category one click away, and switching tools no longer blanks the page.
 
 ### Changed
+- Home and About polish: even spacing under the header and between sections, category links as small pills with a "+N more" pill, "instead of" as a sticker board, a one-card request counter that shows at once, and an "At a glance" card on About.
+- Home page is tools first: browse by category, a short 'instead of' list, and no more long scroll animation.
+- About page is reorganised with a sticky contents list, grouped storage list, keyboard shortcuts, install and version info.
+- Tool pages are reorganised: compact header, the tool next to the sidebar, related tools and the privacy note in a side column, flat sections instead of boxes inside boxes, and smaller inputs, buttons and results.
+- The home page hero is half the height, with your recent, favorite or popular tools right under it.
+- Header, content and footer share one 1440px width on every page, so nothing jumps when you move between pages.
+- Tighter, denser layout on desktop: smaller headings, cards and spacing.
+- Tool URLs stay clean while you work. Settings go into a link only when you press Share, so text you type no longer lands in browser history.
 - Calmer layout on big screens: the content column is 1200px wide instead of 1600px, and page headings and section gaps are smaller on desktop. Phone layouts are unchanged.
 - The "0 requests" status dot now pulses, so it reads as live. It stays still if your system asks for reduced motion.
+- Every tool uses the same small copy button.
 - The site now deploys once a week with each release (Sunday), not on every merge. Urgent fixes ship as a same-day patch release.
 
-### Security
-- The Markdown preview no longer loads remote images, so a tracking pixel in pasted Markdown can't tell anyone you opened it. Copy and Download still keep the image links.
-- The site now sends a Content-Security-Policy that blocks remote images, media and scripts on every page. The API Tester can still call any URL (#142).
-
 ### Fixed
+- The tool sidebar stays fully on screen while you scroll, and its scrollbar no longer shows arrow buttons at the ends.
+- The sidebar scrollbar no longer runs into the panel's rounded corners.
+- Tools are listed A to Z in each category.
+- The theme switch is no longer cut off the right edge of the header on phones.
 - Picking a short tool category no longer nudges the whole page sideways when the scrollbar disappears.
 - Coming back to the home page no longer flashes the flat logo before the 3D glass appears.
 - A flat sheet behind the white glass tile no longer peeks out at its edge.
@@ -27,6 +42,10 @@ All notable changes to Toolglass. The format follows [Keep a Changelog](https://
 - Cron "next runs" in the Timestamp tool now match standard cron: day-of-month and day-of-week are ORed when both are set, 7 counts as Sunday, yearly and leap-day schedules show up, and bad fields like `abc` or `99` show an error instead of a schedule (#137).
 - "Clear everything" on the About page now also clears Notepad text, World Clock zones and the API Tester's per-tab credentials (#139).
 - Two quick pushes to `main` no longer cancel a site deploy partway through (#144).
+
+### Security
+- The Markdown preview no longer loads remote images, so a tracking pixel in pasted Markdown can't tell anyone you opened it. Copy and Download still keep the image links.
+- The site now sends a Content-Security-Policy that blocks remote images, media and scripts on every page. The API Tester can still call any URL (#142).
 
 ## [1.1.1] - 2026-10-21
 

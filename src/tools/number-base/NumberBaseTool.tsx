@@ -36,7 +36,7 @@ export default function NumberBaseTool() {
             const shown = editing?.base === b.base ? editing.text : value === null ? '' : toBase(value, b.base);
             const invalid = editing?.base === b.base && editing.text.trim() !== '' && value === null;
             return (
-              <Field key={b.base} label={`${b.label} (base ${b.base})`} hint={invalid ? <span style={{ color: 'var(--status-error)' }}>Not a valid number</span> : value !== null && <CopyButton size="sm" value={toBase(value, b.base)} />}>
+              <Field key={b.base} label={`${b.label} (base ${b.base})`} hint={invalid ? <span style={{ color: 'var(--status-error)' }}>Not a valid number</span> : value !== null && <CopyButton value={toBase(value, b.base)} label={`Copy ${b.label}`} compact />}>
                 <TextInput
                   value={shown}
                   spellCheck={false}

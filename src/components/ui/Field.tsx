@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect, type CSSProperties, type ReactNode } from 'react';
 import { AnimatePresence, m } from 'framer-motion';
 import { Check, ChevronDown } from 'lucide-react';
+import { cn } from '../../lib/cn';
 
 export function Field({
   label,
@@ -20,7 +21,7 @@ export function Field({
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'baseline',
-          marginBottom: 8,
+          marginBottom: 4,
         }}
       >
         <span style={{ fontSize: 'var(--t-sm)', fontWeight: 600, color: 'var(--ink)' }}>{label}</span>
@@ -32,12 +33,11 @@ export function Field({
 }
 
 const inputBase: CSSProperties = {
-  padding: '11px 14px',
   borderRadius: 'var(--radius-sm)',
   border: '1px solid var(--border)',
   background: 'var(--surface-input)',
   boxShadow: 'var(--edge)',
-  fontSize: 14,
+  fontSize: 'var(--t-base)',
   outline: 'none',
   color: 'var(--ink)',
   transition: 'border-color var(--dur-2) var(--ease-out), box-shadow var(--dur-2) var(--ease-out)',
@@ -47,6 +47,7 @@ export function TextInput(props: React.InputHTMLAttributes<HTMLInputElement>) {
   return (
     <input
       {...props}
+      className={cn('ctl', props.className)}
       style={{
         width: '100%',
         ...inputBase,
@@ -60,6 +61,7 @@ export function TextArea(props: React.TextareaHTMLAttributes<HTMLTextAreaElement
   return (
     <textarea
       {...props}
+      className={cn('ctl', props.className)}
       style={{
         width: '100%',
         ...inputBase,
@@ -80,6 +82,7 @@ export function Select(props: React.SelectHTMLAttributes<HTMLSelectElement>) {
     <div style={{ position: 'relative' }}>
       <select
         {...props}
+        className={cn('ctl', props.className)}
         style={{
           width: '100%',
           ...inputBase,
@@ -102,7 +105,7 @@ export function Select(props: React.SelectHTMLAttributes<HTMLSelectElement>) {
           display: 'grid',
         }}
       >
-        <ChevronDown size={16} />
+        <ChevronDown size={15} />
       </div>
     </div>
   );
@@ -151,6 +154,7 @@ export function Dropdown({
         type="button"
         ref={triggerRef}
         aria-haspopup="listbox"
+        className="ctl"
         aria-expanded={open}
         onClick={() => setOpen(!open)}
         style={{
@@ -207,9 +211,9 @@ export function Dropdown({
                 style={{
                   width: '100%',
                   textAlign: 'left',
-                  padding: '10px 12px',
+                  padding: '7px 10px',
                   borderRadius: 8,
-                  fontSize: 14,
+                  fontSize: 'var(--t-base)',
                   background: opt.value === value ? 'var(--accent-soft)' : 'transparent',
                   color: 'var(--ink)',
                   border: 'none',
@@ -260,7 +264,8 @@ export function Toggle({
         display: 'flex',
         alignItems: 'center',
         gap: 10,
-        padding: '10px 14px',
+        padding: '7px 12px',
+        minHeight: 36,
         background: checked ? 'var(--accent-soft)' : 'var(--surface-1)',
         border: `1px solid ${checked ? 'var(--accent-ring)' : 'var(--border)'}`,
         borderRadius: 'var(--radius-sm)',

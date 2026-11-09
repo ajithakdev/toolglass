@@ -28,7 +28,7 @@ export default function HttpStatusTool() {
                     <div style={{ fontWeight: 650, color: 'var(--ink)' }}>{s.name}</div>
                     <div style={{ fontSize: 'var(--t-sm)', color: 'var(--ink-soft)' }}>{s.description}</div>
                   </div>
-                  <CopyButton size="sm" value={`${s.code} ${s.name}`} />
+                  <CopyButton value={`${s.code} ${s.name}`} label={`Copy ${s.code} ${s.name}`} compact />
                 </div>
               ))}
             </div>

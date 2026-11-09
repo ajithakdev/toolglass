@@ -14,9 +14,9 @@ interface Props extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'children'
 }
 
 const sizeStyles: Record<Size, CSSProperties> = {
-  sm: { height: 32, padding: '0 12px', fontSize: 'var(--t-sm)', borderRadius: 'var(--radius-sm)' },
-  md: { height: 40, padding: '0 16px', fontSize: 14, borderRadius: 'var(--radius-sm)' },
-  lg: { height: 48, padding: '0 22px', fontSize: 'var(--t-base)', borderRadius: 'var(--radius)' },
+  sm: { height: 30, padding: '0 10px', fontSize: 'var(--t-sm)', borderRadius: 'var(--radius-sm)' },
+  md: { height: 34, padding: '0 14px', fontSize: 'var(--t-base)', borderRadius: 'var(--radius-sm)' },
+  lg: { height: 42, padding: '0 18px', fontSize: 'var(--t-base)', borderRadius: 'var(--radius)' },
 };
 
 const variantStyles: Record<Variant, CSSProperties> = {
@@ -61,7 +61,7 @@ export function Button({
       whileHover={disabled ? undefined : { y: -1 }}
       whileTap={disabled ? undefined : { scale: 0.97, y: 0 }}
       transition={spring}
-      className={cn(className)}
+      className={cn('btn', className)}
       disabled={disabled}
       style={{
         ...sizeStyles[size],
@@ -70,7 +70,7 @@ export function Button({
         display: 'inline-flex',
         alignItems: 'center',
         justifyContent: 'center',
-        gap: 8,
+        gap: 6,
         whiteSpace: 'nowrap',
         cursor: disabled ? 'not-allowed' : 'pointer',
         letterSpacing: '-0.005em',

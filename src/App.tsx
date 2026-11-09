@@ -3,6 +3,7 @@ import { lazy, Suspense, useEffect, useState } from 'react';
 import { Route, Routes, useLocation } from 'react-router-dom';
 import { CommandPalette } from './components/CommandPalette';
 import { Shell } from './components/Shell';
+import { ToolsLayout } from './components/ToolsLayout';
 import { Home } from './pages/Home';
 import { ToolPage } from './pages/ToolPage';
 import { ToastProvider } from './components/ui/Toast';
@@ -16,7 +17,7 @@ const ToolsHub = lazy(() => import('./pages/ToolsHub').then((m) => ({ default: m
 
 function Page({ children }: { children: React.ReactNode }) {
   return (
-    <div className="container" style={{ paddingTop: 'var(--s-5)' }}>
+    <div className="container" style={{ paddingTop: 'var(--s-4)' }}>
       {/* Full-height fallback keeps the footer below the fold while a lazy page loads */}
       <Suspense fallback={<div style={{ minHeight: '100vh' }} />}>{children}</Suspense>
     </div>
@@ -53,8 +54,10 @@ export default function App() {
           <ErrorBoundary>
             <Routes>
               <Route path="/" element={<Home />} />
-              <Route path="/tools" element={<Page><ToolsHub /></Page>} />
-              <Route path="/tools/:slug" element={<Page><ToolPage /></Page>} />
+              <Route path="/tools" element={<ToolsLayout />}>
+                <Route index element={<ToolsHub />} />
+                <Route path=":slug" element={<ToolPage />} />
+              </Route>
               <Route path="/about" element={<Page><About /></Page>} />
               <Route path="*" element={<Page><NotFound /></Page>} />
             </Routes>

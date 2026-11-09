@@ -1,6 +1,7 @@
-import { Check, Clipboard, Copy, FileJson, Globe, KeyRound, ListTree, Play, Plus, Save, ShieldAlert, ShieldCheck, Trash2 } from 'lucide-react';
+import { Clipboard, FileJson, Globe, KeyRound, ListTree, Play, Plus, Save, ShieldAlert, ShieldCheck, Trash2 } from 'lucide-react';
 import { Kbd } from '../../components/Shell';
 import { Button } from '../../components/ui/Button';
+import { CopyButton } from '../../components/ui/CopyButton';
 import { Dropdown, Field, TextArea, TextInput } from '../../components/ui/Field';
 import { Segmented } from '../../components/ui/Segmented';
 import { isSensitiveHeader } from './curlSecurity';
@@ -165,7 +166,7 @@ function AuthEditor({ api }: { api: ApiTester }) {
 }
 
 function ResponseView({ api }: { api: ApiTester }) {
-  const { response, error, lineWrap, setLineWrap, isCopiedResponse, handleCopyResponse } = api;
+  const { response, error, lineWrap, setLineWrap } = api;
   if (error) return <Notice tone="error">{error}</Notice>;
   if (!response) {
     return <p style={{ margin: 0, textAlign: 'center', color: 'var(--ink-mute)', fontSize: 'var(--t-sm)', padding: 'var(--s-5) 0' }}>Send a request to see the response here.</p>;
@@ -184,9 +185,7 @@ function ResponseView({ api }: { api: ApiTester }) {
           <Button variant="ghost" size="sm" onClick={() => setLineWrap((w) => !w)} aria-pressed={lineWrap} title="Toggle word wrap (Alt+Z)">
             Wrap {lineWrap ? 'on' : 'off'} <Kbd>Alt Z</Kbd>
           </Button>
-          <Button onClick={handleCopyResponse} variant="soft" size="sm">
-            {isCopiedResponse ? <Check size={14} /> : <Copy size={14} />} {isCopiedResponse ? 'Copied' : 'Copy'}
-          </Button>
+          <CopyButton value={response.rawData} label="Copy response" compact />
         </div>
       </div>
       <pre

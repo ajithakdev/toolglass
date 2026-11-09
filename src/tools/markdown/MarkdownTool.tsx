@@ -83,7 +83,7 @@ export default function MarkdownTool() {
             <div style={{ display: 'flex', gap: 8 }}>
               <Button onClick={downloadHtml} variant="soft" size="sm">Download</Button>
               <Button onClick={handlePrint} variant="primary" size="sm">PDF / Print</Button>
-              <CopyButton value={html} label="Copy HTML" size="sm" />
+              <CopyButton value={html} label="Copy HTML" compact />
             </div>
           </div>
           <div 

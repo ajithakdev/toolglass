@@ -12,9 +12,9 @@ function Loader() {
     const t = setTimeout(() => setShow(true), 150);
     return () => clearTimeout(t);
   }, []);
-  if (!show) return null;
+  if (!show) return <div style={{ minHeight: '100vh' }} />;
   return (
-    <div role="status" aria-label="Loading tool" style={{ display: 'flex', flexDirection: 'column', gap: 'var(--s-5)', paddingTop: 'var(--s-3)' }}>
+    <div role="status" aria-label="Loading tool" style={{ display: 'flex', flexDirection: 'column', gap: 'var(--s-5)', paddingTop: 'var(--s-3)', minHeight: '100vh' }}>
       <div className="skeleton" style={{ width: 180, height: 14 }} />
       <div style={{ display: 'flex', gap: 'var(--s-4)' }}>
         <div className="skeleton" style={{ width: 56, height: 56, borderRadius: 'var(--radius)' }} />

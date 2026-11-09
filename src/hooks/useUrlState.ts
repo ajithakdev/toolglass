@@ -1,51 +1,51 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useSearchParams, type SetURLSearchParams } from 'react-router-dom';
 
-// All hooks on a page share one pending-write queue and one debounce timer, so
-// settings changed together (e.g. a Reset) land in a single URL update instead
-// of later writes overwriting earlier ones.
-// str null = remove the param (value is back at its default)
-const pending = new Map<string, { str: string | null; onWritten: () => void }>();
-let flushTimer: ReturnType<typeof setTimeout> | null = null;
-let latestSetter: SetURLSearchParams | null = null;
+// Values live in memory only (some are sensitive, like URLs with tokens). The
+// address bar is never written while the user works; Share builds its link from
+// this registry.
+const registry = new Map<object, { key: string; str: string }>();
 
-function queueWrite(key: string, str: string | null, onWritten: () => void, setter: SetURLSearchParams) {
-  pending.set(key, { str, onWritten });
-  latestSetter = setter;
-  if (flushTimer) clearTimeout(flushTimer);
-  flushTimer = setTimeout(() => {
-    flushTimer = null;
-    const writes = [...pending];
-    pending.clear();
-    writes.forEach(([, w]) => w.onWritten());
-    latestSetter?.(
-      (prev) => {
-        const updated = new URLSearchParams(prev);
-        writes.forEach(([k, w]) => (w.str === null ? updated.delete(k) : updated.set(k, w.str)));
-        return updated;
-      },
-      { replace: true },
-    );
-  }, 200);
+// Hooks that mount together all strip their param in one navigation, because
+// separate setSearchParams calls in the same tick would overwrite each other.
+const toClean = new Set<string>();
+
+function queueClean(key: string, setter: SetURLSearchParams) {
+  if (toClean.size === 0) {
+    queueMicrotask(() => {
+      const keys = [...toClean];
+      toClean.clear();
+      setter(
+        (prev) => {
+          const next = new URLSearchParams(prev);
+          keys.forEach((k) => next.delete(k));
+          return next;
+        },
+        { replace: true },
+      );
+    });
+  }
+  toClean.add(key);
 }
 
-/** The current page URL with any not-yet-flushed writes applied, so Share never copies stale settings. */
+/** The page URL plus every non-default value held by a mounted useUrlState hook, for the Share button. */
 export function currentUrl(): string {
   const url = new URL(window.location.href);
-  pending.forEach((w, k) => (w.str === null ? url.searchParams.delete(k) : url.searchParams.set(k, w.str)));
+  registry.forEach(({ key, str }) => url.searchParams.set(key, str));
   return url.toString();
 }
 
 /**
- * Syncs a piece of state to/from a URL search parameter.
+ * Reads a piece of state from a URL search parameter once, then keeps it in memory.
  *
  * @param key          The query-string key to use (e.g. "len")
  * @param defaultVal   The default value if the key is not in the URL
  * @param parse        Converts the raw string from the URL → T
- * @param stringify    Converts T → string for the URL
+ * @param stringify    Converts T → string for share links
  *
- * Returns [value, setValue] just like useState.
- * The value updates immediately; the URL write is debounced 200ms.
+ * Returns [value, setValue] just like useState. A param found in the URL is
+ * adopted and then removed from the address bar; the URL is never written during
+ * editing. Share links come from `currentUrl()`.
  */
 export function useUrlState<T>(
   key: string,
@@ -56,38 +56,29 @@ export function useUrlState<T>(
   const [searchParams, setSearchParams] = useSearchParams();
   const raw = searchParams.get(key);
 
-  const [value, setLocal] = useState<T>(() => (raw !== null ? parse(raw) : defaultVal));
+  const [value, setValue] = useState<T>(() => (raw !== null ? parse(raw) : defaultVal));
   const [seenRaw, setSeenRaw] = useState(raw);
-  // String this hook just wrote; cleared once that write shows up in the URL,
-  // so a later navigation back to the same string still re-syncs
-  const writtenRef = useRef<string | null>(null);
 
-  // Re-sync when the param changes from outside (back/forward, pasted link)
+  // A new param arriving from outside (pasted link) replaces the value; the
+  // param disappearing after cleanup must not reset it
   if (raw !== seenRaw) {
     setSeenRaw(raw);
-    const ownWrite = raw !== null && raw === writtenRef.current;
-    writtenRef.current = null;
-    if (!ownWrite) setLocal(raw !== null ? parse(raw) : defaultVal);
+    if (raw !== null) setValue(parse(raw));
   }
 
-  const setValue = useCallback(
-    (next: T) => {
-      setLocal(next);
-      const str = stringify(next);
-      // Defaults stay out of the URL so shared links are short
-      const atDefault = str === stringify(defaultVal);
-      queueWrite(key, atDefault ? null : str, () => (writtenRef.current = atDefault ? null : str), setSearchParams);
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [key, stringify, setSearchParams],
-  );
-
-  // Drop this hook's unsent write on unmount
   useEffect(() => {
+    if (raw !== null) queueClean(key, setSearchParams);
+  }, [raw, key, setSearchParams]);
+
+  const id = useRef({}).current;
+  const str = stringify(value);
+  const atDefault = str === stringify(defaultVal);
+  useEffect(() => {
+    if (!atDefault) registry.set(id, { key, str });
     return () => {
-      pending.delete(key);
+      registry.delete(id);
     };
-  }, [key]);
+  }, [id, key, str, atDefault]);
 
   return [value, setValue];
 }

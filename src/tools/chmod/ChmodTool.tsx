@@ -182,7 +182,7 @@ export default function ChmodTool() {
                   width: '90px',
                 }}
               />
-              <CopyButton value={octal} label="Copy" size="sm" />
+              <CopyButton value={octal} label="Copy octal" compact />
             </div>
           </div>
 
@@ -205,7 +205,7 @@ export default function ChmodTool() {
               <span style={{ fontFamily: 'var(--font-mono)', fontSize: 20, fontWeight: 600, color: 'var(--ink)' }}>
                 {symbolic}
               </span>
-              <CopyButton value={symbolic} label="Copy" size="sm" />
+              <CopyButton value={symbolic} label="Copy symbolic" compact />
             </div>
           </div>
         </div>
@@ -417,7 +417,7 @@ export default function ChmodTool() {
             <code style={{ fontFamily: 'var(--font-mono)', fontSize: 13, color: 'var(--accent)' }}>
               {chmodCmd}
             </code>
-            <CopyButton value={chmodCmd} label="Copy" size="sm" />
+            <CopyButton value={chmodCmd} label="Copy chmod command" compact />
           </div>
 
           <div
@@ -435,7 +435,7 @@ export default function ChmodTool() {
             <code style={{ fontFamily: 'var(--font-mono)', fontSize: 13, color: 'var(--ink-soft)' }}>
               {chmodSymCmd}
             </code>
-            <CopyButton value={chmodSymCmd} label="Copy" size="sm" />
+            <CopyButton value={chmodSymCmd} label="Copy symbolic chmod command" compact />
           </div>
 
           <div
@@ -453,7 +453,7 @@ export default function ChmodTool() {
             <code style={{ fontFamily: 'var(--font-mono)', fontSize: 12, color: 'var(--ink-mute)' }}>
               {lsStyle}
             </code>
-            <CopyButton value={lsStyle} label="Copy" size="sm" />
+            <CopyButton value={lsStyle} label="Copy ls-style permissions" compact />
           </div>
         </div>
 

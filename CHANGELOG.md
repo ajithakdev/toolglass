@@ -5,6 +5,7 @@ All notable changes to Toolglass. The format follows [Keep a Changelog](https://
 ## [Unreleased]
 
 ### Added
+- Docker image for self-hosting: `docker run -p 8080:8080 ghcr.io/ajithakdev/toolglass`. Unprivileged nginx serving the static site, for amd64 and arm64, published to GHCR on every release.
 - A "support it on Ko-fi" link in the Open source section of the About page, plus the UPI ID for India. It is a plain link, so no Ko-fi script loads.
 - Support section in the README with Ko-fi and a UPI QR code.
 - User-Agent Parser: paste a string to see the browser, version, engine, operating system, device, and whether it looks like a bot. Chromium also shows Client Hints for the current browser. Copy the result as JSON (#201, thanks @Dtzul04).

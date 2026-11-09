@@ -30,6 +30,7 @@ Every link for Toolglass, what it is for, how to contribute, and how to run and 
 | https://github.com/ajithakdev/toolglass | Source code and discussions |
 | https://github.com/ajithakdev/toolglass/issues | Bug reports, feature requests, and tool ideas |
 | https://github.com/ajithakdev/toolglass/actions/workflows/ci-cd.yml | CI verify and GitHub Pages deploy workflow |
+| https://github.com/ajithakdev/toolglass/pkgs/container/toolglass | Docker image for self-hosting (published on each release tag) |
 | https://github.com/ajithakdev/toolglass/releases | Published releases and release notes |
 
 ## Accounts
@@ -55,7 +56,8 @@ Every link for Toolglass, what it is for, how to contribute, and how to run and 
 | Check lint | `npm run lint` or `npm run lint -- --fix` |
 | Build and type-check | `npm run build` |
 | Preview build | `npm run preview` |
-| Deploy | Push a `vX.Y.Z` tag (the release does this). Merges to `main` are checked but not deployed |
+| Run the Docker image locally | `docker build -t toolglass .` then `docker run -p 8080:8080 toolglass` (Podman works the same) |
+| Deploy | Push a `vX.Y.Z` tag (the release does this). The same tag also publishes the Docker image to GHCR. Merges to `main` are checked but not deployed |
 | Release (every Sunday) | Patch if the week had only fixes, minor if it added a tool or feature. Move `## [Unreleased]` in `CHANGELOG.md` under `## [X.Y.Z] - date`, bump `package.json`, commit `chore: release vX.Y.Z`, tag `vX.Y.Z`, push the tag, then `gh release create` with that changelog section |
 | Hotfix (broken tool, security) | Same release steps the same day, as a patch |
 | Redeploy without a release | Actions, CI/CD, "Run workflow" on `main` |

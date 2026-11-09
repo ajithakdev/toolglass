@@ -1,6 +1,6 @@
 # Toolglass code map
 
-Mapped at commit: `a2bd9e2` (v1.2.0 release, 2026-11-10; v1.2 files were mapped on the branch). Earlier note: `511327b` plus branch `test/138-timestamp-json-to-ts` (2026-10-26). Sections not touched by that branch were last checked at `6811fb6`. Timestamp and JSON-to-TS sections updated at `41d6999` (#196, 2026-10-31).
+Mapped at commit: `e3077a3` (Docker files added on `feat/docker`, 2026-11-10). Before that: `a2bd9e2` (v1.2.0 release, 2026-11-10; v1.2 files were mapped on the branch). Earlier note: `511327b` plus branch `test/138-timestamp-json-to-ts` (2026-10-26). Sections not touched by that branch were last checked at `6811fb6`. Timestamp and JSON-to-TS sections updated at `41d6999` (#196, 2026-10-31).
 
 Check for drift before trusting this file: `git diff --stat c7cd085..HEAD -- src`
 
@@ -38,6 +38,9 @@ index.html
 | `eslint.config.js` (26) | Flat config. Several `react-hooks/*` rules turned off (set-state-in-effect, purity, refs, error-boundaries, set-state-in-render). |
 | `index.html` | Content-Security-Policy meta, meta, OG tags, JSON-LD, pre-paint theme script. Fonts are self-hosted Geist and Geist Mono (see `index.css`). |
 | `.github/ISSUE_TEMPLATE/` | Issue forms: `bug_report.yml`, `feature_request.yml`; `config.yml` turns off blank issues and links Discussions, SECURITY.md, and the site. Tool-request links in `ToolsHub.tsx` and `About.tsx` open `feature_request.yml` with `template=`. |
+| `Dockerfile` | Two stages: `npm ci` and `npm run build` on the build platform, then `nginx-unprivileged` serving `dist` on port 8080. `.dockerignore` keeps `node_modules`, `dist`, `.git` and docs out of the context. |
+| `docker/nginx.conf` | Serves `/tools/<slug>` from `tools/<slug>.html` like GitHub Pages, `404.html` for unknown paths, a year of cache for `/assets/`, `no-cache` for `sw.js`, plus nosniff, no-referrer and frame-deny headers. |
+| `.github/workflows/docker.yml` | On a `v*` tag: builds amd64 and arm64 and pushes `ghcr.io/ajithakdev/toolglass` tagged `X.Y.Z`, `X.Y` and `latest`. On a PR that touches the Docker files: builds only. |
 | `.github/workflows/ci-cd.yml` | `verify` job: `npm ci`, lint, build, test, upload Pages artifact. `deploy` job: Pages, only on a `v*` tag push or a manual run; it alone has `pages`/`id-token` write. |
 | `scripts/gen-keccak-permute.py` | Prints the unrolled Keccak `permute` for `src/tools/hash/hash.ts`. Only needed if that function is ever regenerated. |
 | `public/` | favicon.svg, icon-192.png, icon-512.png, og-image.png, robots.txt, sitemap.xml. |

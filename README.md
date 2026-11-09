@@ -4,7 +4,13 @@
 
 Every link and how-to is in [RESOURCES-AND-GUIDE.md](RESOURCES-AND-GUIDE.md).
 
-**41 free tools that run entirely in your browser, for developers and everyone else.**
+**42 free tools that run entirely in your browser, for developers and everyone else. Nothing you paste or open is uploaded.**
+
+An open-source alternative to upload-first sites like iLovePDF, TinyPNG, jwt.io and online converters. Use it online, or run your own copy with one command:
+
+```bash
+docker run -d -p 8080:8080 ghcr.io/ajithakdev/toolglass
+```
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blueviolet.svg)](LICENSE)
 [![React](https://img.shields.io/badge/React-19-149eca.svg)](https://react.dev)
@@ -49,6 +55,31 @@ There are tools for everyday jobs (word counter, unit converter, image compresso
 3. **Instant Keyboard Navigation:** Hit `⌘K` or `Ctrl+K` anywhere to open the command palette and jump between tools without taking your hands off the keyboard.
 4. **Shareable State:** Key tool configurations sync to URL query params (debounced) so you can bookmark or share exact settings with teammates.
 5. **No Bloat:** Every tool is code-split via dynamic `React.lazy()` imports. Tools load on demand, so opening one tool does not download the others.
+
+---
+
+## 🐳 Self-host with Docker
+
+The image is the static site served by unprivileged nginx, about 60 MB, for `amd64` and `arm64` (Raspberry Pi works). It has no backend and makes no outgoing requests.
+
+```bash
+docker run -d --name toolglass -p 8080:8080 --restart unless-stopped ghcr.io/ajithakdev/toolglass
+```
+
+Open http://localhost:8080. With Docker Compose:
+
+```yaml
+services:
+  toolglass:
+    image: ghcr.io/ajithakdev/toolglass:latest
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+```
+
+Tags: `latest`, each release (`1.3.0`) and each minor line (`1.3`). To build it yourself: `docker build -t toolglass .`. Serve it at the root of a domain or subdomain (`tools.example.com`); a sub-path like `example.com/tools/` is not supported yet. Installing it as an app and offline use need HTTPS, so put it behind your usual reverse proxy.
+
+What it changes on your system: one container listening on the port you choose. It writes nothing to disk; tool data stays in each visitor's browser storage.
 
 ---
 

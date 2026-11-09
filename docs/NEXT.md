@@ -55,7 +55,7 @@ Positioning to use everywhere: **"Open-source tools that never upload your files
 - [ ] Fix duplicated description text (the image compressor's says "nothing is uploaded" twice). Check every tool's description in `catalog.ts`.
 - [ ] Give every tool page a short "How to use" and "Is my file uploaded? No" section in plain words. That's what ranks for long-tail searches and what people want to read.
 - [ ] One Open Graph image per tool (generated at build time), so shared links show a proper card.
-- [ ] **Docker image plus BASE_PATH** (moved up from Phase C): a small nginx image on GHCR (free for public repos), one `docker run -p 8080:80 ghcr.io/ajithakdev/toolglass` line in the README, and a compose example. This is the entry ticket to r/selfhosted and awesome-selfhosted.
+- [ ] **Docker image** (moved up from Phase C; built on branch `feat/docker`, first image publishes with the v1.3.0 tag; sub-path hosting via BASE_PATH left for later): a small nginx image on GHCR (free for public repos), one `docker run -p 8080:80 ghcr.io/ajithakdev/toolglass` line in the README, and a compose example. This is the entry ticket to r/selfhosted and awesome-selfhosted.
 - [ ] README top: one GIF (compress an image with DevTools open, 0 requests), the "replaces iLovePDF / TinyPNG / online converters" line, the live link, the Docker line. Most visitors decide in the first screen.
 - [ ] Decide on counting (**your call**): today GitHub Pages serves the site directly (DNS only on Cloudflare). Turning on Cloudflare's free proxy for the subdomain would give request counts in its dashboard with no script on the page, so the "no analytics" promise holds. It needs a careful switch (SSL mode Full) so HTTPS doesn't break. Say yes or no.
 

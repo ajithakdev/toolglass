@@ -22,7 +22,7 @@ function Card({ e }: { e: MimeEntry }) {
           </div>
         )}
       </div>
-      <CopyButton size="sm" value={e.mime} />
+      <CopyButton value={e.mime} label={`Copy ${e.mime}`} compact />
     </div>
   );
 }

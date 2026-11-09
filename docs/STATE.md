@@ -1,10 +1,30 @@
 # Toolglass working state
 
-Last updated: 2026-10-21, on `main` (Phase 4 waves 1 and 2 done, v1.1.0 released).
+Last updated: 2026-11-10, on `main` at `a2bd9e2` (v1.2.0 released and live).
 
 Update this file at the end of each work session. Keep it short. Delete entries once they are done and merged.
 
-## In progress
+## Handoff, 2026-11-10
+
+v1.2.0 is out: #199 squash-merged, tagged, GitHub release created, and the tag deploy succeeded (the live bundle matches the local build). It also carried the 1.1.2 fixes, since that release never went out. Lint has 0 errors (1 old warning in `curl-to-fetch/parts.tsx`), the build passes, and all 274 tests in 50 files pass.
+
+Plan file: `~/.claude/plans/i-have-couple-of-melodic-cascade.md` (it-tools analysis, tool gap list Tier A/B/C).
+
+Next, in order:
+1. #204 (Ko-fi link on About) and #205 (Support section with Ko-fi and UPI) are waiting on the owner to pick which UPI ID to publish.
+2. Review contributor PR #201 (User Agent tool, closes #187, by Dtzul04).
+3. Dependabot #202 (fast-uri) and #203 (monthly group of 8): run the tests on both, then merge.
+4. Roadmap: PR 4 platform (`npm run new-tool`, file in/download primitives, test per tool), then Tier A tools, PWA offline (#191), Docker self-host plus BASE_PATH.
+
+Open checks and known leftovers:
+- 3D hero scene in its fixed 340px box not seen rendered (headless Chromium can't draw it); check in a real browser.
+- About sticky left column is about 700px tall; may clip on desktop windows under about 760px high.
+- Sticker board red text in dark mode: contrast not computed.
+- API Tester mobile cURL placeholder is cut off.
+
+Working rules for agents: Opus plans, Sonnet codes, one agent at a time, agents work in the main folder on the branch (no worktrees), plan stays in the plan file, not chat.
+
+## Older notes
 
 Redesign, per `docs/PLAN.md`. Site live at https://toolglass.ajithakdev.com with 41 tools.
 

@@ -59,7 +59,6 @@ export function useApiTester() {
   // cURL Input state
   const [curlInput, setCurlInput] = useState('');
   const [isCurlFocused, setIsCurlFocused] = useState(false);
-  const [isCopiedResponse, setIsCopiedResponse] = useState(false);
 
   const [response, setResponse] = useState<{
     status: number;
@@ -696,17 +695,6 @@ export function useApiTester() {
     setHeaders([...headers, { key: '', value: '' }]);
   };
 
-  const handleCopyResponse = () => {
-    if (response) {
-      copy(response.rawData).then((ok) => {
-        if (!ok) return toast.push('Clipboard access was blocked', 'error');
-        setIsCopiedResponse(true);
-        setTimeout(() => setIsCopiedResponse(false), 2000);
-        increment();
-      });
-    }
-  };
-
   const handleInlineSaveClick = () => {
     setSaveName('');
     setSaveDescription('');
@@ -769,8 +757,6 @@ export function useApiTester() {
     setCurlInput,
     isCurlFocused,
     setIsCurlFocused,
-    isCopiedResponse,
-    setIsCopiedResponse,
     response,
     setResponse,
     loading,
@@ -813,7 +799,6 @@ export function useApiTester() {
     handleSend,
     addQueryParamRow,
     addHeaderRow,
-    handleCopyResponse,
     handleInlineSaveClick,
   };
 }

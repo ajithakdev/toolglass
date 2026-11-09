@@ -45,6 +45,8 @@ export interface ToolInfo {
   keywords: string[];
   /** What this saves you from, shown on the tool page. */
   replaces?: string;
+  /** Uses side-by-side panes, so the tool page gets the full content width instead of a centered column. */
+  wide?: true;
 }
 
 export const catalog: ToolInfo[] = [
@@ -118,6 +120,7 @@ export const catalog: ToolInfo[] = [
   },
   {
     slug: 'timestamp',
+    wide: true,
     title: 'Timestamp',
     short: 'Unix ⇄ human time',
     description: 'Convert between Unix timestamps and human-readable dates.',
@@ -128,6 +131,7 @@ export const catalog: ToolInfo[] = [
   },
   {
     slug: 'json',
+    wide: true,
     title: 'JSON Formatter',
     short: 'Format & minify',
     description: 'Beautify, minify, and validate JSON with error positions.',
@@ -168,6 +172,7 @@ export const catalog: ToolInfo[] = [
   },
   {
     slug: 'regex',
+    wide: true,
     title: 'Regex Tester',
     short: 'Test & match patterns',
     description: 'Write and test regular expressions in real-time. Matches are highlighted.',
@@ -178,6 +183,7 @@ export const catalog: ToolInfo[] = [
   },
   {
     slug: 'json-to-ts',
+    wide: true,
     title: 'JSON to TS',
     short: 'JSON to TypeScript',
     description: 'Convert JSON objects into TypeScript interfaces or types automatically.',
@@ -188,6 +194,7 @@ export const catalog: ToolInfo[] = [
   },
   {
     slug: 'api-tester',
+    wide: true,
     title: 'API Tester',
     short: 'HTTP client',
     description: 'Mini API client to test HTTP requests directly from the browser. Supports cURL import.',
@@ -208,6 +215,7 @@ export const catalog: ToolInfo[] = [
   },
   {
     slug: 'markdown',
+    wide: true,
     title: 'Markdown Preview',
     short: 'MD to HTML',
     description: 'Write Markdown and instantly preview the rendered HTML.',
@@ -248,6 +256,7 @@ export const catalog: ToolInfo[] = [
   },
   {
     slug: 'text-diff',
+    wide: true,
     title: 'Text Diff',
     short: 'Compare two texts line by line',
     description: 'Paste two versions of a text and see which lines were added or removed.',
@@ -308,6 +317,7 @@ export const catalog: ToolInfo[] = [
   },
   {
     slug: 'image-compress',
+    wide: true,
     title: 'Image Compressor',
     short: 'Compress, convert, resize, strip EXIF',
     description: 'Shrink images, convert to WebP, JPEG, PNG, or AVIF, resize, and remove EXIF metadata. Nothing is uploaded.',
@@ -328,6 +338,7 @@ export const catalog: ToolInfo[] = [
   },
   {
     slug: 'csv-json',
+    wide: true,
     title: 'CSV ⇄ JSON ⇄ SQL',
     short: 'Convert tables between formats',
     description: 'Convert CSV to JSON and back, or turn CSV or JSON into a SQL INSERT statement. Handles quoted fields and auto-detects the delimiter.',
@@ -338,6 +349,7 @@ export const catalog: ToolInfo[] = [
   },
   {
     slug: 'yaml-toml',
+    wide: true,
     title: 'YAML ⇄ TOML ⇄ JSON',
     short: 'Convert config formats',
     description: 'Convert config files between YAML, TOML, and JSON, with clear error messages.',
@@ -348,6 +360,7 @@ export const catalog: ToolInfo[] = [
   },
   {
     slug: 'sql-format',
+    wide: true,
     title: 'SQL Formatter',
     short: 'Make SQL readable',
     description: 'Format and beautify SQL: uppercase keywords, one clause and one column per line, indented subqueries.',
@@ -358,6 +371,7 @@ export const catalog: ToolInfo[] = [
   },
   {
     slug: 'http-status',
+    wide: true,
     title: 'HTTP Status Codes',
     short: 'Every status code explained',
     description: 'Search every HTTP status code by number, class, or meaning, with a plain-English explanation.',
@@ -378,6 +392,7 @@ export const catalog: ToolInfo[] = [
   },
   {
     slug: 'html-entities',
+    wide: true,
     title: 'HTML Entities',
     short: 'Encode and decode entities',
     description: 'Escape text for HTML with named, decimal, or hex entities, or decode any entity back to text.',
@@ -387,6 +402,7 @@ export const catalog: ToolInfo[] = [
   },
   {
     slug: 'list-transform',
+    wide: true,
     title: 'List Transformer',
     short: 'Dedupe, sort, reformat lists',
     description: 'Split a list on any delimiter, trim, dedupe, and sort it, then output as lines, CSV, a JSON array, or a SQL IN clause.',
@@ -425,6 +441,7 @@ export const catalog: ToolInfo[] = [
   },
   {
     slug: 'mime-types',
+    wide: true,
     title: 'MIME Types',
     short: 'Look up types and file signatures',
     description: 'Search MIME types by extension or name, and check what a file really is from its magic bytes.',
@@ -434,6 +451,7 @@ export const catalog: ToolInfo[] = [
   },
   {
     slug: 'json-to-zod',
+    wide: true,
     title: 'JSON to Zod',
     short: 'Zod or Valibot schema from JSON',
     description: 'Generate a Zod or Valibot schema and TypeScript type from sample JSON. Keys missing from some array items become optional.',

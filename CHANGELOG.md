@@ -4,6 +4,8 @@ All notable changes to Toolglass. The format follows [Keep a Changelog](https://
 
 ## [Unreleased]
 
+## [1.3.0] - 2026-11-10
+
 ### Added
 - Docker image for self-hosting: `docker run -p 8080:8080 ghcr.io/ajithakdev/toolglass`. Unprivileged nginx serving the static site, for amd64 and arm64, published to GHCR on every release.
 - A "support it on Ko-fi" link in the Open source section of the About page, plus the UPI ID for India. It is a plain link, so no Ko-fi script loads.
@@ -76,7 +78,9 @@ All notable changes to Toolglass. The format follows [Keep a Changelog](https://
 ### Added
 - First release: 19 browser-only developer tools, installable as an offline PWA. Password, UUID, NanoID, ObjectId, QR and JWT generators; JSON formatter, JSON to TypeScript, Base64, URL encoder, JWT decoder, Markdown preview, text case and slug; hash generator and chmod calculator; regex tester, timestamp and cron, color converter, API tester.
 
-[Unreleased]: https://github.com/ajithakdev/toolglass/compare/v1.1.1...HEAD
+[Unreleased]: https://github.com/ajithakdev/toolglass/compare/v1.3.0...HEAD
+[1.3.0]: https://github.com/ajithakdev/toolglass/compare/v1.2.0...v1.3.0
+[1.2.0]: https://github.com/ajithakdev/toolglass/compare/v1.1.1...v1.2.0
 [1.1.1]: https://github.com/ajithakdev/toolglass/compare/v1.1.0...v1.1.1
 [1.1.0]: https://github.com/ajithakdev/toolglass/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/ajithakdev/toolglass/releases/tag/v1.0.0

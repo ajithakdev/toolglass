@@ -14,6 +14,8 @@ Plan file: `~/.claude/plans/i-have-couple-of-melodic-cascade.md` (it-tools analy
 
 Also merged 2026-11-10: #204 (Ko-fi and UPI `ajithakdev@sbi` on About), #205 (README Support section, QR regenerated from a known UPI payload), #207 and #209 (all November dependency bumps incl. js-yaml 5; replaced Dependabot #202, #203, #206, #210), #208 (serialize-javascript). No PRs open. `@vitejs/plugin-react` 6.2.1 is held back (needs Babel 8). All of this ships with the next Sunday release (v1.3.0, since a tool landed).
 
+**The plan from here is `docs/NEXT.md`** (growth first: Search Console, launch posts, then PDF tools, PWA, Docker). Read it before starting work.
+
 Next, in order:
 1. Sunday release v1.3.0.
 2. Roadmap: PR 4 platform (`npm run new-tool`, file in/download primitives, test per tool), then Tier A tools, PWA offline (#191), Docker self-host plus BASE_PATH.

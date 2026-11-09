@@ -75,6 +75,7 @@ Every link for Toolglass, what it is for, how to contribute, and how to run and 
 ## More detail
 
 - `docs/CODEMAP.md`: architecture, file list, conventions, storage keys, and large file maps
+- `docs/NEXT.md`: the plan from here (growth, launch, what to build next)
 - `docs/STATE.md`: current work, shipped phases, and next steps
 - `docs/KNOWN-ISSUES.md`: open bugs, testing gaps, and edge cases
 - `docs/PERFORMANCE.md`: Lighthouse scores and what to fix next

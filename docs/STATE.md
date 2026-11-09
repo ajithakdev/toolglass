@@ -1,26 +1,23 @@
 # Toolglass working state
 
-Last updated: 2026-10-31, on `ui/v1.2` (PR #199 open, v1.2.0 release planned for Sunday 2026-11-01).
+Last updated: 2026-11-10, on `main` at `a2bd9e2` (v1.2.0 released and live).
 
 Update this file at the end of each work session. Keep it short. Delete entries once they are done and merged.
 
-## Handoff, 2026-10-31
+## Handoff, 2026-11-10
 
-PR #199 (`ui/v1.2`) holds all v1.2 work. CI green locally: lint 0 errors (1 old warning in `curl-to-fetch/parts.tsx`), build OK, 274 tests in 50 files. Pre-merge checklist comment is posted; progress comments added after each commit. Not merged: the owner must say "merge #199".
+v1.2.0 is out: #199 squash-merged, tagged, GitHub release created, and the tag deploy succeeded (the live bundle matches the local build). It also carried the 1.1.2 fixes, since that release never went out. Lint has 0 errors (1 old warning in `curl-to-fetch/parts.tsx`), the build passes, and all 274 tests in 50 files pass.
 
-Commits on the branch: density pass, tool sidebar and persistent shell, clean URLs (settings only on Share), half-height hero and 1440 container, tool page redesign with A to Z lists, pinned sidebar and copy buttons, tools-first Home and reorganised About (2e9feba), Home/About polish round 2 (fe9e199: page-top spacing, category pills, sticker board, proof card, At a glance card).
-
-Plan file (owner reads it in VS Code): `~/.claude/plans/i-have-couple-of-melodic-cascade.md`. It also holds the it-tools analysis and the tool gap list (Tier A/B/C).
+Plan file: `~/.claude/plans/i-have-couple-of-melodic-cascade.md` (it-tools analysis, tool gap list Tier A/B/C).
 
 Next, in order:
-1. Owner checks localhost:5173 (hard refresh if stale; service worker) and says "merge #199". Squash-merge.
-2. Bump `fast-uri` to 3.1.9 (Dependabot #43, dev-only).
-3. Release v1.2.0 (ask first): CHANGELOG Unreleased to `[1.2.0] - 2026-11-01`, `chore: release v1.2.0`, tag, push tag, `gh release create` with humanized notes.
-4. Bump "Mapped at commit" in `docs/CODEMAP.md` after merge.
-5. Roadmap: PR 4 platform (`npm run new-tool`, file in/download primitives, test per tool), then Tier A tools, PWA offline (#191), Docker self-host plus BASE_PATH.
+1. #204 (Ko-fi link on About) and #205 (Support section with Ko-fi and UPI) are waiting on the owner to pick which UPI ID to publish.
+2. Review contributor PR #201 (User Agent tool, closes #187, by Dtzul04).
+3. Dependabot #202 (fast-uri) and #203 (monthly group of 8): run the tests on both, then merge.
+4. Roadmap: PR 4 platform (`npm run new-tool`, file in/download primitives, test per tool), then Tier A tools, PWA offline (#191), Docker self-host plus BASE_PATH.
 
 Open checks and known leftovers:
-- 3D hero scene in its new fixed 340px box not seen rendered (headless Chromium can't draw it); check in a real browser.
+- 3D hero scene in its fixed 340px box not seen rendered (headless Chromium can't draw it); check in a real browser.
 - About sticky left column is about 700px tall; may clip on desktop windows under about 760px high.
 - Sticker board red text in dark mode: contrast not computed.
 - API Tester mobile cURL placeholder is cut off.

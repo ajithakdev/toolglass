@@ -55,7 +55,7 @@ Positioning to use everywhere: **"Open-source tools that never upload your files
 - [x] Fix duplicated description text (2026-11-10). Descriptions now also end with "A private alternative to <the site it replaces>", and a test blocks dashes and repeats.
 - [ ] Give every tool page a short "How to use" and "Is my file uploaded? No" section in plain words. That's what ranks for long-tail searches and what people want to read.
 - [ ] One Open Graph image per tool (generated at build time), so shared links show a proper card.
-- [ ] **Docker image** (moved up from Phase C; built on branch `feat/docker`, first image publishes with the v1.3.0 tag; sub-path hosting via BASE_PATH left for later): a small nginx image on GHCR (free for public repos), one `docker run -p 8080:80 ghcr.io/ajithakdev/toolglass` line in the README, and a compose example. This is the entry ticket to r/selfhosted and awesome-selfhosted.
+- [x] **Docker image** (2026-11-10, #211, shipped in v1.3.0): `docker run -p 8080:8080 ghcr.io/ajithakdev/toolglass`, amd64 and arm64, public on GHCR, Compose example in the README. Sub-path hosting (BASE_PATH) left for later. This is the entry ticket to r/selfhosted and awesome-selfhosted.
 - [ ] README top: one GIF (compress an image with DevTools open, 0 requests), the "replaces iLovePDF / TinyPNG / online converters" line, the live link, the Docker line. Most visitors decide in the first screen.
 - [ ] Decide on counting (**your call**): today GitHub Pages serves the site directly (DNS only on Cloudflare). Turning on Cloudflare's free proxy for the subdomain would give request counts in its dashboard with no script on the page, so the "no analytics" promise holds. It needs a careful switch (SSL mode Full) so HTTPS doesn't break. Say yes or no.
 
@@ -104,7 +104,9 @@ If a date passes with no movement, change the channel or the positioning. Don't 
 
 ## Build backlog (keep small, do between launch work)
 
-- [ ] Sunday 2026-11-15: release v1.3.0 (User-Agent tool, support links, dependency updates). After the deploy, test "Copy as JSON" on the User-Agent page.
+- [x] Released v1.3.0 on 2026-11-10 (User-Agent tool, Docker, SEO titles, support links, dependency updates).
+- [ ] Test "Copy as JSON" on the live User-Agent page in a normal browser (the in-app browser blocks clipboard writes).
+- [ ] After the release, "Request indexing" again in Search Console for the home page and top tools, so Google picks up the new titles.
 - [ ] Check the 3D hero in its 340px box in a real browser.
 - [ ] About sticky column may clip on screens under about 760px tall.
 - [ ] Red sticker text in dark mode: check contrast.

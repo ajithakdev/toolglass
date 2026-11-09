@@ -12,12 +12,12 @@ v1.2.0 is out: #199 squash-merged, tagged, GitHub release created, and the tag d
 
 Plan file: `~/.claude/plans/i-have-couple-of-melodic-cascade.md` (it-tools analysis, tool gap list Tier A/B/C).
 
-Also merged 2026-11-10: #204 (Ko-fi and UPI `ajithakdev@sbi` on About), #205 (README Support section, QR regenerated from a known UPI payload), #207 and #209 (all November dependency bumps incl. js-yaml 5; replaced Dependabot #202, #203, #206, #210), #208 (serialize-javascript). No PRs open. `@vitejs/plugin-react` 6.2.1 is held back (needs Babel 8). All of this ships with the next Sunday release (v1.3.0, since a tool landed).
+Also merged 2026-11-10: #204 (Ko-fi and UPI `ajithakdev@sbi` on About), #205 (README Support section, QR regenerated from a known UPI payload), #207 and #209 (all November dependency bumps incl. js-yaml 5; replaced Dependabot #202, #203, #206, #210), #208 (serialize-javascript). No PRs open. `@vitejs/plugin-react` 6.2.1 is held back (needs Babel 8). All of this shipped in v1.3.0 (released early on 2026-11-10 at the owner's request), together with the Docker image (#211) and the SEO title fix.
 
 **The plan from here is `docs/NEXT.md`** (growth first: Search Console, launch posts, then PDF tools, PWA, Docker). Read it before starting work.
 
 Next, in order:
-1. Sunday release v1.3.0.
+1. Search Console: sitemap submit and indexing requests (the `ajithakdev.com` Domain property already exists). Next release follows the normal Sunday schedule.
 2. Roadmap: PR 4 platform (`npm run new-tool`, file in/download primitives, test per tool), then Tier A tools, PWA offline (#191), Docker self-host plus BASE_PATH.
 
 Open checks and known leftovers:

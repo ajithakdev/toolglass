@@ -50,9 +50,9 @@ Positioning to use everywhere: **"Open-source tools that never upload your files
 ### Phase A: get findable (1 or 2 sessions, before any post)
 
 - [ ] Verify the site in Google Search Console and Bing Webmaster Tools, then submit `sitemap.xml` to both. **Needs you:** sign in to both with the personal Google account and paste me the verification tag or TXT record. I add the tag, or put the TXT record in Cloudflare DNS (free).
-- [ ] Create `docs/SEO.md` from the template (`~/projects/ajithakdev.com/docs/SEO.md`): setup, release checklist, what to check monthly.
-- [ ] Fix page titles: they put an em dash between the tool name and "free and private", which breaks the house rule. Use "Image Compressor: free and private | Toolglass".
-- [ ] Fix duplicated description text (the image compressor's says "nothing is uploaded" twice). Check every tool's description in `catalog.ts`.
+- [x] Create `docs/SEO.md` from the template (2026-11-10).
+- [x] Fix page titles (2026-11-10): now "Image Compressor: free online, no upload | Toolglass", and the home title is "Toolglass: free online tools that never upload your files".
+- [x] Fix duplicated description text (2026-11-10). Descriptions now also end with "A private alternative to <the site it replaces>", and a test blocks dashes and repeats.
 - [ ] Give every tool page a short "How to use" and "Is my file uploaded? No" section in plain words. That's what ranks for long-tail searches and what people want to read.
 - [ ] One Open Graph image per tool (generated at build time), so shared links show a proper card.
 - [ ] **Docker image** (moved up from Phase C; built on branch `feat/docker`, first image publishes with the v1.3.0 tag; sub-path hosting via BASE_PATH left for later): a small nginx image on GHCR (free for public repos), one `docker run -p 8080:80 ghcr.io/ajithakdev/toolglass` line in the README, and a compose example. This is the entry ticket to r/selfhosted and awesome-selfhosted.

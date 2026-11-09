@@ -84,7 +84,7 @@ export const catalog: ToolInfo[] = [
     slug: 'objectid',
     title: 'Mongo ObjectId',
     short: '24-char BSON ids',
-    description: 'Generate MongoDB ObjectIds — timestamp + machine + counter.',
+    description: 'Generate MongoDB ObjectIds (timestamp, machine and counter).',
     category: 'developers',
     audience: ['developers'],
     keywords: ['mongodb', 'objectid', 'bson', 'id'],

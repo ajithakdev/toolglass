@@ -12,7 +12,7 @@ export interface PageMeta {
 
 export const HOME: PageMeta = {
   path: '/',
-  title: 'Toolglass — free, private tools for everything you do in a browser',
+  title: 'Toolglass: free online tools that never upload your files',
   description:
     'Free tools that run entirely in your browser: passwords, QR codes, JSON, timestamps, and more. No sign-up, no uploads, no ads.',
 };
@@ -42,8 +42,12 @@ export function pageForPath(pathname: string): PageMeta | undefined {
 
 export const toolPage = (t: ToolInfo): PageMeta => ({
   path: `/tools/${t.slug}`,
-  title: `${t.title} — free and private | Toolglass`,
-  description: `${t.description} Runs in your browser; nothing is uploaded.`,
+  title: `${t.title}: free online, no upload | Toolglass`,
+  description: [
+    t.description,
+    /upload|on your device/i.test(t.description) ? '' : 'Runs in your browser, nothing is uploaded.',
+    t.replaces ? `A private alternative to ${t.replaces}.` : '',
+  ].filter(Boolean).join(' '),
 });
 
 /** Every page that gets its own HTML file and sitemap entry. */

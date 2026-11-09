@@ -36,6 +36,14 @@ describe('seo', () => {
     expect(pageForPath('/tools/nope')).toBeUndefined();
   });
 
+  it('keeps titles and descriptions free of dashes and repeated privacy lines', () => {
+    for (const p of allPages()) {
+      expect(p.title + p.description).not.toMatch(/[\u2013\u2014]/);
+      expect(p.description.match(/nothing is uploaded/gi)?.length ?? 0).toBeLessThanOrEqual(1);
+    }
+    expect(pageForPath('/tools/image-compress')!.description).toContain('alternative to TinyPNG');
+  });
+
   it('lists the home page and every tool in the sitemap', () => {
     const pages = allPages();
     expect(pages[0]!.path).toBe('/');
